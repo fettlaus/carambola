@@ -1,0 +1,30 @@
+/*
+ * daemon.h
+ *
+ *  Created on: Oct 12, 2012
+ *      Author: bachelor
+ */
+
+#ifndef DAEMON_H_
+#define DAEMON_H_
+#include "daemon.c"
+
+/*
+ * Basically:
+ * fork()
+ * setsid()
+ * ignore signals
+ * fork()
+ * Source: http://openbook.galileocomputing.de/linux_unix_programmierung/Kap07-011.htm
+ */
+void daemon_fork();
+
+/*
+ * chdir()
+ * umask()
+ * openlog()
+ * Source: http://openbook.galileocomputing.de/linux_unix_programmierung/Kap07-011.htm
+ */
+void daemon_init(mode_t);
+
+#endif /* DAEMON_H_ */
