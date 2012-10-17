@@ -21,7 +21,7 @@ define Package/openocd
   CATEGORY:=Utilities
   TITLE:=OpenOCD / Open On-Chip Debugger
   URL:=http://openocd.sourceforge.net
-  DEPENDS:=+kmod-usb-serial +kmod-usb-serial-ftdi
+  DEPENDS:=+libftdi +libusb
 endef
 
 define Package/openocd/description
@@ -30,13 +30,18 @@ endef
 
 CONFIGURE_ARGS+= \
 	--enable-dummy \
-	--enable-buspirate
+	--enable-buspirate \
+	--disable-werror
 
-TARGET_CFLAGS += -std=gnu99 -Wall -I$(PKG_BUILD_DIR)/jimtcl
+TARGET_CFLAGS += -std=gnu99 \
+	-I$(PKG_BUILD_DIR)/jimtcl \
+	-I$(STAGING_DIR)/usr/include
+
+TARGET_LDFLAGS += -lusb -lftdi
 
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
-		$(TARGET_CONFIGURE_OPTS) CFLAGS="$(TARGET_CFLAGS) -I$(LINUX_DIR)/include"
+		$(TARGET_CONFIGURE_OPTS)
 endef
 
 define Package/openocd/install
