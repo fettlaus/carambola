@@ -27,7 +27,7 @@ int main(int argc, char** args) {
 		ERROR("Need GLib 2.26.0");
 	}
 	PRINT("GLib %i.%i.%i present", GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION);
-	PRINT("Started FreeJTAG. Debug enabled.");
+	PRINT("Starting FreeJTAG w\\ Debug enabled.");
 	GError* error = NULL;
 	GOptionContext* context;
 	context = g_option_context_new(NULL);
