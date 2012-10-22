@@ -35,8 +35,8 @@ int main(int argc, char** args) {
 		exit(EXIT_FAILURE);
 	}
 	g_option_context_free(context);
-	PRINT("Started FreeJTAG. Debug enabled.\n");
-	PRINT("GLib %i.%i.%i present\n", GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION);
+	PRINT("Started FreeJTAG. Debug enabled.");
+	PRINT("GLib %i.%i.%i present", GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION);
 	if(!nodetach){
 		daemon_fork();
 	}
@@ -52,7 +52,7 @@ int main(int argc, char** args) {
 #ifdef DEBUG
 			time(&t);
 			zeit = localtime(&t);
-			printf("Heartbeat at %02i:%02i:%02i\n",zeit->tm_hour,zeit->tm_min,zeit->tm_sec);
+			PRINT("Heartbeat at %02i:%02i:%02i",zeit->tm_hour,zeit->tm_min,zeit->tm_sec);
 #endif
 		sleep(10);
 	}

@@ -8,8 +8,8 @@
 #ifndef FREEJTAG_H_
 #define FREEJTAG_H_
 #ifdef DEBUG
-#define ERROR(...) fprintf(stderr, __VA_ARGS__)
-#define PRINT(...) fprintf(stdout, __VA_ARGS__)
+#define ERROR(...) g_error(__VA_ARGS__)
+#define PRINT(...) g_message(__VA_ARGS__)
 #else
 #define ERROR(...)
 #define PRINT(...)

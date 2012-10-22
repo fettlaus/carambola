@@ -13,7 +13,7 @@ void daemon_fork(){
 	//become autonomous
 	pid_t pid, sid;
 	if(!nodetach){
-		PRINT("We have to detach...\n");
+		PRINT("We have to detach...");
 		PRINT("Forking\n");
 		pid = fork();
 		if(pid <0){
@@ -37,7 +37,7 @@ void daemon_fork(){
 
 	//become autonomous a second time
 	if(!nodetach){
-		PRINT("Second fork...\n");
+		PRINT("Second fork...");
 		pid = fork();
 		if(pid <0){
 			syslog(LOG_EMERG,"%s","Couldn't fork second child process");
@@ -52,17 +52,17 @@ void daemon_fork(){
 }
 void daemon_init(mode_t mask){
 	// Change working directory
-	PRINT("Changing directory\n");
+	PRINT("Changing directory");
 	if(chdir("/")<0){
 		syslog(LOG_EMERG,"%s","Couldn't change to root");
 		exit(EXIT_FAILURE);
 	}
 
 	//set file permissions
-	PRINT("Setting umask\n");
+	PRINT("Setting umask");
 	umask(mask);
 
 	//open syslog
-	PRINT("Opening log\n");
+	PRINT("Opening log");
 	openlog("freejtag",LOG_CONS,LOG_DAEMON);
 }
