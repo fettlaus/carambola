@@ -17,7 +17,7 @@
  * fork()
  * Source: http://openbook.galileocomputing.de/linux_unix_programmierung/Kap07-011.htm
  */
-void daemon_fork();
+void fj_daemon_fork();
 
 /*
  * chdir()
@@ -25,6 +25,6 @@ void daemon_fork();
  * openlog()
  * Source: http://openbook.galileocomputing.de/linux_unix_programmierung/Kap07-011.htm
  */
-void daemon_init(mode_t);
+void fj_daemon_init(mode_t);
 
 #endif /* DAEMON_H_ */

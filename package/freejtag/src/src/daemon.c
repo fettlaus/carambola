@@ -8,7 +8,7 @@
 
 extern gboolean nodetach;
 
-void daemon_fork(){
+void fj_daemon_fork(){
 
 	//become autonomous
 	pid_t pid, sid;
@@ -50,7 +50,7 @@ void daemon_fork(){
 
 
 }
-void daemon_init(mode_t mask){
+void fj_daemon_init(mode_t mask){
 	// Change working directory
 	PRINT("Changing directory");
 	if(chdir("/")<0){

@@ -23,7 +23,7 @@ static GOptionEntry options[] = {
 };
 
 #ifdef DEBUG
-gboolean heartbeat(){
+gboolean fj_heartbeat(){
 	time_t t;
 	struct tm* zeit;
 	time(&t);
@@ -51,10 +51,10 @@ int main(int argc, char** args) {
 	}
 	g_option_context_free(context);
 	if(!nodetach){
-		daemon_fork();
+		fj_daemon_fork();
 	}
 
-	daemon_init(0);
+	fj_daemon_init(0);
 
 	//FreeJTAG Init
 	syslog(LOG_INFO,"%s","FreeJTAG startet successfully");
@@ -63,7 +63,7 @@ int main(int argc, char** args) {
 	GMainLoop* mainloop;
 	mainloop = g_main_loop_new(NULL,FALSE);
 #ifdef DEBUG
-	g_timeout_add_seconds(10,heartbeat,NULL);
+	g_timeout_add_seconds(10,fj_heartbeat,NULL);
 #endif
 	g_main_loop_run(mainloop);
 
