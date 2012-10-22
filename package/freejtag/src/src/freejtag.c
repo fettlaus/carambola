@@ -23,6 +23,9 @@ static GOptionEntry options[] = {
 };
 
 int main(int argc, char** args) {
+	if(!GLIB_CHECK_VERSION(2,26,0)){
+		ERROR("Need GLib 2.26.0");
+	}
 	GError* error = NULL;
 	GOptionContext* context;
 	context = g_option_context_new(NULL);
