@@ -22,6 +22,17 @@ static GOptionEntry options[] = {
 		{NULL}
 };
 
+#ifdef DEBUG
+gboolean heartbeat(){
+	time_t t;
+	struct tm* zeit;
+	time(&t);
+	zeit = localtime(&t);
+	PRINT("Heartbeat at %02i:%02i:%02i",zeit->tm_hour,zeit->tm_min,zeit->tm_sec);
+	return TRUE;
+}
+#endif
+
 int main(int argc, char** args) {
 	if(!GLIB_CHECK_VERSION(2,26,0)){
 		ERROR("Need GLib 2.26.0");
@@ -48,15 +59,13 @@ int main(int argc, char** args) {
 	//FreeJTAG Init
 	syslog(LOG_INFO,"%s","FreeJTAG startet successfully");
 
-	time_t t;
-	struct tm* zeit;
-	while(1){
+	//Main Loop
+	GMainLoop* mainloop;
+	mainloop = g_main_loop_new(NULL,FALSE);
 #ifdef DEBUG
-			time(&t);
-			zeit = localtime(&t);
-			PRINT("Heartbeat at %02i:%02i:%02i",zeit->tm_hour,zeit->tm_min,zeit->tm_sec);
+	g_timeout_add_seconds(10,heartbeat,NULL);
 #endif
-		sleep(10);
-	}
+	g_main_loop_run(mainloop);
+
 	return EXIT_FAILURE;
 }
