@@ -14,7 +14,7 @@ void daemon_fork(){
 	pid_t pid, sid;
 	if(!nodetach){
 		PRINT("We have to detach...");
-		PRINT("Forking\n");
+		PRINT("Forking");
 		pid = fork();
 		if(pid <0){
 			syslog(LOG_EMERG,"%s","Couldn't fork child process");
@@ -26,7 +26,7 @@ void daemon_fork(){
 	}
 
 	//get SID
-	PRINT("SetSID\n");
+	PRINT("SetSID");
 	sid = setsid();
 	if(sid < 0){
 		syslog(LOG_EMERG,"%s","Couldn't get SID");
