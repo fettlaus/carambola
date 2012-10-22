@@ -13,19 +13,18 @@
 
 extern gboolean nodetach;
 
-void fj_daemon_fork(){
+void fj_daemon_fork() {
 
 	//become autonomous
 	pid_t pid, sid;
-	if(!nodetach){
-		PRINT("We have to detach...");
-		PRINT("Forking");
+	if (!nodetach) {
+		PRINT("We have to detach..."); PRINT("Forking");
 		pid = fork();
-		if(pid <0){
-			syslog(LOG_EMERG,"%s","Couldn't fork child process");
+		if (pid < 0) {
+			syslog(LOG_EMERG, "%s", "Couldn't fork child process");
 			exit(EXIT_FAILURE);
 		}
-		if(pid>0){
+		if (pid > 0) {
 			exit(EXIT_SUCCESS);
 		}
 	}
@@ -33,33 +32,32 @@ void fj_daemon_fork(){
 	//get SID
 	PRINT("SetSID");
 	sid = setsid();
-	if(sid < 0){
-		syslog(LOG_EMERG,"%s","Couldn't get SID");
+	if (sid < 0) {
+		syslog(LOG_EMERG, "%s", "Couldn't get SID");
 		exit(EXIT_FAILURE);
 	}
 
 	//TODO: ignore signals
 
 	//become autonomous a second time
-	if(!nodetach){
+	if (!nodetach) {
 		PRINT("Second fork...");
 		pid = fork();
-		if(pid <0){
-			syslog(LOG_EMERG,"%s","Couldn't fork second child process");
+		if (pid < 0) {
+			syslog(LOG_EMERG, "%s", "Couldn't fork second child process");
 			exit(EXIT_FAILURE);
 		}
-		if(pid>0){
+		if (pid > 0) {
 			exit(EXIT_SUCCESS);
 		}
 	}
 
-
 }
-void fj_daemon_init(mode_t mask){
+void fj_daemon_init(mode_t mask) {
 	// Change working directory
 	PRINT("Changing directory");
-	if(chdir("/")<0){
-		syslog(LOG_EMERG,"%s","Couldn't change to root");
+	if (chdir("/") < 0) {
+		syslog(LOG_EMERG, "%s", "Couldn't change to root");
 		exit(EXIT_FAILURE);
 	}
 
@@ -69,5 +67,5 @@ void fj_daemon_init(mode_t mask){
 
 	//open syslog
 	PRINT("Opening log");
-	openlog("freejtag",LOG_CONS,LOG_DAEMON);
+	openlog("freejtag", LOG_CONS, LOG_DAEMON);
 }
