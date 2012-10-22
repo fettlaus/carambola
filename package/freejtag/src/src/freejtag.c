@@ -8,7 +8,6 @@
  ============================================================================
  */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
 #include <time.h>
@@ -31,7 +30,7 @@ int main(int argc, char** args) {
 	g_option_context_add_main_entries(context,options,NULL);
 
 	if(!g_option_context_parse(context,&argc,&args,&error)){
-		printf("Error: %s\n",error->message);
+		ERROR("%s",error->message);
 		exit(EXIT_FAILURE);
 	}
 	g_option_context_free(context);
