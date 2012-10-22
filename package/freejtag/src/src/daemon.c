@@ -4,7 +4,12 @@
  *  Created on: Oct 12, 2012
  *      Author: bachelor
  */
+
+#include "daemon.h"
 #include "freejtag.h"
+#include <glib.h>
+#include <stdlib.h>
+#include <syslog.h>
 
 extern gboolean nodetach;
 

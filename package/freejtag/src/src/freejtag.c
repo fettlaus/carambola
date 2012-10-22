@@ -8,12 +8,12 @@
  ============================================================================
  */
 
+#include "freejtag.h"
+#include "daemon.h"
+#include <glib.h>
 #include <stdlib.h>
 #include <syslog.h>
 #include <time.h>
-#include <glib.h>
-#include "daemon.h"
-#include "freejtag.h"
 
 gboolean nodetach = FALSE;
 

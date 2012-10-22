@@ -7,8 +7,8 @@
 
 #ifndef DAEMON_H_
 #define DAEMON_H_
-#include "daemon.c"
 
+#include <sys/types.h>
 /*
  * Basically:
  * fork()
@@ -25,6 +25,6 @@ void fj_daemon_fork();
  * openlog()
  * Source: http://openbook.galileocomputing.de/linux_unix_programmierung/Kap07-011.htm
  */
-void fj_daemon_init(mode_t);
+void fj_daemon_init(mode_t mask);
 
 #endif /* DAEMON_H_ */
