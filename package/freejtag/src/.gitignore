@@ -24,8 +24,10 @@ Makefile.in
 Makefile.msc
 missing
 
-#Compiler
+#Compiler/Building
 *.o
+/debug
+/release
 
 #Temp
 *~
