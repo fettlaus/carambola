@@ -42,7 +42,7 @@ gboolean fj_telnet_new_connection(GSocketService *service,
 	GIOChannel *channel = g_io_channel_unix_new(fd);
 
 	//add channel to event. send connection as user data.
-	PRINT("Connect callback for incoming data")
+	PRINT("Connect callback for incoming data");
 	g_io_add_watch(channel, G_IO_IN, (GIOFunc) fj_telnet_read_line, connection);
 	return TRUE;
 }
