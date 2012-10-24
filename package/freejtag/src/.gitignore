@@ -9,7 +9,9 @@ autom4te.cache
 .deps
 .libs
 aclocal.m4
+compile
 config.guess
+config.h.in
 config.log
 config.status
 config.sub

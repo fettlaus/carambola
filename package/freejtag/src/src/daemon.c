@@ -9,6 +9,8 @@
 #include "freejtag.h"
 #include <glib.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #include <syslog.h>
 
 extern gboolean nodetach;

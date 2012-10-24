@@ -1,6 +1,5 @@
 bin_PROGRAMS=freejtag
-freejtag_SOURCES=freejtag.c daemon.c
-freejtag_CFLAGS = ${GLIB_CFLAGS}
-freejtag_LDADD = ${GLIB_LIBS}
+freejtag_SOURCES=freejtag.c daemon.c settings.c
 MAINTAINERCLEANFILES= \
 		$(srcdir)/Makefile.in
+
