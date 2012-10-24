@@ -10,6 +10,7 @@
 
 #include "freejtag.h"
 #include "daemon.h"
+#include "settings.h"
 #include <glib.h>
 #include <stdlib.h>
 #include <syslog.h>
@@ -46,6 +47,13 @@ int main(int argc, char** args) {
 		exit(EXIT_FAILURE);
 	}
 	g_option_context_free(context);
+
+	//Load configuration
+	if(!fj_load_settings(&error)){
+		ERROR("Can't load configuration: %s",error->message);
+	}
+
+	//forking and starting daemon
 	if (!nodetach) {
 		fj_daemon_fork();
 	}
