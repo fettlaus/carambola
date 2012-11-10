@@ -13,6 +13,7 @@ PKG_VERSION:=0.0.1
 PKG_RELEASE:=1
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/freejtag
   SECTION:=utils
@@ -31,6 +32,7 @@ define Build/Prepare
 endef
 
 define Build/Configure
+	$(call Build/Configure/Default)
 endef
 
 define Build/Compile
