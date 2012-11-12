@@ -26,6 +26,10 @@ define Package/freejtag/description
  Free and Open On-Chip Debugging, In-System Programming and Boundary-Scan Testing
 endef
 
+define Package/freejtag/conffiles
+/etc/openocd.cfg
+endef
+
 define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
 	$(CP) ./src/* $(PKG_BUILD_DIR)/
@@ -42,6 +46,11 @@ endef
 define Package/freejtag/install
 	$(INSTALL_DIR) $(1)/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/freejtag $(1)/bin/
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/freejtag.uci-defaults $(1)/etc/uci-defaults/XX_freejtag
+	$(INSTALL_DIR) $(1)/etc
+	$(INSTALL_DATA) ./files/openocd.cfg $(1)/etc/openocd.cfg
+	
 endef
 
 $(eval $(call BuildPackage,freejtag))
