@@ -28,8 +28,7 @@ missing
 
 #Compiler/Building
 *.o
-/debug
-/release
+/build-*
 
 #Temp
 *~
