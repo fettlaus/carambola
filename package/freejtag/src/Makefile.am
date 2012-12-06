@@ -1,4 +1,4 @@
-SUBDIRS=src
+SUBDIRS=src tests
 MAINTAINERCLEANFILES = \
 	$(srcdir)/INSTALL \
 	$(srcdir)/configure \
