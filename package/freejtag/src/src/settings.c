@@ -9,7 +9,6 @@
 #include <glib.h>
 
 GKeyFile* fj_settings_file;
-GMutex* gm;
 
 gchar* fj_setting_get_filename(){
 #ifdef DEBUG
@@ -23,7 +22,6 @@ gboolean fj_load_settings(GError** error){
 	gchar* file;
 	file = fj_setting_get_filename();
 	fj_settings_file = g_key_file_new();
-	gm = g_mutex_new();
 	PRINT("Loading config from %s",file);
 	g_key_file_load_from_file(fj_settings_file,file,G_KEY_FILE_NONE,error);
 	if(*error!=NULL){
