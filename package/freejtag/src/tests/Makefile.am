@@ -1,4 +1,9 @@
-TESTS = check_daemon
-check_PROGRAMS = check_daemon
-check_daemon_SOURCES = check_daemon.c $(top_builddir)/src/daemon.h
-check_daemon_CFLAGS = @CHECK_CFLAGS@
+include $(top_srcdir)/Makefile.decl
+
+noinst_PROGRAMS = $(TEST_PROGS)
+
+TEST_PROGS        += testing
+testing_SOURCES   = test_test.c \
+					test_settings.c
+
+testing_LDADD     = $(progs_ldadd)
