@@ -49,7 +49,7 @@ int main(int argc, char** args) {
 	g_option_context_free(context);
 
 	//Load configuration
-	if(!fj_load_settings(&error)){
+	if(!fj_settings_load(&error)){
 		ERROR("Can't load configuration: %s",error->message);
 	}
 

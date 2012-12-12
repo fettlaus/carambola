@@ -18,7 +18,7 @@ gchar* fj_setting_get_filename(){
 #endif
 }
 
-gboolean fj_load_settings(GError** error){
+gboolean fj_settings_load(GError** error){
 	gchar* file;
 	file = fj_setting_get_filename();
 	fj_settings_file = g_key_file_new();
