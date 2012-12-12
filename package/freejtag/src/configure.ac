@@ -17,6 +17,12 @@ CFLAGS="$CFLAGS $GLIB_CFLAGS -pedantic -std=c99"
 LIBS="$LIBS $GLIB_LIBS"
 AM_CPPFLAGS=-DSYSCONFDIR='${sysconfdir}'
 AC_SUBST([AM_CPPFLAGS])
-AC_CONFIG_FILES(Makefile src/Makefile tests/Makefile)
+
+AC_CONFIG_FILES([
+Makefile
+src/Makefile
+tests/Makefile
+])
+
 AC_OUTPUT
 
