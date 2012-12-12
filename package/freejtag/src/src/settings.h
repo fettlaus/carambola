@@ -16,6 +16,7 @@ extern GKeyFile* fj_settings_file;
 #define FJ_TYPE_INT 1
 #define FJ_TYPE_STRING 2
 
+gchar* fj_setting_get_filename();
 void* fj_settings_get(int type,char* group, char* key);
 void fj_settings_check(GError** error);
 void fj_settings_save(GError** error);
