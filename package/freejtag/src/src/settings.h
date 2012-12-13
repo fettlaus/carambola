@@ -29,7 +29,7 @@ void fj_settings_save(GError** error);
 
 #define fj_settings_get_bool(cat,key) *((gboolean*) fj_settings_get(FJ_TYPE_BOOL,cat,key))
 
-gboolean fj_settings_load(GError** error);
+gboolean fj_settings_load(GKeyFile* keyfile, GError** error);
 
 
 

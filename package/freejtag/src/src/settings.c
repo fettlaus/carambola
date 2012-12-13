@@ -18,7 +18,7 @@ gchar* fj_setting_get_filename(){
 #endif
 }
 
-gboolean fj_settings_load(GError** error){
+gboolean fj_settings_load(GKeyFile* keyfile, GError** error){
 	gchar* file;
 	file = fj_setting_get_filename();
 	fj_settings_file = g_key_file_new();
@@ -51,4 +51,8 @@ void fj_settings_save(GError** error){
 	gsize length;
 	cont = g_key_file_to_data(fj_settings_file,&length,NULL);
 	g_file_set_contents(fj_setting_get_filename(),cont,length,error);
+}
+
+void fj_settings_free(GKeyFile* keyfile){
+	g_key_file_free(keyfile);
 }
