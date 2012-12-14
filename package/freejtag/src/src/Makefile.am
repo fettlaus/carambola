@@ -2,8 +2,8 @@ bin_PROGRAMS=freejtag
 freejtag_SOURCES= \
 		freejtag.c \
 		daemon.c \
-		settings.c \
-		telnet.c
+		telnet.c \
+		menu.c
 MAINTAINERCLEANFILES= \
 		$(srcdir)/Makefile.in
 
