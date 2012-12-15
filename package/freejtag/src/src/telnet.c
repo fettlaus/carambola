@@ -38,8 +38,12 @@ static void fj_telnet_close_connections(){
 }
 
 void fj_telnet_disconnect_client(FJ_Client *client){
-	g_io_channel_shutdown(client->channel,TRUE,NULL);
+	g_io_channel_shutdown(client->channel,FALSE,NULL);
+	g_io_channel_unref(client->channel);
+	g_source_destroy(client->source);
 	g_object_unref(client->socket);
+	clientlist = g_slist_remove(clientlist,client);
+	g_free(client);
 }
 
 static gboolean fj_telnet_read_line(GIOChannel *channel, GIOCondition cond,
@@ -49,14 +53,23 @@ static gboolean fj_telnet_read_line(GIOChannel *channel, GIOCondition cond,
 	//Read Line
 	GIOStatus ret = g_io_channel_read_line_string(channel, s, NULL, &error);
 	if (ret == G_IO_STATUS_ERROR || ret == G_IO_STATUS_EOF) {
+		WARNING("%s", error->message);
+		g_clear_error(&error);
 		// close io Channel and free last reference
+		// TODO: replace by disconnect_client
 		g_io_channel_shutdown(((FJ_Client*)data)->channel,TRUE,&error);
 		g_object_unref(((FJ_Client*)data)->socket);
 		WARNING("%s", error->message);
 		//return false (remove event source )
 		return FALSE;
+	}else if(ret == G_IO_STATUS_NORMAL){
+		if(!fj_menu_parse((FJ_Client*)data, s)){
+			// close io Channel and free last reference
+			fj_telnet_disconnect_client((FJ_Client*)data);
+			//WARNING("%s", error->message);
+			return FALSE;
+		}
 	}
-	fj_menu_parse((FJ_Client*)data, s);
 	PRINT("Got: %s", s->str);
 	return TRUE;
 }
@@ -72,15 +85,20 @@ static gboolean fj_telnet_new_connection(GSocketService *service,
 
 	// add client to list
 	FJ_Client* client = g_new(FJ_Client,1);
-	client->channel = channel;
-	client->socket = connection;
-	client->service = service;
 	clientlist = g_slist_prepend(clientlist,client);
+
+	//Attach to telnet-GMainLoop and set callback
+	GSource* src = g_io_create_watch(channel,G_IO_IN);
+	g_source_attach(src,g_main_loop_get_context(telnetloop));
+	g_source_set_callback(src,(GSourceFunc)fj_telnet_read_line,client,NULL);
 
 	//add channel to event. send connection as user data.
 	PRINT("Connect callback for incoming data");
-	g_io_add_watch(channel, G_IO_IN, (GIOFunc) fj_telnet_read_line, client);
-
+	//client->source = g_io_add_watch(channel, G_IO_IN, (GIOFunc) fj_telnet_read_line, client);
+	client->channel = channel;
+	client->source = src;
+	client->socket = connection;
+	client->service = service;
 	fj_menu_banner(client);
 	return TRUE;
 }

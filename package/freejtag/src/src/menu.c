@@ -36,7 +36,12 @@ gboolean fj_menu_parse(FJ_Client* client, GString *input){
 		fj_telnet_stop(client);
 	}else if(g_strcmp0(input->str,"exit\r\n")==0||g_strcmp0(input->str,"quit\r\n")==0){
 		fj_menu_answer(client,"Bye, bye!");
+		return FALSE;
+		//fj_telnet_disconnect_client(client);
+	}else if(g_strcmp0(input->str,"disco\r\n")==0){
+		fj_menu_answer(client,"Bye, other!");
 		fj_telnet_disconnect_client(client);
+		//fj_telnet_disconnect_client(client);
 	}else{
 		fj_menu_answer(client,"Keine Ahnung, was das ist.");
 	}
