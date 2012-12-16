@@ -19,9 +19,14 @@ static void fj_menu_answer(FJ_Client *client,const char *msg){
 void fj_menu_banner(FJ_Client* client){
 	GInetAddress* inetaddr;
 	GSocketAddress* addr = g_socket_connection_get_remote_address(client->socket,NULL);
+	gchar *inetaddrstr;
 	g_object_get(G_INET_SOCKET_ADDRESS(addr),"address",&inetaddr,NULL);
-	char *banner = g_strconcat("Welcome! You are connecting from ",g_inet_address_to_string(inetaddr),NULL);
+	inetaddrstr = g_inet_address_to_string(inetaddr);
+	char *banner = g_strconcat("Welcome! You are connecting from ",inetaddrstr,NULL);
+
 	fj_menu_answer(client,banner);
+	g_free(inetaddrstr);
+	g_object_unref(addr);
 	g_free(banner);
 	g_object_unref(inetaddr);
 }

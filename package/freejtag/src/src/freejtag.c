@@ -67,12 +67,14 @@ int main(int argc, char** args) {
 	mainloop = g_main_loop_new(NULL,FALSE);
 
 	GThread* telnet;
-	telnet = g_thread_create(fj_telnet_run,mainloop,FALSE,error);
+	telnet = g_thread_create((GThreadFunc)fj_telnet_run,mainloop,FALSE,&error);
 
 #ifdef DEBUG
 	g_timeout_add_seconds(10,fj_heartbeat,NULL);
 #endif
 	g_main_loop_run(mainloop);
 
+	g_main_context_unref(g_main_loop_get_context(mainloop));
+	g_main_loop_unref(mainloop);
 	return EXIT_FAILURE;
 }

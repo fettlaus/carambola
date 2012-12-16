@@ -42,6 +42,7 @@ void fj_telnet_disconnect_client(FJ_Client *client){
 	g_io_channel_unref(client->channel);
 	g_source_destroy(client->source);
 	g_object_unref(client->socket);
+	//g_object_unref(client->channel);
 	clientlist = g_slist_remove(clientlist,client);
 	g_free(client);
 }
@@ -71,6 +72,7 @@ static gboolean fj_telnet_read_line(GIOChannel *channel, GIOCondition cond,
 		}
 	}
 	PRINT("Got: %s", s->str);
+	g_string_free(s,TRUE);
 	return TRUE;
 }
 
@@ -113,10 +115,13 @@ static void fj_telnet_attach_callback(GSocketService *service, GError **werror){
 	PRINT("Add port to socket");
 	GError *err = NULL;
 	//TODO: read port from cfg
+
 	g_socket_listener_add_inet_port(G_SOCKET_LISTENER(service),3436,NULL,&err);
+
 	if(err != NULL){
 		ERROR("%s",err->message);
 	}
+	//g_error_free(err);
 	PRINT("Connect callback for incoming connection");
 	g_signal_connect(service,"incoming",G_CALLBACK(fj_telnet_new_connection),NULL);
 	PRINT("Start socket");
@@ -126,11 +131,10 @@ static void fj_telnet_attach_callback(GSocketService *service, GError **werror){
 /**
  * Start the Telnet process with a new GMainLoop. Needs to run in a separate thread.
  */
-void fj_telnet_run(GMainLoop* parent){
+gpointer fj_telnet_run(GMainLoop* parent){
 	gboolean run;
 	// new mainloop
-	GMainContext* context;
-	context = g_main_context_new();
+	GMainContext* context = g_main_context_new();
 	telnetloop = g_main_loop_new(context,FALSE);
 
 	GSocketService *service;
@@ -144,14 +148,23 @@ void fj_telnet_run(GMainLoop* parent){
 
 	// now we have to shutdown
 	g_socket_service_stop(service);
+	g_object_unref(service);
+	g_object_unref(service);
+
 	fj_telnet_close_connections();
 
+	// TODO: see if we are going to shtdown completely
+	g_main_context_unref(g_main_loop_get_context(telnetloop));
+	g_main_loop_unref(telnetloop);
+	g_main_loop_quit(parent);
 	// TODO: free mainloop
 	// TODO: exit parent mainloop
-	return;
+	g_thread_exit(NULL);
+	return NULL;
 }
 
 void fj_telnet_stop(FJ_Client *client){
+	fj_telnet_disconnect_client(client);
 	g_main_loop_quit(telnetloop);
 }
 
