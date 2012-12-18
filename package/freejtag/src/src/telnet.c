@@ -42,7 +42,7 @@ void fj_telnet_disconnect_client(FJ_Client *client){
 	g_io_channel_unref(client->channel);
 	g_source_destroy(client->source);
 	g_object_unref(client->socket);
-	//g_object_unref(client->channel);
+	g_object_unref(client->source);
 	clientlist = g_slist_remove(clientlist,client);
 	g_free(client);
 }
@@ -93,6 +93,7 @@ static gboolean fj_telnet_new_connection(GSocketService *service,
 	GSource* src = g_io_create_watch(channel,G_IO_IN);
 	g_source_attach(src,g_main_loop_get_context(telnetloop));
 	g_source_set_callback(src,(GSourceFunc)fj_telnet_read_line,client,NULL);
+	g_source_remove()
 
 	//add channel to event. send connection as user data.
 	PRINT("Connect callback for incoming data");
@@ -147,9 +148,10 @@ gpointer fj_telnet_run(GMainLoop* parent){
 	g_main_loop_run(telnetloop);
 
 	// now we have to shutdown
+	g_socket_listener_close(G_SOCKET_LISTENER(service));
 	g_socket_service_stop(service);
 	g_object_unref(service);
-	g_object_unref(service);
+	//g_object_unref(service);
 
 	fj_telnet_close_connections();
 
@@ -157,8 +159,7 @@ gpointer fj_telnet_run(GMainLoop* parent){
 	g_main_context_unref(g_main_loop_get_context(telnetloop));
 	g_main_loop_unref(telnetloop);
 	g_main_loop_quit(parent);
-	// TODO: free mainloop
-	// TODO: exit parent mainloop
+
 	g_thread_exit(NULL);
 	return NULL;
 }
