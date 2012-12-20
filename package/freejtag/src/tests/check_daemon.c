@@ -4,7 +4,7 @@
  *  Created on: Dec 5, 2012
  *      Author: bachelor
  */
-#include <check.h>
+//#include <check.h>
 
 int
 main (void)
