@@ -93,7 +93,6 @@ static gboolean fj_telnet_new_connection(GSocketService *service,
 	GSource* src = g_io_create_watch(channel,G_IO_IN);
 	g_source_attach(src,g_main_loop_get_context(telnetloop));
 	g_source_set_callback(src,(GSourceFunc)fj_telnet_read_line,client,NULL);
-	g_source_remove()
 
 	//add channel to event. send connection as user data.
 	PRINT("Connect callback for incoming data");
