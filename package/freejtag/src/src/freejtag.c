@@ -67,7 +67,7 @@ int main(int argc, char** args) {
 	mainloop = g_main_loop_new(NULL,FALSE);
 
 	GThread* telnet;
-	telnet = g_thread_create((GThreadFunc)fj_telnet_run,mainloop,FALSE,&error);
+	telnet = g_thread_new("telnet",(GThreadFunc)fj_telnet_run,mainloop);
 
 #ifdef DEBUG
 	g_timeout_add_seconds(10,fj_heartbeat,NULL);
