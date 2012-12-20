@@ -7,42 +7,169 @@
 
 #include "telnet.h"
 #include "freejtag.h"
+#include "menu.h"
 #include <gio/gio.h>
 #include <glib.h>
 
-gboolean fj_telnet_read_line(GIOChannel *channel, GIOCondition cond,
+// new mainloop
+// new socketlistener
+// attach_callback()
+// on new connection:
+// 		callback attaches watch and callback
+// on server restart command:
+// 		change port in cfg
+//		close_connections()
+//		attach_callback()
+// on shutdown:
+//		close_connections()
+//		stop socketlistener
+//		free resources
+//
+//
+static GMainLoop *telnetloop;
+static GSList* clientlist;
+
+static void fj_telnet_close_connections(){
+	//TODO: Write close_connections()
+	//		warn all clients
+	//		disconnect all clients (remove callback from watch)
+	//		remove callback for new connections
+	//		remove inetport
+}
+
+void fj_telnet_disconnect_client(FJ_Client *client){
+	g_io_channel_shutdown(client->channel,FALSE,NULL);
+	g_io_channel_unref(client->channel);
+	g_source_destroy(client->source);
+	g_object_unref(client->socket);
+	g_object_unref(client->source);
+	clientlist = g_slist_remove(clientlist,client);
+	g_free(client);
+}
+
+static gboolean fj_telnet_read_line(GIOChannel *channel, GIOCondition cond,
 		gpointer data) {
 	GString *s = g_string_new(NULL );
 	GError *error = NULL;
 	//Read Line
 	GIOStatus ret = g_io_channel_read_line_string(channel, s, NULL, &error);
-	if (ret == G_IO_STATUS_ERROR) {
-		//free last reference
-		g_object_unref(data);
+	if (ret == G_IO_STATUS_ERROR || ret == G_IO_STATUS_EOF) {
+		WARNING("%s", error->message);
+		g_clear_error(&error);
+		// close io Channel and free last reference
+		// TODO: replace by disconnect_client
+		g_io_channel_shutdown(((FJ_Client*)data)->channel,TRUE,&error);
+		g_object_unref(((FJ_Client*)data)->socket);
 		WARNING("%s", error->message);
 		//return false (remove event source )
 		return FALSE;
-	} else {
-		//TODO: Handle Data
-		PRINT("Got: %s", s->str);
+	}else if(ret == G_IO_STATUS_NORMAL){
+		if(!fj_menu_parse((FJ_Client*)data, s)){
+			// close io Channel and free last reference
+			fj_telnet_disconnect_client((FJ_Client*)data);
+			//WARNING("%s", error->message);
+			return FALSE;
+		}
 	}
-	if (ret == G_IO_STATUS_EOF) {
-		return FALSE;
-	}
+	PRINT("Got: %s", s->str);
+	g_string_free(s,TRUE);
 	return TRUE;
 }
 
-gboolean fj_telnet_new_connection(GSocketService *service,
+static gboolean fj_telnet_new_connection(GSocketService *service,
 		GSocketConnection *connection, GObject *source, gpointer data) {
 	PRINT("New connection detected.");
-	//keep reference to connection (don't drop it!)
+	///We need to keep a reference to the connection. (don't drop it!)
 	g_object_ref(connection);
 	GSocket *socket = g_socket_connection_get_socket(connection);
 	gint fd = g_socket_get_fd(socket);
 	GIOChannel *channel = g_io_channel_unix_new(fd);
 
+	// add client to list
+	FJ_Client* client = g_new(FJ_Client,1);
+	clientlist = g_slist_prepend(clientlist,client);
+
+	//Attach to telnet-GMainLoop and set callback
+	GSource* src = g_io_create_watch(channel,G_IO_IN);
+	g_source_attach(src,g_main_loop_get_context(telnetloop));
+	g_source_set_callback(src,(GSourceFunc)fj_telnet_read_line,client,NULL);
+
 	//add channel to event. send connection as user data.
 	PRINT("Connect callback for incoming data");
-	g_io_add_watch(channel, G_IO_IN, (GIOFunc) fj_telnet_read_line, connection);
+	//client->source = g_io_add_watch(channel, G_IO_IN, (GIOFunc) fj_telnet_read_line, client);
+	client->channel = channel;
+	client->source = src;
+	client->socket = connection;
+	client->service = service;
+	fj_menu_banner(client);
 	return TRUE;
+}
+
+/**
+ * Attach port as specified in config-file to service. Then connect signal \"incoming\" from the service to callback fj_telnet_new_connection().
+ * @see fj_telnet_new_connection
+ * @param service
+ * @param error error at opening port
+ */
+static void fj_telnet_attach_callback(GSocketService *service, GError **werror){
+	PRINT("Add port to socket");
+	GError *err = NULL;
+	//TODO: read port from cfg
+
+	g_socket_listener_add_inet_port(G_SOCKET_LISTENER(service),3436,NULL,&err);
+
+	if(err != NULL){
+		ERROR("%s",err->message);
+	}
+	//g_error_free(err);
+	PRINT("Connect callback for incoming connection");
+	g_signal_connect(service,"incoming",G_CALLBACK(fj_telnet_new_connection),NULL);
+	PRINT("Start socket");
+	g_socket_service_start(service);
+}
+
+/**
+ * Start the Telnet process with a new GMainLoop. Needs to run in a separate thread.
+ */
+gpointer fj_telnet_run(GMainLoop* parent){
+	gboolean run;
+	// new mainloop
+	GMainContext* context = g_main_context_new();
+	telnetloop = g_main_loop_new(context,FALSE);
+
+	GSocketService *service;
+	GError* socketerror;
+	PRINT("Creating socket service");
+	service = g_socket_service_new();
+	fj_telnet_attach_callback(service,&socketerror);
+	// TODO: attach restart signal?
+
+	g_main_loop_run(telnetloop);
+
+	// now we have to shutdown
+	g_socket_listener_close(G_SOCKET_LISTENER(service));
+	g_socket_service_stop(service);
+	g_object_unref(service);
+	//g_object_unref(service);
+
+	fj_telnet_close_connections();
+
+	// TODO: see if we are going to shtdown completely
+	g_main_context_unref(g_main_loop_get_context(telnetloop));
+	g_main_loop_unref(telnetloop);
+	g_main_loop_quit(parent);
+
+	g_thread_exit(NULL);
+	return NULL;
+}
+
+void fj_telnet_stop(FJ_Client *client){
+	fj_telnet_disconnect_client(client);
+	g_main_loop_quit(telnetloop);
+}
+
+void fj_telnet_change_port(GSocketService* service, gint port, GError** error){
+	//TODO: change port in cfg
+	fj_telnet_close_connections();
+	fj_telnet_attach_callback(service,error);
 }

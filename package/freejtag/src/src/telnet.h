@@ -9,12 +9,21 @@
 #define TELNET_H_
 #include<gio/gio.h>
 
-gboolean fj_telnet_read_line(GIOChannel *channel, GIOCondition cond,
-		gpointer data);
-/**
- * aeaea
- */
-gboolean fj_telnet_new_connection(GSocketService *service,
-		GSocketConnection *connection, GObject *source, gpointer data);
+typedef struct{
+	GSocketConnection* socket;
+	GIOChannel* channel;
+	GSocketService* service;
+	GSource* source;
+} FJ_Client;
+
+void fj_telnet_disconnect_client(FJ_Client *client);
+
+void fj_telnet_change_port(GSocketService* service, gint port, GError** error);
+
+gpointer fj_telnet_run(GMainLoop* parent);
+
+void fj_telnet_stop(FJ_Client *client);
+
+
 
 #endif /* TELNET_H_ */

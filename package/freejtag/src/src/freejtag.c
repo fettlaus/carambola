@@ -74,26 +74,15 @@ int main(int argc, char** args) {
 	GMainLoop* mainloop;
 	mainloop = g_main_loop_new(NULL, FALSE);
 
-	//Add Telnet server
-	PRINT("Initializing Telnet");
-	GSocketService *service;
-	GError* socketerror;
-	PRINT("Creating socket service");
-	service = g_socket_service_new();
-	PRINT("Add port to socket");
-	g_socket_listener_add_inet_port(G_SOCKET_LISTENER(service),3436,NULL,&socketerror);
-	if(socketerror){
-		ERROR("%s",socketerror->message);
-	}
-	PRINT("Connect callback for incoming connection");
-	g_signal_connect(service,"incoming",G_CALLBACK(fj_telnet_new_connection),NULL);
-	PRINT("Start socket");
-	g_socket_service_start(service);
+	GThread* telnet;
+	telnet = g_thread_new("telnet",(GThreadFunc)fj_telnet_run,mainloop);
 
 #ifdef DEBUG
 	g_timeout_add_seconds(10,fj_heartbeat,NULL);
 #endif
 	g_main_loop_run(mainloop);
 
+	g_main_context_unref(g_main_loop_get_context(mainloop));
+	g_main_loop_unref(mainloop);
 	return EXIT_FAILURE;
 }
