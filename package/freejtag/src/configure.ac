@@ -1,27 +1,21 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([FreeJTAG], [0.0.1])
+AC_INIT(cpptest, 1.0)
 
 
 AC_CANONICAL_SYSTEM
-AC_CONFIG_SRCDIR([src/freejtag.c])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE()
 
-AC_PROG_CC
-AC_CONFIG_HEADERS([src/config.h])
-PKG_CHECK_MODULES(GLIB,[glib-2.0 >= 2.26.1] gio-2.0 gthread-2.0)
+AC_PROG_CXX
+AC_PROG_LIBTOOL
 
-CFLAGS="$CFLAGS $GLIB_CFLAGS -pedantic -std=c99"
-LIBS="$LIBS $GLIB_LIBS"
-AM_CPPFLAGS=-DSYSCONFDIR='${sysconfdir}'
+BOOST_REQUIRE
+BOOST_THREADS
+BOOST_PROGRAM_OPTIONS
+AM_CPPFLAGS="$AM_CPPFLAGS -DSYSCONFDIR='${sysconfdir}'"
 AC_SUBST([AM_CPPFLAGS])
 
-AC_CONFIG_FILES([
-Makefile
-src/Makefile
-tests/Makefile
-])
-
+AC_CONFIG_FILES(Makefile src/Makefile)
 AC_OUTPUT
 

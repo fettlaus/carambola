@@ -7,30 +7,26 @@
 
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
+#include <boost/program_options.hpp>
+#include <string>
 
-#include <glib.h>
+namespace po = boost::program_options;
 
-extern GKeyFile* fj_settings_file;
-
-#define FJ_TYPE_BOOL 0
-#define FJ_TYPE_INT 1
-#define FJ_TYPE_STRING 2
-
-gchar* fj_setting_get_filename();
-void* fj_settings_get(int type,char* group, char* key);
-void fj_settings_check(GError** error);
-void fj_settings_save(GError** error);
-
-#define fj_settings_get_n(type,cat,key) { \
-	g_mutex_lock(gm); \
-	g_key_file_get_##type##(settings,cat,key,NULL); \
-	g_mutex_release(gm); \
-}while(0){}
-
-#define fj_settings_get_bool(cat,key) *((gboolean*) fj_settings_get(FJ_TYPE_BOOL,cat,key))
-
-gboolean fj_settings_load(GKeyFile* keyfile, GError** error);
-
-
+namespace freejtag {
+class settings{
+private:
+	po::variables_map map;
+	po::options_description desc;
+	const char* get_filename();
+	void set_descs();
+public:
+	settings(int argc, char* argv[]);
+	~settings();
+	po::variables_map &get_map();
+	template <typename P> const P get_value(const char* val) const;
+	void save_file();
+};
+}
+#include "settings.hpp"
 
 #endif /* SETTINGS_H_ */
