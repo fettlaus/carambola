@@ -23,7 +23,7 @@ public:
 };
 
 typedef std::set<Connection::pointer> ConnectionList;
-class telnet:ConnectionBundle{
+class telnet:public ConnectionBundle{
 private:
 	asio::io_service* io_service;
 	asio::ip::tcp::acceptor accepto;
@@ -33,6 +33,7 @@ private:
 public:
 	telnet(int port);
 	int run();
+	bool sendBroadcast(const Message& msg);
 };
 
 
