@@ -56,12 +56,15 @@ namespace freejtag{
 		}
 		start_accept();
 	}
-	bool telnet::sendBroadcast(const Message& msg) {
+
+telnet::~telnet() {
+
+}
+
+bool telnet::sendBroadcast(const Message& msg) {
 		//std::for_each(connections_.begin(),connections_.end(),boost::bind(&Connection::send()))
 		return true;
 	}
 
 
 }
-
-

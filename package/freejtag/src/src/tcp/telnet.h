@@ -18,8 +18,9 @@ namespace asio = boost::asio;
 namespace freejtag{
 class ConnectionBundle{
 public:
-	virtual bool sendBroadcast(const Message& msg);
-	virtual ~ConnectionBundle(){};
+	virtual ~ConnectionBundle(){}
+	virtual bool sendBroadcast(const Message& msg) = 0;
+
 };
 
 typedef std::set<Connection::pointer> ConnectionList;
@@ -31,6 +32,7 @@ private:
 	void handle_accept(Connection::pointer ptr, const boost::system::error_code& err);
 	ConnectionList connections_;
 public:
+	~telnet();
 	telnet(int port);
 	int run();
 	bool sendBroadcast(const Message& msg);
