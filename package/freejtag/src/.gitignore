@@ -26,6 +26,13 @@ Makefile.in
 Makefile.msc
 missing
 
+#Libtool
+libtool.m4
+lt~obsolete.m4
+ltoptions.m4
+ltsugar.m4
+ltversion.m4
+
 #Compiler/Building
 *.o
 /build-*
