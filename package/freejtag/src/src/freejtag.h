@@ -15,7 +15,7 @@
 #define WARNING(...) printf(__VA_ARGS__)
 #define CRITICAL(...) printf(__VA_ARGS__)
 #else
-#define PRINT(...) printf(__VA_ARGS__)
+#define PRINT(...)
 #define WARNING(...)
 #define CRITICAL(...)
 #endif
