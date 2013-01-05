@@ -7,6 +7,8 @@
 
 #include "settings.h"
 #include "tcp/telnet.h"
+#include <ostream>
+#include <iostream>
 
 #ifndef FREEJTAG_H_
 #define FREEJTAG_H_
