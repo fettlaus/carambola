@@ -8,7 +8,8 @@ freejtag_SOURCES=freejtag.cpp \
 				tcp/telnet.cpp \
 				tcp/Connection.cpp \
 				tcp/Message.cpp \
-				tcp/MessageType.cpp
+				tcp/MessageType.cpp \
+				tcp/MessageQueue.hpp
 AUTOMAKE_OPTIONS = subdir-objects
 AM_CPPFLAGS=$(BOOST_CPPFLAGS)
 AM_LDFLAGS=$(BOOST_THREADS_LDFLAGFS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)

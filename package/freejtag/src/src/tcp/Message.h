@@ -27,8 +27,13 @@ public:
 	char* header();
 	bool decode_header();
 	bool encode_header();
-	Message(MessageType type,uint32_t timestamp);
-	Message();
+	// ping: type
+	// simple msg: type, body
+	// extended msg: type, body, timestamp
+	Message(MessageType type, char* body, uint32_t timestamp);
+	//Message(MessageType type, char* body);
+	//Message(MessageType type);
+	//Message();
 	~Message();
 	std::size_t BodyLength() const;
 	void BodyLength(std::size_t bodyLength);

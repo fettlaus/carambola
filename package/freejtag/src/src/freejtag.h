@@ -9,6 +9,8 @@
 #include "tcp/telnet.h"
 #include <ostream>
 #include <iostream>
+#include "tcp/MessageQueue.h"
+#include "tcp/Message.h"
 
 #ifndef FREEJTAG_H_
 #define FREEJTAG_H_
@@ -29,7 +31,7 @@ class freejtag{
 private:
 	settings *prog_settings;
 	telnet *prog_telnet;
-
+	MessageQueue<Message> message_queue_;
 public:
 	freejtag(int argc, char* argv[]);
 	~freejtag();

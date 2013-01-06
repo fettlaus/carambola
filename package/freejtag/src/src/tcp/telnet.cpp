@@ -34,7 +34,7 @@
 //
 namespace freejtag{
 
-	telnet::telnet(int port):io_service(new asio::io_service),accepto(*io_service,asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)){
+	telnet::telnet(MessageQueue<Message>& messages, int port):io_service(new asio::io_service),messages_(messages),accepto(*io_service,asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)){
 		PRINT("new telnet");
 		;
 	}

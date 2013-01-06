@@ -16,6 +16,8 @@
 //#include <time.h>
 #include <boost/program_options.hpp>
 #include <boost/thread/thread.hpp>
+#include "tcp/MessageQueue.h"
+#include "tcp/Message.h"
 
 int main(int argc, char* argv[]) {
 	freejtag::freejtag *prog;
@@ -28,7 +30,7 @@ int main(int argc, char* argv[]) {
 namespace freejtag {
 freejtag::freejtag(int argc, char* argv[]):prog_settings(new settings(argc,argv)) {
 	PRINT("new freejtag");
-	prog_telnet = new telnet(12323);
+	prog_telnet = new telnet(message_queue_, 12323);
 }
 freejtag::~freejtag() {
 	delete prog_settings;

@@ -10,13 +10,13 @@
 #include <cstring>
 
 namespace freejtag {
-Message::Message(MessageType type,uint32_t timestamp):length_(0),type_(TypeToInt(type)),timestamp_(timestamp) {
+Message::Message(MessageType type,char* body = NULL,uint32_t timestamp=0):length_(0),type_(TypeToInt(type)),timestamp_(timestamp) {
 	memset(data_,0,header_length+body_max_length);
 }
 
-Message::~Message(){
-	;
-}
+//Message::~Message(){
+//	;
+//}
 
 size_t Message::BodyLength() const {
 	return length_;
@@ -63,9 +63,9 @@ const char* Message::getData() const {
 	return data_;
 }
 
-Message::Message():type_(ERROR),length_(0),timestamp_(0){
-
-}
+//Message::Message():type_(ERROR),length_(0),timestamp_(0){
+//
+//}
 
 size_t Message::size() {
 	return header_length+(strnlen(data_+header_length,body_max_length));

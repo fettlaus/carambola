@@ -11,6 +11,7 @@
 #include <boost/asio/ip/tcp.hpp>
 //#include <iostream>
 #include "Connection.h"
+#include "MessageQueue.h"
 #include <set>
 
 namespace asio = boost::asio;
@@ -31,9 +32,10 @@ private:
 	void start_accept();
 	void handle_accept(Connection::pointer ptr, const boost::system::error_code& err);
 	ConnectionList connections_;
+	MessageQueue<Message>& messages_;
 public:
 	~telnet();
-	telnet(int port);
+	telnet(MessageQueue<Message>& messages, int port);
 	int run();
 	bool sendBroadcast(const Message& msg);
 };
