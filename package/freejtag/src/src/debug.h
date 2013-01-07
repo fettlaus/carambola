@@ -13,6 +13,9 @@
 
 #ifdef DEBUG
 #define PRINT(...) {DPRINT() << __VA_ARGS__;}
+/**
+ * http://stackoverflow.com/questions/9527127/thread-safe-cout-technique-am-i-missing-something
+ */
 class DPRINT {
 public:
     explicit DPRINT(){

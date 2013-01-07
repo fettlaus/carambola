@@ -21,19 +21,19 @@ class Message;
 
 class Connection: public boost::enable_shared_from_this<Connection>{
 private:
-	// hidden constructor (use create_new)
-	Connection(boost::asio::io_service& service);
-	boost::asio::ip::tcp::socket socket;
+	Connection(boost::asio::io_service& service); ///< Hidden constructor
+	boost::asio::ip::tcp::socket socket_; ///< Our socket
+	Message cur_message_; ///< The message we are reading into
 	void handle_write(const boost::system::error_code& err, size_t);
-	Message cur_message_;
 public:
+	typedef boost::shared_ptr<Connection> pointer; ///< Shared pointer to a Connection
+
 	void deliver(const Message&);
 	void start();
-	bool send(const Message& msg);
-	typedef boost::shared_ptr<Connection> pointer;
 	static pointer create_new(boost::asio::io_service& service);
 	boost::asio::ip::tcp::socket& get_socket();
-	void connect_bindings();
+	//bool send(const Message& msg);
+	//void connect_bindings();
 
 };
 

@@ -15,6 +15,10 @@ Message::Message(MessageType type,std::string body,uint32_t timestamp):length_(b
 	memset(data_,0,header_length+body_max_length);
 	const char* tmp = body.c_str();
 	memcpy(data_+header_length,tmp,strlen(tmp));
+	/**
+	 * http://www.boost.org/doc/libs/1_52_0/doc/html/date_time/posix_time.html
+	 * http://stackoverflow.com/questions/6734375/c-boost-get-current-time-in-milliseconds
+	 */
 	using namespace boost::posix_time;
 	using namespace boost::gregorian;
 	ptime zero(date(day_clock::local_day()));

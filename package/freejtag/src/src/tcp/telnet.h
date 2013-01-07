@@ -23,7 +23,10 @@ namespace asio = boost::asio;
 namespace freejtag{
 
 
-
+/**
+ * http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/example/chat/chat_server.cpp
+ * http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/tutorial/tutdaytime3/src.html
+ */
 class telnet{
 private:
 	asio::io_service* io_service;

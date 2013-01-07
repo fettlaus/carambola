@@ -18,7 +18,9 @@
 
 namespace freejtag {
 
-
+/**
+ * http://www.justsoftwaresolutions.co.uk/threading/implementing-a-thread-safe-queue-using-condition-variables.html
+ */
 template<typename D>
 class MessageQueue {
 public:
