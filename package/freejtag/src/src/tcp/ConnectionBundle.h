@@ -16,10 +16,9 @@ namespace freejtag {
 typedef std::set<Connection::pointer> ConnectionList;
 class ConnectionBundle{
 public:
-	bool sendBroadcast(const Message& msg);
 	void addConnection(Connection::pointer conn);
 	void removeConnection(Connection::pointer conn);
-private:
+protected:
 	ConnectionList connections_;
 };
 

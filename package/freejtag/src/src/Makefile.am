@@ -10,7 +10,8 @@ freejtag_SOURCES=freejtag.cpp \
 				tcp/Connection.cpp \
 				tcp/Message.cpp \
 				tcp/MessageTarget.cpp \
-				tcp/ConnectionBundle.cpp
+				tcp/ConnectionBundle.cpp \
+				tcp/MessageTargetBundle.cpp
 				
 AUTOMAKE_OPTIONS = subdir-objects
 AM_CPPFLAGS=$(BOOST_CPPFLAGS)

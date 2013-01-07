@@ -12,18 +12,15 @@
 
 namespace freejtag {
 
-bool freejtag::ConnectionBundle::sendBroadcast(const Message& msg) {
-	PRINT("Sending Broadcast");
-	std::for_each(connections_.begin(),connections_.end(),boost::bind(&Connection::deliver,_1,boost::ref(msg)));
-	return true;
-}
 
-void freejtag::ConnectionBundle::addConnection(Connection::pointer conn) {
-	this->sendBroadcast(Message(MESS,"New Connection!"));
+
+void ConnectionBundle::addConnection(Connection::pointer conn) {
 	connections_.insert(conn);
 }
 
-void freejtag::ConnectionBundle::removeConnection(Connection::pointer conn) {
+
+
+void ConnectionBundle::removeConnection(Connection::pointer conn) {
 	connections_.erase(conn);
 }
 
