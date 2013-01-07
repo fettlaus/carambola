@@ -19,12 +19,17 @@ Message::Message(MessageType type,std::string body,uint32_t timestamp):length_(b
 	 * http://www.boost.org/doc/libs/1_52_0/doc/html/date_time/posix_time.html
 	 * http://stackoverflow.com/questions/6734375/c-boost-get-current-time-in-milliseconds
 	 */
-	using namespace boost::posix_time;
-	using namespace boost::gregorian;
-	ptime zero(date(day_clock::local_day()));
-	ptime now(microsec_clock::local_time());
-	time_duration diff = now - zero;
-	PRINT("Message at " << diff.total_milliseconds());
+	//Need to generate own timestamp
+	if(timestamp_ == 0){
+		using namespace boost::posix_time;
+		using namespace boost::gregorian;
+		ptime zero(date(day_clock::local_day()));
+		ptime now(microsec_clock::local_time());
+		time_duration diff = now - zero;
+		timestamp_ = diff.total_milliseconds();
+	}
+
+	PRINT("Message(" << (int)type_ << "," << (int)length_ << "," << (long)timestamp_ << ")=\"" << body << "\"");
 }
 
 Message::~Message(){
@@ -117,6 +122,22 @@ uint8_t Message::TypeToInt(MessageType messageTypeEnum) {
 		default:
 			return 0;
 	}
+}
+
+uint32_t Message::getTimestamp() const {
+	return timestamp_;
+}
+
+void Message::setTimestamp(uint32_t time) {
+	timestamp_ = time;
+}
+
+MessageType Message::getType() const {
+	return IntToType(type_);
+}
+
+void Message::setType(MessageType type) {
+	type_ = TypeToInt(type);
 }
 
 MessageType Message::IntToType(uint8_t unsignedChar) {
