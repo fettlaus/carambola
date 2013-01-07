@@ -52,7 +52,7 @@ int freejtag::run() {
 
 		PRINT("PING!");
 		//Message msg = Message(PING);
-		message_queue_.push(Message(MESS,"Test"));
+		message_queue_.push(std::make_pair(MessageTarget(), Message(MESS,"Test")));
 		//boost::thread telnet_thread(*prog_telnet::run());
 		//prog_telnet->run();
 		boost::this_thread::sleep(boost::posix_time::milliseconds(10000));

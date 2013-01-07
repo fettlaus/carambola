@@ -6,8 +6,10 @@ bin_PROGRAMS=freejtag
 freejtag_SOURCES=freejtag.cpp \
 				settings.cpp \
 				tcp/NetworkService.cpp \
+				tcp/BaseConnection.cpp \
 				tcp/Connection.cpp \
 				tcp/Message.cpp \
+				tcp/MessageTarget.cpp \
 				tcp/ConnectionBundle.cpp
 				
 AUTOMAKE_OPTIONS = subdir-objects

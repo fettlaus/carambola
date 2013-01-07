@@ -35,7 +35,7 @@
 //
 namespace freejtag{
 
-NetworkService::NetworkService(BlockingQueue<Message>& messages, int port):io_service(new asio::io_service),
+NetworkService::NetworkService(MessageQueue& messages, int port):io_service(new asio::io_service),
 			messages_(messages),
 			accepto(*io_service,asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)),
 			thread_(boost::bind(&NetworkService::run, this)),
@@ -70,11 +70,12 @@ NetworkService::NetworkService(BlockingQueue<Message>& messages, int port):io_se
 
 int NetworkService::run_dispatch() {
 	while(!shutdown_){
-		Message msg;
+		std::pair<MessageTarget,Message> msg;
+		//Message msg;
 		PRINT("Wait for Message");
 		messages_.pop(msg);
 		PRINT("Got Message!");
-		connection_bundle_.sendBroadcast(msg);
+		connection_bundle_.sendBroadcast(msg.second);
 		//
 	}
 	return 0;

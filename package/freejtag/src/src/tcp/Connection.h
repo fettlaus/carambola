@@ -9,9 +9,10 @@
 #define CONNECTION_H_
 
 #include "Message.h"
+#include "BaseConnection.h"
+#include "MessageTarget.h"
 
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/asio/ip/tcp.hpp>
 
 //class boost::asio::io_service;
 namespace freejtag {
@@ -19,19 +20,17 @@ namespace freejtag {
 class Message;
 
 
-class Connection: public boost::enable_shared_from_this<Connection>{
+class Connection:public BaseConnection,public MessageTarget, public boost::enable_shared_from_this<Connection>{
 private:
 	Connection(boost::asio::io_service& service); ///< Hidden constructor
-	boost::asio::ip::tcp::socket socket_; ///< Our socket
 	Message cur_message_; ///< The message we are reading into
 	void handle_write(const boost::system::error_code& err, size_t);
 public:
-	typedef boost::shared_ptr<Connection> pointer; ///< Shared pointer to a Connection
-
+	typedef boost::shared_ptr<Connection> pointer;
+	static pointer create_new(boost::asio::io_service& service);
 	void deliver(const Message&);
 	void start();
-	static pointer create_new(boost::asio::io_service& service);
-	boost::asio::ip::tcp::socket& get_socket();
+
 	//bool send(const Message& msg);
 	//void connect_bindings();
 

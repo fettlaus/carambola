@@ -12,12 +12,13 @@
 #include "tcp/NetworkService.h"
 #include "tcp/BlockingQueue.h"
 #include "tcp/Message.h"
+#include <utility>
 
 //class freejtag::telnet;
 namespace freejtag{
 class freejtag{
 private:
-	BlockingQueue<Message> message_queue_;
+	MessageQueue message_queue_;
 	settings prog_settings;
 	NetworkService prog_network;
 public:

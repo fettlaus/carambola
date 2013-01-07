@@ -27,11 +27,12 @@ namespace freejtag{
  * http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/example/chat/chat_server.cpp
  * http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/tutorial/tutdaytime3/src.html
  */
+typedef BlockingQueue< std::pair<MessageTarget,Message> > MessageQueue;
 class NetworkService{
 private:
 	asio::io_service* io_service;
 	asio::ip::tcp::acceptor accepto;
-	BlockingQueue<Message>& messages_;
+	MessageQueue& messages_;
 	bool shutdown_;
 	boost::thread thread_;
 	boost::thread dispatch_thread_;
@@ -42,7 +43,7 @@ private:
 	ConnectionBundle connection_bundle_;
 public:
 	~NetworkService();
-	NetworkService(BlockingQueue<Message>& messages, int port);
+	NetworkService(MessageQueue& messages, int port);
 	int run();
 	bool sendBroadcast(const Message& msg);
 };
