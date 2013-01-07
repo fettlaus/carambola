@@ -5,25 +5,13 @@
  *      Author: bachelor
  */
 
-#include "settings.h"
-#include "tcp/telnet.h"
-#include <ostream>
-#include <iostream>
-#include "tcp/MessageQueue.h"
-#include "tcp/Message.h"
-
 #ifndef FREEJTAG_H_
 #define FREEJTAG_H_
-#ifdef DEBUG
-#define PRINT(...) std::cout << __VA_ARGS__ << std::endl
-#define WARNING(...) printf(__VA_ARGS__)
-#define CRITICAL(...) printf(__VA_ARGS__)
-#else
-#define PRINT(...)
-#define WARNING(...)
-#define CRITICAL(...)
-#endif
-#define ERROR(...) g_error(__VA_ARGS__)
+
+#include "settings.h"
+#include "tcp/telnet.h"
+#include "tcp/MessageQueue.h"
+#include "tcp/Message.h"
 
 //class freejtag::telnet;
 namespace freejtag{

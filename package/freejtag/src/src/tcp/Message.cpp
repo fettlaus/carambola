@@ -6,20 +6,25 @@
  */
 
 #include "Message.h"
-#include "freejtag.h"
+#include "debug.h"
+
 #include <cstring>
 
 namespace freejtag {
-Message::Message(MessageType type,char* body = NULL,uint32_t timestamp=0):length_(0),type_(TypeToInt(type)),timestamp_(timestamp) {
+Message::Message(MessageType type,std::string body,uint32_t timestamp):length_(body.length()),type_(TypeToInt(type)),timestamp_(timestamp) {
 	memset(data_,0,header_length+body_max_length);
+	const char* tmp = body.c_str();
+	memcpy(data_+header_length,tmp,strlen(tmp));
+	using namespace boost::posix_time;
+	using namespace boost::gregorian;
+	ptime zero(date(day_clock::local_day()));
+	ptime now(microsec_clock::local_time());
+	time_duration diff = now - zero;
+	PRINT("Message at " << diff.total_milliseconds());
 }
 
-//Message::~Message(){
-//	;
-//}
-
-size_t Message::BodyLength() const {
-	return length_;
+Message::~Message(){
+	;
 }
 
 /*
@@ -54,7 +59,7 @@ bool Message::encode_header() {
 	length_ = strnlen(data_+header_length,body_max_length);
 	return true;
 }
-
+/*
 char* Message::body() {
 	return data_+header_length;
 }
@@ -62,20 +67,26 @@ char* Message::body() {
 const char* Message::getData() const {
 	return data_;
 }
+*/
 
 //Message::Message():type_(ERROR),length_(0),timestamp_(0){
 //
 //}
 
-size_t Message::size() {
-	return header_length+(strnlen(data_+header_length,body_max_length));
+
+
+size_t Message::getLength() const {
+	return length_;
 }
 
-std::vector<asio::const_buffer> Message::to_buffers() {
+std::vector<asio::const_buffer> Message::toBuffers() const {
 	std::vector<boost::asio::const_buffer> buffers;
 	buffers.push_back(asio::buffer(&type_,1));
 	buffers.push_back(asio::buffer(&length_,2));
 	buffers.push_back(asio::buffer(&timestamp_,4));
+	if(type_ == 0x01){
+		buffers.push_back(asio::buffer(data_+header_length,length_));
+	}
 	return buffers;
 }
 

@@ -7,32 +7,36 @@
 
 #ifndef TELNET_H_
 #define TELNET_H_
+#include "Connection.h"
+#include "ConnectionBundle.h"
+#include "MessageQueue.h"
+
 //#include<gio/gio.h>
+#include <boost/thread.hpp>
 #include <boost/asio/ip/tcp.hpp>
 //#include <iostream>
-#include "Connection.h"
-#include "MessageQueue.h"
 #include <set>
+
 
 namespace asio = boost::asio;
 
 namespace freejtag{
-class ConnectionBundle{
-public:
-	virtual ~ConnectionBundle(){}
-	virtual bool sendBroadcast(const Message& msg) = 0;
 
-};
 
-typedef std::set<Connection::pointer> ConnectionList;
-class telnet:public ConnectionBundle{
+
+class telnet{
 private:
 	asio::io_service* io_service;
 	asio::ip::tcp::acceptor accepto;
+	MessageQueue<Message>& messages_;
+	bool shutdown_;
+	boost::thread thread_;
+	boost::thread dispatch_thread_;
 	void start_accept();
 	void handle_accept(Connection::pointer ptr, const boost::system::error_code& err);
-	ConnectionList connections_;
-	MessageQueue<Message>& messages_;
+	int run_dispatch();
+
+	ConnectionBundle connection_bundle_;
 public:
 	~telnet();
 	telnet(MessageQueue<Message>& messages, int port);

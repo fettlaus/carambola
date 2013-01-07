@@ -7,8 +7,9 @@
 
 #include "telnet.h"
 #include "Connection.h"
-#include "freejtag.h"
+#include "debug.h"
 //#include "menu.h"
+
 #include <boost/bind.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
@@ -34,9 +35,13 @@
 //
 namespace freejtag{
 
-	telnet::telnet(MessageQueue<Message>& messages, int port):io_service(new asio::io_service),messages_(messages),accepto(*io_service,asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)){
+	telnet::telnet(MessageQueue<Message>& messages, int port):io_service(new asio::io_service),
+			messages_(messages),
+			accepto(*io_service,asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)),
+			thread_(boost::bind(&telnet::run, this)),
+			dispatch_thread_(boost::bind(&telnet::run_dispatch,this)),
+			shutdown_(false){
 		PRINT("new telnet");
-		;
 	}
 	int telnet::run(){
 		start_accept();
@@ -46,25 +51,34 @@ namespace freejtag{
 	}
 	void telnet::start_accept(){
 		PRINT("Start accept");
-		Connection::pointer new_conn = Connection::create_new(accepto.get_io_service());
+		//asio::io_service& ios = accepto.get_io_service();
+		Connection::pointer new_conn = Connection::create_new(*io_service);
 		accepto.async_accept(new_conn->get_socket(),boost::bind(&telnet::handle_accept,this,new_conn,asio::placeholders::error));
 	}
 	void telnet::handle_accept(Connection::pointer ptr, const boost::system::error_code& err){
-		PRINT("New Connection!");
+		PRINT("incoming Connection!");
 		if(!err){
 			ptr->start();
 		}
+		connection_bundle_.addConnection(ptr);
 		start_accept();
 	}
 
 telnet::~telnet() {
-
+	delete io_service;
 }
 
-bool telnet::sendBroadcast(const Message& msg) {
-		//std::for_each(connections_.begin(),connections_.end(),boost::bind(&Connection::send()))
-		return true;
+int telnet::run_dispatch() {
+	while(!shutdown_){
+		Message msg;
+		PRINT("Wait for Message");
+		messages_.pop(msg);
+		PRINT("Got Message!");
+		connection_bundle_.sendBroadcast(msg);
+		//
 	}
+	return 0;
+}
 
 
 }

@@ -7,9 +7,11 @@
 
 #ifndef CONNECTION_H_
 #define CONNECTION_H_
+
+#include "Message.h"
+
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio/ip/tcp.hpp>
-#include "Message.h"
 
 //class boost::asio::io_service;
 namespace freejtag {
@@ -25,6 +27,7 @@ private:
 	void handle_write(const boost::system::error_code& err, size_t);
 	Message cur_message_;
 public:
+	void deliver(const Message&);
 	void start();
 	bool send(const Message& msg);
 	typedef boost::shared_ptr<Connection> pointer;

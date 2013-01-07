@@ -6,8 +6,9 @@
  */
 
 #include "Connection.h"
-#include "freejtag.h"
 #include "Message.h"
+#include "debug.h"
+
 #include <boost/asio/io_service.hpp>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
@@ -20,16 +21,27 @@ Connection::Connection(asio::io_service& service):socket(service) {
 	;// TODO Auto-generated constructor stub
 
 }
-asio::ip::tcp::socket& Connection::get_socket(){
+
+void Connection::deliver(const Message& msg) {
+	PRINT("Deliver to Client");
+	asio::async_write(socket,msg.toBuffers(),boost::bind(&Connection::handle_write,
+			shared_from_this(),
+			asio::placeholders::error,
+			asio::placeholders::bytes_transferred));
+}
+
+asio::ip::tcp::socket& Connection::get_socket() {
 	return socket;
 }
 
 void Connection::handle_write(const boost::system::error_code& err, size_t bytes){
-
+ 	PRINT(bytes << " Byte gesendet");
 }
+
 Connection::pointer Connection::create_new(boost::asio::io_service& service){
 	return Connection::pointer(new Connection(service));
 }
+
 void Connection::start(){
 	//Message *m = new Message(PING,12312);
 	//strncpy(m->body(),"Testeingabe",12);
@@ -43,7 +55,7 @@ void Connection::start(){
 	buffers.push_back(asio::buffer(&b,4));
 	buffers.push_back(asio::buffer("zweiter"));
 	buffers.push_back(asio::buffer("zweiter"));
-	asio::async_write(socket,buffers,
+	asio::async_write(socket,asio::buffer("Test"),
 			boost::bind(&Connection::handle_write,
 					shared_from_this(),
 					asio::placeholders::error,

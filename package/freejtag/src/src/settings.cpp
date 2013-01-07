@@ -7,6 +7,7 @@
 
 //#include "freejtag.h"
 #include "settings.h"
+
 #include <stdio.h>
 #include <boost/program_options.hpp>
 #include <boost/program_options/variables_map.hpp>

@@ -5,12 +5,16 @@
  *      Author: bachelor
  */
 
+
 #ifndef MESSAGEQUEUE_H_
 #define MESSAGEQUEUE_H_
 
-#include <queue>
+#include "debug.h"
+
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
+#include <queue>
+
 
 namespace freejtag {
 
@@ -24,9 +28,9 @@ public:
 	//MessageQueue();
 	//virtual ~MessageQueue();
 private:
-	mutable boost::mutex mutex;
-	std::queue<D> queue;
-	boost::condition_variable cond;
+	mutable boost::mutex mutex_;
+	std::queue<D> queue_;
+	boost::condition_variable cond_;
 };
 
 } /* namespace freejtag */

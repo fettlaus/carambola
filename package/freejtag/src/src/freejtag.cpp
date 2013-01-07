@@ -11,13 +11,14 @@
 #include "freejtag.h"
 //#include "daemon.h"
 #include "settings.h"
+#include "tcp/MessageQueue.h"
+#include "tcp/Message.h"
+
 //#include <stdlib.h>
 //#include <syslog.h>
 //#include <time.h>
 #include <boost/program_options.hpp>
 #include <boost/thread/thread.hpp>
-#include "tcp/MessageQueue.h"
-#include "tcp/Message.h"
 
 int main(int argc, char* argv[]) {
 	freejtag::freejtag *prog;
@@ -53,7 +54,10 @@ int freejtag::run() {
 		// teardown
 
 		PRINT("PING!");
-		prog_telnet->run();
+		//Message msg = Message(PING);
+		message_queue_.push(Message(MESS,"Test"));
+		//boost::thread telnet_thread(*prog_telnet::run());
+		//prog_telnet->run();
 		boost::this_thread::sleep(boost::posix_time::milliseconds(10000));
 	}
 	return 0;
