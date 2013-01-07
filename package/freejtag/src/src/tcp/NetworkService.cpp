@@ -5,7 +5,7 @@
  *      Author: bachelor
  */
 
-#include "telnet.h"
+#include "NetworkService.h"
 #include "Connection.h"
 #include "debug.h"
 //#include "menu.h"

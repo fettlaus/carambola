@@ -9,7 +9,7 @@
 #define FREEJTAG_H_
 
 #include "settings.h"
-#include "tcp/telnet.h"
+#include "tcp/NetworkService.h"
 #include "tcp/MessageQueue.h"
 #include "tcp/Message.h"
 

@@ -5,7 +5,7 @@
 bin_PROGRAMS=freejtag
 freejtag_SOURCES=freejtag.cpp \
 				settings.cpp \
-				tcp/telnet.cpp \
+				tcp/NetworkService.cpp \
 				tcp/Connection.cpp \
 				tcp/Message.cpp \
 				tcp/ConnectionBundle.cpp
