@@ -26,7 +26,7 @@ class BlockingQueue {
 public:
 	void push(D const& data);
 	bool empty() const;
-	void pop(D& data);
+	D pop();
 	//MessageQueue();
 	//virtual ~MessageQueue();
 private:

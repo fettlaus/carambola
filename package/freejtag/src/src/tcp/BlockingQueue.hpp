@@ -21,12 +21,13 @@ inline bool freejtag::BlockingQueue<D>::empty() const {
 }
 
 template<typename D>
-inline void freejtag::BlockingQueue<D>::pop(D& data) {
+inline D freejtag::BlockingQueue<D>::pop() {
 	boost::mutex::scoped_lock lock(mutex_);
 	while(queue_.empty()){
 		cond_.wait(lock);
 	}
-	data = queue_.front();
+	D temp = queue_.front();
 	queue_.pop();
+	return temp;
 }
 
