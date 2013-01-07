@@ -10,7 +10,7 @@
 
 #include "settings.h"
 #include "tcp/NetworkService.h"
-#include "tcp/MessageQueue.h"
+#include "tcp/BlockingQueue.h"
 #include "tcp/Message.h"
 
 //class freejtag::telnet;

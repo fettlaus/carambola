@@ -11,8 +11,6 @@
 #include "freejtag.h"
 //#include "daemon.h"
 #include "settings.h"
-#include "tcp/MessageQueue.h"
-#include "tcp/Message.h"
 
 //#include <stdlib.h>
 //#include <syslog.h>

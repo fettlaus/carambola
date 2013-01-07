@@ -9,7 +9,7 @@
 #define TELNET_H_
 #include "Connection.h"
 #include "ConnectionBundle.h"
-#include "MessageQueue.h"
+#include "BlockingQueue.h"
 
 //#include<gio/gio.h>
 #include <boost/thread.hpp>

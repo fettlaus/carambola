@@ -36,6 +36,6 @@ private:
 };
 
 } /* namespace freejtag */
-#include "MessageQueue.hpp"
+#include "BlockingQueue.hpp"
 
 #endif /* MESSAGEQUEUE_H_ */
