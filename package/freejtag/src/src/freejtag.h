@@ -17,9 +17,9 @@
 namespace freejtag{
 class freejtag{
 private:
-	settings *prog_settings;
-	telnet *prog_telnet;
 	MessageQueue<Message> message_queue_;
+	settings prog_settings;
+	NetworkService prog_network;
 public:
 	freejtag(int argc, char* argv[]);
 	~freejtag();

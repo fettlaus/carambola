@@ -35,27 +35,27 @@
 //
 namespace freejtag{
 
-	telnet::telnet(MessageQueue<Message>& messages, int port):io_service(new asio::io_service),
+NetworkService::NetworkService(MessageQueue<Message>& messages, int port):io_service(new asio::io_service),
 			messages_(messages),
 			accepto(*io_service,asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)),
-			thread_(boost::bind(&telnet::run, this)),
-			dispatch_thread_(boost::bind(&telnet::run_dispatch,this)),
+			thread_(boost::bind(&NetworkService::run, this)),
+			dispatch_thread_(boost::bind(&NetworkService::run_dispatch,this)),
 			shutdown_(false){
 		PRINT("new telnet");
 	}
-	int telnet::run(){
+	int NetworkService::run(){
 		start_accept();
 		PRINT("Run Service");
 		io_service->run();
 		return 0;
 	}
-	void telnet::start_accept(){
+	void NetworkService::start_accept(){
 		PRINT("Start accept");
 		//asio::io_service& ios = accepto.get_io_service();
 		Connection::pointer new_conn = Connection::create_new(*io_service);
-		accepto.async_accept(new_conn->get_socket(),boost::bind(&telnet::handle_accept,this,new_conn,asio::placeholders::error));
+		accepto.async_accept(new_conn->get_socket(),boost::bind(&NetworkService::handle_accept,this,new_conn,asio::placeholders::error));
 	}
-	void telnet::handle_accept(Connection::pointer ptr, const boost::system::error_code& err){
+	void NetworkService::handle_accept(Connection::pointer ptr, const boost::system::error_code& err){
 		PRINT("incoming Connection!");
 		if(!err){
 			ptr->start();
@@ -64,11 +64,11 @@ namespace freejtag{
 		start_accept();
 	}
 
-telnet::~telnet() {
+	NetworkService::~NetworkService() {
 	delete io_service;
 }
 
-int telnet::run_dispatch() {
+int NetworkService::run_dispatch() {
 	while(!shutdown_){
 		Message msg;
 		PRINT("Wait for Message");

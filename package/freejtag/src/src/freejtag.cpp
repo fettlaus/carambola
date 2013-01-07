@@ -29,20 +29,19 @@ int main(int argc, char* argv[]) {
 }
 
 namespace freejtag {
-freejtag::freejtag(int argc, char* argv[]):prog_settings(new settings(argc,argv)) {
+freejtag::freejtag(int argc, char* argv[]):prog_settings(argc,argv),
+		prog_network(message_queue_, 12323) {
 	PRINT("new freejtag");
-	prog_telnet = new telnet(message_queue_, 12323);
+	//prog_network = new NetworkService(message_queue_, 12323);
 }
 freejtag::~freejtag() {
-	delete prog_settings;
-	delete prog_telnet;
 }
 
 int freejtag::run() {
 	// check settings for daemon
 	// po::variables_map map = prog_settings->get_map();
 	// bool b = prog_settings->get_value<bool>("detached");
-	if(prog_settings->get_value<bool>("detached") == true){
+	if(prog_settings.get_value<bool>("detached") == true){
 		PRINT("Detached");
 		//init daemon
 	}

@@ -27,7 +27,7 @@ namespace freejtag{
  * http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/example/chat/chat_server.cpp
  * http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/tutorial/tutdaytime3/src.html
  */
-class telnet{
+class NetworkService{
 private:
 	asio::io_service* io_service;
 	asio::ip::tcp::acceptor accepto;
@@ -41,8 +41,8 @@ private:
 
 	ConnectionBundle connection_bundle_;
 public:
-	~telnet();
-	telnet(MessageQueue<Message>& messages, int port);
+	~NetworkService();
+	NetworkService(MessageQueue<Message>& messages, int port);
 	int run();
 	bool sendBroadcast(const Message& msg);
 };
