@@ -17,7 +17,7 @@
 namespace freejtag{
 class freejtag{
 private:
-	MessageQueue<Message> message_queue_;
+	BlockingQueue<Message> message_queue_;
 	settings prog_settings;
 	NetworkService prog_network;
 public:

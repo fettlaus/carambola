@@ -6,7 +6,7 @@
  */
 
 template<typename D>
-inline void freejtag::MessageQueue<D>::push(const D& data) {
+inline void freejtag::BlockingQueue<D>::push(const D& data) {
 	boost::mutex::scoped_lock lock(mutex_);
 	PRINT("Push to Queue");
 	queue_.push(data);
@@ -15,13 +15,13 @@ inline void freejtag::MessageQueue<D>::push(const D& data) {
 }
 
 template<typename D>
-inline bool freejtag::MessageQueue<D>::empty() const {
+inline bool freejtag::BlockingQueue<D>::empty() const {
 	boost::mutex::scoped_lock lock(mutex_);
 	return queue_.empty();
 }
 
 template<typename D>
-inline void freejtag::MessageQueue<D>::pop(D& data) {
+inline void freejtag::BlockingQueue<D>::pop(D& data) {
 	boost::mutex::scoped_lock lock(mutex_);
 	while(queue_.empty()){
 		cond_.wait(lock);

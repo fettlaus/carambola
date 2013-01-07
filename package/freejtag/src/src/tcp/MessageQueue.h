@@ -22,7 +22,7 @@ namespace freejtag {
  * http://www.justsoftwaresolutions.co.uk/threading/implementing-a-thread-safe-queue-using-condition-variables.html
  */
 template<typename D>
-class MessageQueue {
+class BlockingQueue {
 public:
 	void push(D const& data);
 	bool empty() const;

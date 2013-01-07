@@ -31,7 +31,7 @@ class NetworkService{
 private:
 	asio::io_service* io_service;
 	asio::ip::tcp::acceptor accepto;
-	MessageQueue<Message>& messages_;
+	BlockingQueue<Message>& messages_;
 	bool shutdown_;
 	boost::thread thread_;
 	boost::thread dispatch_thread_;
@@ -42,7 +42,7 @@ private:
 	ConnectionBundle connection_bundle_;
 public:
 	~NetworkService();
-	NetworkService(MessageQueue<Message>& messages, int port);
+	NetworkService(BlockingQueue<Message>& messages, int port);
 	int run();
 	bool sendBroadcast(const Message& msg);
 };
