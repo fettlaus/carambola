@@ -8,7 +8,7 @@
 #ifndef TELNET_H_
 #define TELNET_H_
 #include "Connection.h"
-#include "ConnectionBundle.h"
+#include "MessageTargetBundle.h"
 #include "BlockingQueue.h"
 
 //#include<gio/gio.h>
@@ -27,12 +27,14 @@ namespace freejtag{
  * http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/example/chat/chat_server.cpp
  * http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/tutorial/tutdaytime3/src.html
  */
-typedef BlockingQueue< std::pair<MessageTarget,Message> > MessageQueue;
+typedef std::pair<MessageTarget,Message> MessageDatagram;
+typedef BlockingQueue< MessageDatagram > MessageQueue;
 class NetworkService{
 private:
 	asio::io_service* io_service;
 	asio::ip::tcp::acceptor accepto;
-	MessageQueue& messages_;
+	MessageQueue& output_buffer_;
+	MessageQueue& input_buffer_;
 	bool shutdown_;
 	boost::thread thread_;
 	boost::thread dispatch_thread_;
@@ -40,10 +42,10 @@ private:
 	void handle_accept(Connection::pointer ptr, const boost::system::error_code& err);
 	int run_dispatch();
 
-	ConnectionBundle connection_bundle_;
+	MessageTargetBundle connection_bundle_;
 public:
 	~NetworkService();
-	NetworkService(MessageQueue& messages, int port);
+	NetworkService(MessageQueue& input_buffer,MessageQueue& output_buffer, int port);
 	int run();
 	bool sendBroadcast(const Message& msg);
 };
