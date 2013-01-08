@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 
 namespace freejtag {
 freejtag::freejtag(int argc, char* argv[]):prog_settings(argc,argv),
-		prog_network(message_queue_, 12323) {
+		prog_network(message_input_buffer_,message_output_buffer_, 12323) {
 	PRINT("new freejtag");
 	//prog_network = new NetworkService(message_queue_, 12323);
 }
@@ -52,7 +52,7 @@ int freejtag::run() {
 
 		PRINT("PING!");
 		//Message msg = Message(PING);
-		message_queue_.push(std::make_pair(MessageTarget(), Message(MESS,"Test")));
+		message_output_buffer_.push(std::make_pair(MessageTarget(), Message(MESS,"Test")));
 		//boost::thread telnet_thread(*prog_telnet::run());
 		//prog_telnet->run();
 		boost::this_thread::sleep(boost::posix_time::milliseconds(10000));
