@@ -15,8 +15,8 @@ class MessageTarget {
 public:
 	bool isBroadcast();
 	void deliver(const Message&);
-private:
 	MessageTarget(bool broadcast = true);
+private:
 	bool broadcast_;
 };
 
