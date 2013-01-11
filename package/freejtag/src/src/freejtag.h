@@ -10,7 +10,6 @@
 
 #include "settings.h"
 #include "tcp/NetworkService.h"
-#include "tcp/BlockingQueue.h"
 #include "tcp/Message.h"
 #include <utility>
 

@@ -8,7 +8,7 @@
 #ifndef NETWORKSERVICETYPEDEF_H_
 #define NETWORKSERVICETYPEDEF_H_
 
-#include "BlockingQueue.h"
+#include "../util/BlockingQueue.h"
 //#include "Connection.h"
 //#include "Message.h"
 
