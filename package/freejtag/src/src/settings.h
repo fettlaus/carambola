@@ -8,11 +8,13 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 #include <boost/program_options.hpp>
+#include <boost/asio/serial_port_base.hpp>
 #include <string>
 
 namespace po = boost::program_options;
 
 namespace freejtag {
+
 class settings{
 private:
 	po::variables_map map;

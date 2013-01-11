@@ -28,7 +28,8 @@ int main(int argc, char* argv[]) {
 
 namespace freejtag {
 freejtag::freejtag(int argc, char* argv[]):prog_settings(argc,argv),
-		prog_network(12323) {
+		prog_network(12323),
+		uart_service_(prog_settings){
 	PRINT("new freejtag");
 	//prog_network = new NetworkService(message_queue_, 12323);
 }

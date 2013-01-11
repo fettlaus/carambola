@@ -11,6 +11,7 @@
 #include "settings.h"
 #include "tcp/NetworkService.h"
 #include "tcp/Message.h"
+#include "uart/UARTService.h"
 #include <utility>
 
 //class freejtag::telnet;
@@ -19,6 +20,7 @@ class freejtag{
 private:
 	settings prog_settings;
 	NetworkService prog_network;
+	UARTService uart_service_;
 public:
 	freejtag(int argc, char* argv[]);
 	~freejtag();
