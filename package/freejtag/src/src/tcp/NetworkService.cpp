@@ -7,6 +7,7 @@
 
 #include "NetworkService.h"
 #include "Connection.h"
+#include "ConnectionException.h"
 #include "debug.h"
 //#include "menu.h"
 
@@ -35,25 +36,33 @@
 //
 namespace freejtag{
 
-NetworkService::NetworkService(MessageQueue& input_buffer, MessageQueue& output_buffer, int port):io_service(new asio::io_service),
-			output_buffer_(output_buffer),
-			input_buffer_(input_buffer),
+NetworkService::NetworkService(int port):io_service(new asio::io_service),
 			accepto(*io_service,asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)),
 			thread_(boost::bind(&NetworkService::run, this)),
 			dispatch_thread_(boost::bind(&NetworkService::run_dispatch,this)),
+			dispatch_broadcast_thread_(boost::bind(&NetworkService::run_dispatch_broadcast,this)),
 			shutdown_(false){
 		PRINT("new telnet");
 	}
 	int NetworkService::run(){
 		start_accept();
 		PRINT("Run Service");
-		io_service->run();
+		while(!shutdown_){
+			try{
+			io_service->run();
+			}catch(boost::system::system_error& err){
+				PRINT("Disconnected Client!");
+			}catch(connection_exception& err){
+				if(Connection::pointer const * con=boost::get_error_info<connection_info>(err))
+					connection_bundle_.removeConnection(*con);
+			}
+		}
 		return 0;
 	}
 	void NetworkService::start_accept(){
 		PRINT("Start accept");
 		//asio::io_service& ios = accepto.get_io_service();
-		Connection::pointer new_conn = Connection::create_new(*io_service);
+		Connection::pointer new_conn = Connection::create_new(input_buffer_, *io_service);
 		accepto.async_accept(new_conn->get_socket(),boost::bind(&NetworkService::handle_accept,this,new_conn,asio::placeholders::error));
 	}
 	void NetworkService::handle_accept(Connection::pointer ptr, const boost::system::error_code& err){
@@ -74,14 +83,29 @@ int NetworkService::run_dispatch() {
 		PRINT("Wait for Message");
 		MessageDatagram msg = output_buffer_.pop();
 		PRINT("Got Message!");
-		if(msg.first.isBroadcast()){
-			connection_bundle_.sendBroadcast(msg.second);
-		}else{
-			msg.first.deliver(msg.second);
-		}
+		msg.first->deliver(msg.second);
 	}
 	return 0;
 }
 
+bool NetworkService::sendBroadcast(Message::pointer msg) {
+	broadcast_buffer_.push(msg);
+	return true;
+}
+
+int NetworkService::run_dispatch_broadcast() {
+	while(!shutdown_){
+		PRINT("Wait for Broadcast");
+		Message::pointer msg = broadcast_buffer_.pop();
+		PRINT("Got Broadcast!");
+		connection_bundle_.sendBroadcast(msg);
+	}
+	return 0;
+}
+
+bool NetworkService::sendMessage(Connection::pointer ptr, Message::pointer msg) {
+	output_buffer_.push(std::make_pair(ptr,msg));
+	return true;
+}
 
 }

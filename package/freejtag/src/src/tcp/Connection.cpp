@@ -7,6 +7,7 @@
 
 #include "Connection.h"
 #include "Message.h"
+#include "ConnectionException.h"
 #include "debug.h"
 
 #include <boost/asio.hpp>
@@ -19,7 +20,9 @@ namespace freejtag {
  * Create a new Connection and bind it to a socket.
  * @param service
  */
-Connection::Connection(asio::io_service& service):BaseConnection(service),MessageTarget(false) {
+Connection::Connection(MessageDatagramQueue& output_queue, asio::io_service& service):cur_message_(Message::createMessage()),
+		BaseConnection(service),
+		output_queue_(output_queue) {
 	PRINT("new Connection");
 	;// TODO Auto-generated constructor stub
 
@@ -29,12 +32,14 @@ Connection::Connection(asio::io_service& service):BaseConnection(service),Messag
  * Deliver message to this connection.
  * @param msg
  */
-void Connection::deliver(const Message& msg) {
+void Connection::deliver(const Message::pointer msg) {
 	PRINT("Deliver to Client");
-	asio::async_write(this->get_socket(),msg.toBuffers(),boost::bind(&Connection::handle_write,
+	send_mutex_.lock();
+	asio::async_write(this->get_socket(),msg->toBuffers(),boost::bind(&Connection::handle_write,
 			shared_from_this(),
 			asio::placeholders::error,
-			asio::placeholders::bytes_transferred));
+			asio::placeholders::bytes_transferred,
+			msg));
 }
 
 /**
@@ -42,8 +47,8 @@ void Connection::deliver(const Message& msg) {
  * @param service
  * @return boost::shared_ptr
  */
-Connection::pointer Connection::create_new(boost::asio::io_service& service){
-	return pointer(new Connection(service));
+Connection::pointer Connection::create_new(MessageDatagramQueue& input_messages,boost::asio::io_service& service){
+	return pointer(new Connection(input_messages, service));
 }
 
 /**
@@ -51,11 +56,16 @@ Connection::pointer Connection::create_new(boost::asio::io_service& service){
  * @param err error code
  * @param bytes amount of bytes written
  */
-void Connection::handle_write(const boost::system::error_code& err, size_t bytes){
- 	PRINT(bytes << " Byte gesendet");
+void Connection::handle_write(const boost::system::system_error& err, size_t bytes, const Message::pointer msg){
+	if(err.code()){
+		throw connection_exception() << connection_info(shared_from_this());
+	}
+	send_mutex_.unlock();
+ 	PRINT("Message(" << (int)Message::TypeToInt(msg->getType()) << "," << (int)msg->getLength() << "," << (long)msg->getTimestamp() << ") <== " << bytes << " Byte gesendet an " << socket_.remote_endpoint().address().to_string());
 }
 
-
+Connection::~Connection() {
+}
 
 /**
  * Start the Connection. Has to be called after acquiring a connection or we won't be able to handle input and output.
@@ -69,15 +79,17 @@ void Connection::start(){
 	data = 0xAB;
 	uint32_t b;
 	b = 123123;
+	const Message::pointer msg = Message::createMessage(MESS,"Hello there!");
 	buffers.push_back(asio::buffer(&data,1));
 	buffers.push_back(asio::buffer(&b,4));
 	buffers.push_back(asio::buffer("zweiter"));
 	buffers.push_back(asio::buffer("zweiter"));
-	asio::async_write(this->get_socket(),asio::buffer("Test"),
+	asio::async_write(this->get_socket(),msg->toBuffers(),
 			boost::bind(&Connection::handle_write,
 					shared_from_this(),
 					asio::placeholders::error,
-					asio::placeholders::bytes_transferred));
+					asio::placeholders::bytes_transferred,
+					msg));
 
 }
 

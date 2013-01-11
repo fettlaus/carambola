@@ -16,7 +16,7 @@ class BaseConnection {
 public:
 	BaseConnection(boost::asio::io_service& service); ///< Hidden constructor
 	boost::asio::ip::tcp::socket& get_socket();
-private:
+protected:
 	boost::asio::ip::tcp::socket socket_; ///< Our socket
 };
 

@@ -18,8 +18,6 @@
 namespace freejtag{
 class freejtag{
 private:
-	MessageQueue message_output_buffer_;
-	MessageQueue message_input_buffer_;
 	settings prog_settings;
 	NetworkService prog_network;
 public:

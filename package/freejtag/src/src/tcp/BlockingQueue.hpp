@@ -28,6 +28,7 @@ inline D freejtag::BlockingQueue<D>::pop() {
 	}
 	D temp = queue_.front();
 	queue_.pop();
+	PRINT("Removed from Queue");
 	return temp;
 }
 

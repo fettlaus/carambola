@@ -9,6 +9,7 @@
 #define MESSAGE_H_
 
 #include <boost/asio/buffer.hpp>
+#include <boost/enable_shared_from_this.hpp>
 //#include <cstdlib>
 #include <stdint.h>
 //#include <vector>
@@ -32,7 +33,7 @@ enum MessageType {MESS, ///< 0x01: Common message to target.  Max size is body_m
 /**
  * http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/example/chat/chat_message.hpp
  */
-class Message{
+class Message:public boost::enable_shared_from_this<Message>{
 
 public:
 	//char* body();
@@ -42,7 +43,7 @@ public:
 	// ping: type
 	// simple msg: type, body
 	// extended msg: type, body, timestamp
-	Message(MessageType type=ERROR, std::string = "", uint32_t timestamp = 0);
+
 	//Message(MessageType type, char* body);
 	//Message(MessageType type);
 	//Message();
@@ -55,18 +56,20 @@ public:
 
 
 	std::vector<asio::const_buffer> toBuffers() const;
-
+	typedef boost::shared_ptr<Message> pointer;
 	size_t getLength() const;
 	uint32_t getTimestamp() const;
 	void setTimestamp(uint32_t time);
 	MessageType getType() const;
 	void setType(MessageType type);
+	static pointer createMessage(MessageType type=ERROR, std::string = "", uint32_t timestamp = 0);
+	static uint8_t TypeToInt(MessageType);
+	static MessageType IntToType(uint8_t);
 private:
+	Message(MessageType type, std::string, uint32_t timestamp);
 	enum{header_length=7};
 	enum{body_max_length=512};
 	//MessageType *type_;
-	static uint8_t TypeToInt(MessageType);
-	static MessageType IntToType(uint8_t);
 	uint8_t type_;
 	uint16_t length_;
 	uint32_t timestamp_;

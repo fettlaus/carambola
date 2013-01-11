@@ -8,18 +8,17 @@
 #include "MessageTarget.h"
 #include "debug.h"
 
-namespace freejtag {
+namespace freejtag{
 
-
-bool MessageTarget::isBroadcast() {
-	return broadcast_;
-}
-
-MessageTarget::MessageTarget(bool broadcast):broadcast_(broadcast){
+MessageTarget::MessageTarget(){
 
 }
 
-void MessageTarget::deliver(const Message&) {
+MessageTarget::~MessageTarget(){
+
+}
+
+void MessageTarget::deliver(const Message::pointer) {
 	PRINT("False print to broadcast!");
 }
 

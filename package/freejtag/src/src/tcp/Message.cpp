@@ -33,7 +33,7 @@ Message::Message(MessageType type,std::string body,uint32_t timestamp):length_(b
 }
 
 Message::~Message(){
-	;
+	PRINT("Message(" << (int)type_ << "," << (int)length_ << "," << (long)timestamp_ << ") destroyed");
 }
 
 /*
@@ -138,6 +138,11 @@ MessageType Message::getType() const {
 
 void Message::setType(MessageType type) {
 	type_ = TypeToInt(type);
+}
+
+Message::pointer Message::createMessage(MessageType type, std::string allocator,
+		uint32_t timestamp) {
+	return pointer(new Message(type,allocator,timestamp));
 }
 
 MessageType Message::IntToType(uint8_t unsignedChar) {

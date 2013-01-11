@@ -16,8 +16,8 @@ class MessageTargetBundle: public freejtag::ConnectionBundle {
 
 public:
 	void addConnection(Connection::pointer conn);
-	bool sendBroadcast(const Message& msg);
-	bool sendMessage(MessageTarget& target,const Message& msg);
+	bool sendBroadcast(const Message::pointer msg);
+	//bool sendMessage(MessageTarget& target,const Message& msg);
 };
 
 } /* namespace freejtag */

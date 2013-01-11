@@ -13,12 +13,12 @@ namespace freejtag {
 
 class MessageTarget {
 public:
-	bool isBroadcast();
-	void deliver(const Message&);
-	MessageTarget(bool broadcast = true);
-private:
-	bool broadcast_;
+	virtual ~MessageTarget()=0;
+	void deliver(const Message::pointer);
+protected:
+	MessageTarget();
 };
+
 
 } /* namespace freejtag */
 #endif /* MESSAGETARGET_H_ */
