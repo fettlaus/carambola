@@ -12,15 +12,17 @@
 #include "tcp/NetworkService.h"
 #include "tcp/Message.h"
 #include "uart/UARTService.h"
+#include <boost/asio/io_service.hpp>
 #include <utility>
 
-//class freejtag::telnet;
 namespace freejtag{
 class Freejtag{
 private:
+	boost::asio::io_service* io_service_;
 	settings prog_settings;
 	NetworkService prog_network;
 	UARTService uart_service_;
+
 public:
 	Freejtag(int argc, char* argv[]);
 	~Freejtag();

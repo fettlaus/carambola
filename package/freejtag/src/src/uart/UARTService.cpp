@@ -10,10 +10,10 @@
 
 namespace freejtag {
 
-UARTService::UARTService(settings& settings):uart_thread_(boost::bind(&UARTService::read_line,this)),
+UARTService::UARTService(boost::asio::io_service& io_service, settings& settings):uart_thread_(boost::bind(&UARTService::read_line,this)),
 		shutdown_(false),
-		uart_connection_(new UARTConnection(*io_service_)),
-		io_service_(new boost::asio::io_service),
+		uart_connection_(new UARTConnection(io_service_)),
+		io_service_(io_service),
 		settings_(settings){
 	reload_settings();
 	// get settings

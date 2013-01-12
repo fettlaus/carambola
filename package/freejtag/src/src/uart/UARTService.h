@@ -19,13 +19,13 @@ class UARTConnection;
 typedef std::pair<uint32_t,std::string> UARTMessage;
 class UARTService {
 public:
-	UARTService(settings& settings);
+	UARTService(boost::asio::io_service& io_service, settings& settings);
 	virtual ~UARTService();
 	std::string get_line();
 private:
 	void reload_settings();
 	settings& settings_;
-	boost::asio::io_service* io_service_;
+	boost::asio::io_service& io_service_;
 	bool shutdown_;
 	void read_line();
 	BlockingQueue<UARTMessage> uart_buffer_;
