@@ -20,7 +20,7 @@ public:
 	virtual ~UARTConnection();
 
 	template<typename SettableSerialPortOption>
-	bool set_settings(const SettableSerialPortOption& opt);
+	bool set_settings(const SettableSerialPortOption& opt, std::string name);
 
 	bool open(std::string device);
 	void close();
@@ -29,12 +29,19 @@ private:
 	boost::asio::serial_port port_;
 };
 
+/**
+ * Set options on serial port.
+ * @param opt Option to set
+ * @param name Name for debug
+ * @return
+ */
 template<typename SettableSerialPortOption>
-bool UARTConnection::set_settings(const SettableSerialPortOption& opt) {
+bool UARTConnection::set_settings(const SettableSerialPortOption& opt,std::string name) {
+	try{
 	port_.set_option(opt);
-	//port_.set_option(boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even));
-	//TODO: catch errors
-	//PRINT(port_);
+	}catch(boost::system::system_error& se){
+		WARNING("UART: "<< se.what()<<". Invalid \""<< name <<"\"");
+	}
 	return true;
 }
 

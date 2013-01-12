@@ -34,11 +34,11 @@ void UARTService::reload_settings() {
 	using namespace boost::asio;
 	uart_connection_->close();
 	uart_connection_->open(settings_.get_value<std::string>("device"));
-	uart_connection_->set_settings<uart::parity>(settings_.get_value<uart::parity>("parity"));
-	uart_connection_->set_settings<uart::flow_control>(settings_.get_value<uart::flow_control>("flow_control"));
-	uart_connection_->set_settings<uart::stop_bits>(settings_.get_value<uart::stop_bits>("stop_bits"));
-	uart_connection_->set_settings<serial_port_base::baud_rate>(serial_port::baud_rate(settings_.get_value<unsigned int>("baud")));
-	uart_connection_->set_settings<serial_port_base::character_size>(serial_port::character_size(settings_.get_value<unsigned int>("data")));
+	uart_connection_->set_settings<uart::parity>(settings_.get_value<uart::parity>("parity"),"parity");
+	uart_connection_->set_settings<uart::flow_control>(settings_.get_value<uart::flow_control>("flow_control"),"flow control");
+	uart_connection_->set_settings<uart::stop_bits>(settings_.get_value<uart::stop_bits>("stop_bits"),"stop bits");
+	uart_connection_->set_settings<serial_port_base::baud_rate>(serial_port::baud_rate(settings_.get_value<unsigned int>("baud")),"baud rate");
+	uart_connection_->set_settings<serial_port_base::character_size>(serial_port::character_size(settings_.get_value<unsigned int>("data")),"char size");
 }
 
 void UARTService::read_line() {
