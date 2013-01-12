@@ -3,7 +3,7 @@
 #AM_CPPFLAGS = $(BOOST_CPPFLAGS)
 
 bin_PROGRAMS=freejtag
-freejtag_SOURCES=freejtag.cpp \
+freejtag_SOURCES=Freejtag.cpp \
 				settings.cpp \
 				tcp/NetworkService.cpp \
 				tcp/BaseConnection.cpp \

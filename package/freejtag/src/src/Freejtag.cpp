@@ -8,7 +8,7 @@
  ============================================================================
  */
 
-#include "freejtag.h"
+#include "Freejtag.h"
 //#include "daemon.h"
 #include "settings.h"
 
@@ -19,24 +19,24 @@
 #include <boost/thread/thread.hpp>
 
 int main(int argc, char* argv[]) {
-	freejtag::freejtag *prog;
-	prog = new freejtag::freejtag(argc, argv);
+	freejtag::Freejtag *prog;
+	prog = new freejtag::Freejtag(argc, argv);
 	int res = prog->run();
 	delete prog;
 	return res;
 }
 
 namespace freejtag {
-freejtag::freejtag(int argc, char* argv[]):prog_settings(argc,argv),
+Freejtag::Freejtag(int argc, char* argv[]):prog_settings(argc,argv),
 		prog_network(12323),
 		uart_service_(prog_settings){
 	PRINT("new freejtag");
 	//prog_network = new NetworkService(message_queue_, 12323);
 }
-freejtag::~freejtag() {
+Freejtag::~Freejtag() {
 }
 
-int freejtag::run() {
+int Freejtag::run() {
 	// check settings for daemon
 	// po::variables_map map = prog_settings->get_map();
 	// bool b = prog_settings->get_value<bool>("detached");

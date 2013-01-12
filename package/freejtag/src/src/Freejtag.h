@@ -16,14 +16,14 @@
 
 //class freejtag::telnet;
 namespace freejtag{
-class freejtag{
+class Freejtag{
 private:
 	settings prog_settings;
 	NetworkService prog_network;
 	UARTService uart_service_;
 public:
-	freejtag(int argc, char* argv[]);
-	~freejtag();
+	Freejtag(int argc, char* argv[]);
+	~Freejtag();
 	int run();
 };
 }
