@@ -33,10 +33,9 @@ private:
 	MessageDatagramQueue output_buffer_;
 	MessageDatagramQueue input_buffer_;
 	MessageQueue broadcast_buffer_;
-	asio::io_service* io_service;
+	asio::io_service& io_service_;
 	asio::ip::tcp::acceptor accepto;
 	bool shutdown_;
-	boost::thread thread_;
 	boost::thread dispatch_thread_;
 	boost::thread dispatch_broadcast_thread_;
 	void start_accept();
@@ -46,11 +45,10 @@ private:
 
 	MessageTargetBundle connection_bundle_;
 public:
-	~NetworkService();
-	NetworkService(int port);
-	int run();
+	NetworkService(asio::io_service& io_service, int port);
+	void removeConnection(Connection::pointer conn);
 	bool sendBroadcast(Message::pointer msg);
-	bool sendMessage(Connection::pointer,Message::pointer);
+	bool sendMessage(Connection::pointer conn, Message::pointer msg);
 };
 
 

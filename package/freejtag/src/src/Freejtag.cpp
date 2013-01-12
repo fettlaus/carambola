@@ -11,12 +11,15 @@
 #include "Freejtag.h"
 //#include "daemon.h"
 #include "settings.h"
+#include "tcp/ConnectionException.h"
 
 //#include <stdlib.h>
 //#include <syslog.h>
 //#include <time.h>
 #include <boost/program_options.hpp>
 #include <boost/thread/thread.hpp>
+#include <boost/asio.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 int main(int argc, char* argv[]) {
 	freejtag::Freejtag *prog;
@@ -28,9 +31,8 @@ int main(int argc, char* argv[]) {
 
 namespace freejtag {
 Freejtag::Freejtag(int argc, char* argv[]):prog_settings(argc,argv),
-		prog_network(12323),
-		uart_service_(*io_service_, prog_settings),
-		io_service_(new boost::asio::io_service){
+		prog_network(io_service_, 12323),
+		uart_service_(io_service_, prog_settings){
 	PRINT("new freejtag");
 	//prog_network = new NetworkService(message_queue_, 12323);
 }
@@ -47,19 +49,31 @@ int Freejtag::run() {
 	}
 	bool run = true;
 	while (run) {
+		boost::asio::deadline_timer t(io_service_, boost::posix_time::seconds(5));
+		t.async_wait(boost::bind(&Freejtag::ping,this,&t));
+			try{
+			io_service_.run();
+			}catch(boost::system::system_error& err){
+				WARNING("System Error");
+			}catch(connection_exception& err){
+				PRINT("Disconnected Client!");
+				if(Connection::pointer const * con=boost::get_error_info<connection_info>(err)){
+					prog_network.removeConnection(*con);
+				}
+
+			}
 		// setup telnet
 		// setup serial
 		// do stuff
 		// teardown
-
-		PRINT("PING!");
-		//Message msg = Message(PING);
-		prog_network.sendBroadcast(Message::createMessage(MESS,"Test!"));
-		//boost::thread telnet_thread(*prog_telnet::run());
-		//prog_telnet->run();
-		boost::this_thread::sleep(boost::posix_time::milliseconds(10000));
 	}
 	return 0;
+}
+
+void Freejtag::ping(boost::asio::deadline_timer* t){
+	prog_network.sendBroadcast(Message::createMessage(MESS,"PING!"));
+	t->expires_at(t->expires_at()+boost::posix_time::seconds(10));
+	t->async_wait(boost::bind(&Freejtag::ping,this,t));
 }
 }
 /*

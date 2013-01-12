@@ -36,33 +36,20 @@
 //
 namespace freejtag{
 
-NetworkService::NetworkService(int port):io_service(new asio::io_service),
-			accepto(*io_service,asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)),
-			thread_(boost::bind(&NetworkService::run, this)),
+NetworkService::NetworkService(asio::io_service& io_service, int port):io_service_(io_service),
+			accepto(io_service_,asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)),
 			dispatch_thread_(boost::bind(&NetworkService::run_dispatch,this)),
 			dispatch_broadcast_thread_(boost::bind(&NetworkService::run_dispatch_broadcast,this)),
 			shutdown_(false){
 		PRINT("new telnet");
-	}
-	int NetworkService::run(){
 		start_accept();
 		PRINT("Run Service");
-		while(!shutdown_){
-			try{
-			io_service->run();
-			}catch(boost::system::system_error& err){
-				PRINT("Disconnected Client!");
-			}catch(connection_exception& err){
-				if(Connection::pointer const * con=boost::get_error_info<connection_info>(err))
-					connection_bundle_.removeConnection(*con);
-			}
-		}
-		return 0;
 	}
+
 	void NetworkService::start_accept(){
 		PRINT("Start accept");
 		//asio::io_service& ios = accepto.get_io_service();
-		Connection::pointer new_conn = Connection::create_new(input_buffer_, *io_service);
+		Connection::pointer new_conn = Connection::create_new(input_buffer_, io_service_);
 		accepto.async_accept(new_conn->get_socket(),boost::bind(&NetworkService::handle_accept,this,new_conn,asio::placeholders::error));
 	}
 	void NetworkService::handle_accept(Connection::pointer ptr, const boost::system::error_code& err){
@@ -73,10 +60,6 @@ NetworkService::NetworkService(int port):io_service(new asio::io_service),
 		connection_bundle_.addConnection(ptr);
 		start_accept();
 	}
-
-	NetworkService::~NetworkService() {
-	delete io_service;
-}
 
 int NetworkService::run_dispatch() {
 	while(!shutdown_){
@@ -101,6 +84,10 @@ int NetworkService::run_dispatch_broadcast() {
 		connection_bundle_.sendBroadcast(msg);
 	}
 	return 0;
+}
+
+void NetworkService::removeConnection(Connection::pointer conn) {
+	connection_bundle_.removeConnection(conn);
 }
 
 bool NetworkService::sendMessage(Connection::pointer ptr, Message::pointer msg) {
