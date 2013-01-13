@@ -47,9 +47,9 @@ NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buff
 		unsigned int this_port = settings.get_value<uint16_t>("port");
 		asio::ip::tcp::endpoint ep(asio::ip::tcp::v4(),this_port);
 		accepto.open(ep.protocol());
+		accepto.set_option(boost::asio::socket_base::reuse_address(true));
 		accepto.bind(ep);
 		accepto.listen();
-		accepto.set_option(boost::asio::socket_base::reuse_address(true));
 		start_accept();
 		PRINT("Run Service");
 	}
