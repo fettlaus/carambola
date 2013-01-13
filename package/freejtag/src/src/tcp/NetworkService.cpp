@@ -38,8 +38,6 @@ namespace freejtag{
 
 NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings, int port):io_service_(io_service),
 			accepto(io_service_),
-			dispatch_thread_(boost::bind(&NetworkService::run_dispatch,this)),
-			dispatch_broadcast_thread_(boost::bind(&NetworkService::run_dispatch_broadcast,this)),
 			shutdown_(false),
 			settings_(settings),
 			input_buffer_(buffer){
@@ -69,29 +67,10 @@ NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buff
 		start_accept();
 	}
 
-int NetworkService::run_dispatch() {
-	while(!shutdown_){
-		PRINT("Wait for Message");
-		MessageDatagram msg = output_buffer_.pop();
-		PRINT("Got Message!");
-		msg.first->deliver(msg.second);
-	}
-	return 0;
-}
-
 bool NetworkService::sendBroadcast(Message::pointer msg) {
-	broadcast_buffer_.push(msg);
+	PRINT("Got Broadcast!");
+	connection_bundle_.sendBroadcast(msg);
 	return true;
-}
-
-int NetworkService::run_dispatch_broadcast() {
-	while(!shutdown_){
-		PRINT("Wait for Broadcast");
-		Message::pointer msg = broadcast_buffer_.pop();
-		PRINT("Got Broadcast!");
-		connection_bundle_.sendBroadcast(msg);
-	}
-	return 0;
 }
 
 void NetworkService::removeConnection(Connection::pointer conn) {
@@ -99,7 +78,8 @@ void NetworkService::removeConnection(Connection::pointer conn) {
 }
 
 bool NetworkService::sendMessage(Connection::pointer ptr, Message::pointer msg) {
-	output_buffer_.push(std::make_pair(ptr,msg));
+	PRINT("Got Direct-Message!");
+	ptr->deliver(msg);
 	return true;
 }
 

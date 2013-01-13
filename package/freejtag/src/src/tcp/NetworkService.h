@@ -38,12 +38,8 @@ private:
 	asio::io_service& io_service_;
 	asio::ip::tcp::acceptor accepto;
 	bool shutdown_;
-	boost::thread dispatch_thread_;
-	boost::thread dispatch_broadcast_thread_;
 	void start_accept();
 	void handle_accept(Connection::pointer ptr, const boost::system::error_code& err);
-	int run_dispatch();
-	int run_dispatch_broadcast();
 
 	MessageTargetBundle connection_bundle_;
 public:
