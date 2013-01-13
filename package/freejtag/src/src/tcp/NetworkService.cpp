@@ -49,6 +49,7 @@ NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buff
 		accepto.open(ep.protocol());
 		accepto.bind(ep);
 		accepto.listen();
+		accepto.set_option(boost::asio::socket_base::reuse_address(true));
 		start_accept();
 		PRINT("Run Service");
 	}
