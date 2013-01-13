@@ -93,7 +93,8 @@ std::vector<asio::const_buffer> Message::toBuffers() const {
 	buffers.push_back(asio::buffer(&type_,1));
 	buffers.push_back(asio::buffer(&length_,2));
 	buffers.push_back(asio::buffer(&timestamp_,4));
-	if(type_ == 0x01){
+	//TODO: Encode different headers
+	if(type_ == 0x01 || type_ == 0x02){
 		buffers.push_back(asio::buffer(data_+header_length,length_));
 	}
 	return buffers;
