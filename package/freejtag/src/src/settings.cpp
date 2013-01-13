@@ -34,14 +34,17 @@ settings::settings(int argc, char* argv[]):desc(po::options_description("Options
 			("flow_control",value<uart::flow_control>()->default_value(uart::flow_control(),"none"),"Flow control")
 			("stop_bits",value<uart::stop_bits>()->default_value(uart::stop_bits(),"one"),"Stop bits")
 			("data",value<unsigned int>()->default_value(8),"Size of character");
-
+	options_description tcp_options("Network Settings");
+	tcp_options.add_options()
+			("port",value<unsigned int>()->default_value(12323),"Port");
 	options_description desc2;
 	desc2.add_options()
 			("help,?", "Print this help message")
 			("debug", value<bool>(), "Enable Debug")
-			("detached",value<bool>()->zero_tokens()->default_value(false),"Enable detaching");
-	options_description cmd;
-	cmd.add(desc2).add(uart_options);
+			("detached",value<bool>()->zero_tokens()->default_value(false),"Enable detaching")
+			("threads",value<unsigned char>()->default_value(1),"Number of Threads [unused]");
+	options_description cmd("Settings");
+	cmd.add(desc2).add(tcp_options).add(uart_options);
 	store(parse_command_line(argc,argv,cmd),map);
 	//TODO: Catch parse errors
 	// TODO: parse config file
