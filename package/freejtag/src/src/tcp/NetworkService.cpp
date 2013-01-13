@@ -36,12 +36,18 @@
 //
 namespace freejtag{
 
-NetworkService::NetworkService(asio::io_service& io_service, int port):io_service_(io_service),
-			accepto(io_service_,asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)),
+NetworkService::NetworkService(asio::io_service& io_service, settings& settings, int port):io_service_(io_service),
+			accepto(io_service_),
 			dispatch_thread_(boost::bind(&NetworkService::run_dispatch,this)),
 			dispatch_broadcast_thread_(boost::bind(&NetworkService::run_dispatch_broadcast,this)),
-			shutdown_(false){
+			shutdown_(false),
+			settings_(settings){
 		PRINT("new telnet");
+		unsigned int this_port = settings.get_value<uint16_t>("port");
+		asio::ip::tcp::endpoint ep(asio::ip::tcp::v4(),this_port);
+		accepto.open(ep.protocol());
+		accepto.bind(ep);
+		accepto.listen();
 		start_accept();
 		PRINT("Run Service");
 	}

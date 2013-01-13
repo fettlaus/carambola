@@ -36,7 +36,7 @@ settings::settings(int argc, char* argv[]):desc(po::options_description("Options
 			("data",value<unsigned int>()->default_value(8),"Size of character");
 	options_description tcp_options("Network Settings");
 	tcp_options.add_options()
-			("port",value<unsigned int>()->default_value(12323),"Port");
+			("port",value<uint16_t>()->default_value(12323),"Port");
 	options_description desc2;
 	desc2.add_options()
 			("help,?", "Print this help message")

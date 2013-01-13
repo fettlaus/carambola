@@ -8,6 +8,7 @@
 #ifndef TELNET_H_
 #define TELNET_H_
 #include "Connection.h"
+#include "../settings.h"
 #include "MessageTargetBundle.h"
 #include "NetworkServiceTypedef.h"
 
@@ -33,6 +34,7 @@ private:
 	MessageDatagramQueue output_buffer_;
 	MessageDatagramQueue input_buffer_;
 	MessageQueue broadcast_buffer_;
+	settings& settings_;
 	asio::io_service& io_service_;
 	asio::ip::tcp::acceptor accepto;
 	bool shutdown_;
@@ -45,7 +47,7 @@ private:
 
 	MessageTargetBundle connection_bundle_;
 public:
-	NetworkService(asio::io_service& io_service, int port);
+	NetworkService(asio::io_service& io_service, settings& settings, int port);
 	void removeConnection(Connection::pointer conn);
 	bool sendBroadcast(Message::pointer msg);
 	bool sendMessage(Connection::pointer conn, Message::pointer msg);
