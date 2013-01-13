@@ -67,10 +67,10 @@ int Freejtag::run() {
 		PRINT("Detached");
 		//init daemon
 	}
+	boost::asio::deadline_timer t(io_service_, boost::posix_time::seconds(5));
+	t.async_wait(boost::bind(&Freejtag::ping,this,&t));
 	bool run = true;
 	while (run) {
-		boost::asio::deadline_timer t(io_service_, boost::posix_time::seconds(5));
-		t.async_wait(boost::bind(&Freejtag::ping,this,&t));
 			try{
 			io_service_.run();
 			}catch(boost::system::system_error& err){
