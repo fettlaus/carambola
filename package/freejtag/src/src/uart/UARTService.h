@@ -10,6 +10,7 @@
 
 #include "UARTConnection.h"
 #include "UARTServiceTypedef.h"
+#include "UARTTypes.h"
 //#include "../util/BlockingQueue.h"
 //#include "../settings.h"
 #include <boost/thread.hpp>

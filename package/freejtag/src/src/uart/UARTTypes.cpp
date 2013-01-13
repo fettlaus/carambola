@@ -6,6 +6,7 @@
  */
 
 #include "UARTTypes.h"
+#include "debug.h"
 #include <boost/program_options.hpp>
 
 namespace freejtag {
@@ -27,6 +28,7 @@ void validate(boost::any& v,
 	using namespace boost::program_options;
 	validators::check_first_occurrence(v);
 	const std::string& s = validators::get_single_string(val);
+	PRINT("Validate parity");
 	if(s == "none"){
 		v = boost::any(parity(parity::none));
 	}else if (s == "odd"){
@@ -44,6 +46,7 @@ void validate(boost::any& v, const std::vector<std::string>& val,
 	using namespace boost::program_options;
 	validators::check_first_occurrence(v);
 	const std::string& s = validators::get_single_string(val);
+	PRINT("Validate flow_control");
 	if(s == "none"){
 		v = boost::any(flow_control(flow_control::none));
 	}else if(s == "software"){
@@ -61,6 +64,7 @@ void validate(boost::any& v, const std::vector<std::string>& val,
 	using namespace boost::program_options;
 	validators::check_first_occurrence(v);
 	const std::string& s = validators::get_single_string(val);
+	PRINT("Validate stop_bits");
 	if(s == "one"){
 		v = boost::any(stop_bits(stop_bits::one));
 	}else if(s == "onepointfive"){

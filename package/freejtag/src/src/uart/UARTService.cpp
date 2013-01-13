@@ -16,7 +16,7 @@ UARTService::UARTService(boost::asio::io_service& io_service, UARTBuffer& buffer
 		io_service_(io_service),
 		settings_(settings),
 		uart_buffer_(buffer){
-	reload_settings();
+	//reload_settings();
 	// get settings
 	// start uart
 	// start uartservice

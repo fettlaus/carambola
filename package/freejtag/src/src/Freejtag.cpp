@@ -42,10 +42,11 @@ Freejtag::~Freejtag() {
 int Freejtag::run() {
 	//set serial options
 	using namespace boost::asio;
+	PRINT(prog_settings.get_value<std::string>("device"));
 	uart_service_.open(prog_settings.get_value<std::string>("device"));
-	uart_service_.set_setting<serial_port::parity>(prog_settings.get_value<serial_port::parity>("parity"),"parity");
-	uart_service_.set_setting<serial_port::flow_control>(prog_settings.get_value<serial_port::flow_control>("flow_control"),"flow control");
-	uart_service_.set_setting<serial_port::stop_bits>(prog_settings.get_value<serial_port::stop_bits>("stop_bits"),"stop bits");
+	uart_service_.set_setting<uart::parity>(prog_settings.get_value<uart::parity>("parity"),"parity");
+	uart_service_.set_setting<uart::flow_control>(prog_settings.get_value<uart::flow_control>("flow_control"),"flow control");
+	uart_service_.set_setting<uart::stop_bits>(prog_settings.get_value<uart::stop_bits>("stop_bits"),"stop bits");
 	uart_service_.set_setting<serial_port::baud_rate>(serial_port::baud_rate(prog_settings.get_value<unsigned int>("baud")),"baud rate");
 	uart_service_.set_setting<serial_port::character_size>(serial_port::character_size(prog_settings.get_value<unsigned int>("data")),"char size");
 
