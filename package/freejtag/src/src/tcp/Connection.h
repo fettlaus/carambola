@@ -23,15 +23,15 @@ namespace freejtag {
 
 class Connection:public BaseConnection,public MessageTarget, public boost::enable_shared_from_this<Connection>{
 private:
-	Connection(MessageDatagramQueue& output_queue, boost::asio::io_service& service); ///< Hidden constructor
+	Connection(NetworkBuffer& output_queue, boost::asio::io_service& service); ///< Hidden constructor
 	Message::pointer cur_message_; ///< The message we are reading into
 	void handle_write(const boost::system::system_error& err, size_t, const Message::pointer msg);
-	MessageDatagramQueue& output_queue_;
+	NetworkBuffer& output_queue_;
 	boost::mutex send_mutex_;
 public:
 	~Connection();
 	typedef boost::shared_ptr<Connection> pointer;
-	static pointer create_new(MessageDatagramQueue& input_messages, boost::asio::io_service& service);
+	static pointer create_new(NetworkBuffer& input_messages, boost::asio::io_service& service);
 	void deliver(const Message::pointer);
 	void start();
 

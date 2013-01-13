@@ -6,15 +6,16 @@
  */
 
 #include "UARTService.h"
-#include "UARTTypes.h"
+//#include "UARTTypes.h"
 
 namespace freejtag {
 
-UARTService::UARTService(boost::asio::io_service& io_service, settings& settings):uart_thread_(boost::bind(&UARTService::read_line,this)),
+UARTService::UARTService(boost::asio::io_service& io_service, UARTBuffer& buffer, settings& settings):uart_thread_(boost::bind(&UARTService::read_line,this)),
 		shutdown_(false),
-		uart_connection_(new UARTConnection(io_service_)),
+		uart_connection_(io_service_,buffer),
 		io_service_(io_service),
-		settings_(settings){
+		settings_(settings),
+		uart_buffer_(buffer){
 	reload_settings();
 	// get settings
 	// start uart
@@ -32,13 +33,12 @@ std::string UARTService::get_line() {
 
 void UARTService::reload_settings() {
 	using namespace boost::asio;
-	uart_connection_->close();
-	uart_connection_->open(settings_.get_value<std::string>("device"));
-	uart_connection_->set_settings<uart::parity>(settings_.get_value<uart::parity>("parity"),"parity");
-	uart_connection_->set_settings<uart::flow_control>(settings_.get_value<uart::flow_control>("flow_control"),"flow control");
-	uart_connection_->set_settings<uart::stop_bits>(settings_.get_value<uart::stop_bits>("stop_bits"),"stop bits");
-	uart_connection_->set_settings<serial_port_base::baud_rate>(serial_port::baud_rate(settings_.get_value<unsigned int>("baud")),"baud rate");
-	uart_connection_->set_settings<serial_port_base::character_size>(serial_port::character_size(settings_.get_value<unsigned int>("data")),"char size");
+	uart_connection_.close();
+	uart_connection_.open(device_);
+}
+
+void UARTService::open(std::string device) {
+	uart_connection_.open(device);
 }
 
 void UARTService::read_line() {
@@ -47,5 +47,7 @@ void UARTService::read_line() {
 		boost::this_thread::sleep(boost::posix_time::milliseconds(10000));
 	}
 }
+
+
 
 } /* namespace freejtag */

@@ -31,8 +31,8 @@ int main(int argc, char* argv[]) {
 
 namespace freejtag {
 Freejtag::Freejtag(int argc, char* argv[]):prog_settings(argc,argv),
-		prog_network(io_service_, prog_settings, 12323),
-		uart_service_(io_service_, prog_settings){
+		prog_network(io_service_, input_network_, prog_settings, 12323),
+		uart_service_(io_service_, input_uart_, prog_settings){
 	PRINT("new freejtag");
 	//prog_network = new NetworkService(message_queue_, 12323);
 }
@@ -40,6 +40,16 @@ Freejtag::~Freejtag() {
 }
 
 int Freejtag::run() {
+	//set serial options
+	using namespace boost::asio;
+	uart_service_.open(prog_settings.get_value<std::string>("device"));
+	uart_service_.set_setting<serial_port::parity>(prog_settings.get_value<serial_port::parity>("parity"),"parity");
+	uart_service_.set_setting<serial_port::flow_control>(prog_settings.get_value<serial_port::flow_control>("flow_control"),"flow control");
+	uart_service_.set_setting<serial_port::stop_bits>(prog_settings.get_value<serial_port::stop_bits>("stop_bits"),"stop bits");
+	uart_service_.set_setting<serial_port::baud_rate>(serial_port::baud_rate(prog_settings.get_value<unsigned int>("baud")),"baud rate");
+	uart_service_.set_setting<serial_port::character_size>(serial_port::character_size(prog_settings.get_value<unsigned int>("data")),"char size");
+
+
 	// check settings for daemon
 	// po::variables_map map = prog_settings->get_map();
 	// bool b = prog_settings->get_value<bool>("detached");

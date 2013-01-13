@@ -20,7 +20,7 @@ namespace freejtag {
  * Create a new Connection and bind it to a socket.
  * @param service
  */
-Connection::Connection(MessageDatagramQueue& output_queue, asio::io_service& service):cur_message_(Message::createMessage()),
+Connection::Connection(NetworkBuffer& output_queue, asio::io_service& service):cur_message_(Message::createMessage()),
 		BaseConnection(service),
 		output_queue_(output_queue) {
 	PRINT("new Connection");
@@ -47,7 +47,7 @@ void Connection::deliver(const Message::pointer msg) {
  * @param service
  * @return boost::shared_ptr
  */
-Connection::pointer Connection::create_new(MessageDatagramQueue& input_messages,boost::asio::io_service& service){
+Connection::pointer Connection::create_new(NetworkBuffer& input_messages,boost::asio::io_service& service){
 	return pointer(new Connection(input_messages, service));
 }
 

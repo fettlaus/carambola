@@ -20,6 +20,8 @@ namespace freejtag{
 class Freejtag{
 private:
 	boost::asio::io_service io_service_;
+	UARTBuffer input_uart_;
+	NetworkBuffer input_network_;
 	settings prog_settings;
 	NetworkService prog_network;
 	UARTService uart_service_;

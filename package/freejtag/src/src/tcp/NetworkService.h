@@ -31,8 +31,8 @@ namespace freejtag{
 
 class NetworkService{
 private:
-	MessageDatagramQueue output_buffer_;
-	MessageDatagramQueue input_buffer_;
+	NetworkBuffer output_buffer_;
+	NetworkBuffer& input_buffer_;
 	MessageQueue broadcast_buffer_;
 	settings& settings_;
 	asio::io_service& io_service_;
@@ -47,7 +47,7 @@ private:
 
 	MessageTargetBundle connection_bundle_;
 public:
-	NetworkService(asio::io_service& io_service, settings& settings, int port);
+	NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings, int port);
 	void removeConnection(Connection::pointer conn);
 	bool sendBroadcast(Message::pointer msg);
 	bool sendMessage(Connection::pointer conn, Message::pointer msg);

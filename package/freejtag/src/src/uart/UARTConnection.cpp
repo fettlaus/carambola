@@ -9,7 +9,10 @@
 
 namespace freejtag {
 
-UARTConnection::UARTConnection(boost::asio::io_service& io_service):io_service_(io_service),port_(io_service_) {
+UARTConnection::UARTConnection(boost::asio::io_service& io_service, UARTBuffer& buffer):
+		io_service_(io_service),
+		port_(io_service_),
+		buffer_(buffer) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -22,6 +25,10 @@ bool UARTConnection::open(std::string device){
 	port_.open(device);
 	//TODO: Catch errors
 	return true;
+}
+
+boost::asio::serial_port& UARTConnection::get_port() {
+	return this->port_;
 }
 
 void UARTConnection::close() {
