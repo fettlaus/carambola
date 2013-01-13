@@ -20,6 +20,7 @@
 #include <boost/thread/thread.hpp>
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/bind.hpp>
 
 int main(int argc, char* argv[]) {
 	freejtag::Freejtag *prog;
@@ -32,11 +33,19 @@ int main(int argc, char* argv[]) {
 namespace freejtag {
 Freejtag::Freejtag(int argc, char* argv[]):prog_settings(argc,argv),
 		prog_network(io_service_, input_network_, prog_settings, 12323),
-		uart_service_(io_service_, input_uart_, prog_settings){
+		uart_service_(io_service_, input_uart_, prog_settings),
+		uart_dispatcher_(boost::bind(&Freejtag::uart_handle,this)){
 	PRINT("new freejtag");
 	//prog_network = new NetworkService(message_queue_, 12323);
 }
 Freejtag::~Freejtag() {
+}
+
+void Freejtag::uart_handle() {
+	while(true){
+		UARTMessage msg = input_uart_.pop();
+		prog_network.sendBroadcast(Message::createMessage(UART,msg.second,msg.first));
+	}
 }
 
 int Freejtag::run() {

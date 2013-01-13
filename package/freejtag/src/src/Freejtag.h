@@ -25,7 +25,9 @@ private:
 	settings prog_settings;
 	NetworkService prog_network;
 	UARTService uart_service_;
+	boost::thread uart_dispatcher_;
 	void ping(boost::asio::deadline_timer* t);
+	void uart_handle();
 
 public:
 	Freejtag(int argc, char* argv[]);
