@@ -13,14 +13,14 @@ namespace freejtag
 
 /**
  * Create a new message. This constructor is private, because new instances should be created by
- * Message::createMessage().
+ * Message::create_message().
  * @param type The MessageType of the new Message
  * @param body The body-content of the new Message
  * @param timestamp The timestamp of the new Message
  */
 Message::Message(MessageType type, std::string body, uint32_t timestamp) :
     length_(body.length()),
-    type_(TypeToInt(type)),
+    type_(type_to_int(type)),
     timestamp_(timestamp)
 {
     // ensure data_ is zeroed
@@ -115,10 +115,10 @@ bool Message::decode_header()
 
 /**
  * Get length of message-body as specified in the header.
- * @pre Read a header from socket and called decode_header()
+ * @pre Read a header from socket and called Message::decode_header()
  * @return Length of body
  */
-size_t Message::getLength() const
+size_t Message::get_length() const
 {
     return length_;
 }
@@ -128,7 +128,7 @@ size_t Message::getLength() const
  * @pre Content of the Message has to be set by construction or setters.
  * @return Buffer of this message
  */
-std::vector<asio::const_buffer> Message::toBuffers() const
+std::vector<asio::const_buffer> Message::to_buffers() const
 {
     std::vector<boost::asio::const_buffer> buffers;
     buffers.push_back(asio::buffer(&type_, 1));
@@ -143,10 +143,10 @@ std::vector<asio::const_buffer> Message::toBuffers() const
 }
 
 /**
- * The timestamp of this message. Either set on construction or by using setTimestamp().
+ * The timestamp of this message. Either set on construction or by using set_timestamp().
  * @return Timestamp of message
  */
-uint32_t Message::getTimestamp() const
+uint32_t Message::get_timestamp() const
 {
     return timestamp_;
 }
@@ -156,39 +156,39 @@ uint32_t Message::getTimestamp() const
  * MessageType of Message.
  * @param time
  */
-void Message::setTimestamp(uint32_t time)
+void Message::set_timestamp(uint32_t time)
 {
     timestamp_ = time;
 }
 
 /**
  *
- * Get the MessageType of this Message. If no MessageType is set on creation and no decode_header() is called in
+ * Get the MessageType of this Message. If no MessageType is set on creation and no Message::decode_header() is called in
  * between, it is set to ERROR and the message should not be used further.
  * @return Type of Message
  */
-MessageType Message::getType() const
+MessageType Message::get_type() const
 {
-    return IntToType(type_);
+    return int_to_type(type_);
 }
 
 /**
  * Set the MessageType of this Message.
  * @param type MessageType of this Message
  */
-void Message::setType(MessageType type)
+void Message::set_type(MessageType type)
 {
-    type_ = TypeToInt(type);
+    type_ = type_to_int(type);
 }
 
 /**
- * Constructs a new Message and return a Message::pointer to it. This provides safe use of boost::shared_ptr.
+ * Constructs a new Message and return a Message::pointer to it. This provides safe use with a boost::shared_ptr.
  * @param type Type of the new Message
  * @param allocator Body of the new Message
  * @param timestamp Timestamp of the new Message
  * @return Smart-pointer to the new Message
  */
-Message::pointer Message::createMessage(MessageType type, std::string allocator, uint32_t timestamp)
+Message::pointer Message::create_message(MessageType type, std::string allocator, uint32_t timestamp)
 {
     return pointer(new Message(type, allocator, timestamp));
 }
@@ -198,7 +198,7 @@ Message::pointer Message::createMessage(MessageType type, std::string allocator,
  * @param unsignedChar The decimal representation
  * @return Corresponding MessageType
  */
-MessageType Message::IntToType(uint8_t unsignedChar)
+MessageType Message::int_to_type(uint8_t unsignedChar)
 {
     switch (unsignedChar) {
     case 0x01:
@@ -229,7 +229,7 @@ MessageType Message::IntToType(uint8_t unsignedChar)
  * @param messageTypeEnum The MessageType
  * @return integer Corresponding representation of MessageType
  */
-uint8_t Message::TypeToInt(MessageType messageTypeEnum)
+uint8_t Message::type_to_int(MessageType messageTypeEnum)
 {
     switch (messageTypeEnum) {
     case MESS:

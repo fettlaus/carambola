@@ -44,7 +44,7 @@ Freejtag::~Freejtag() {
 void Freejtag::uart_handle() {
 	while(true){
 		UARTMessage msg = input_uart_.pop();
-		prog_network.sendBroadcast(Message::createMessage(UART,msg.second,msg.first));
+		prog_network.sendBroadcast(Message::create_message(UART,msg.second,msg.first));
 	}
 }
 
@@ -91,7 +91,7 @@ int Freejtag::run() {
 }
 
 void Freejtag::ping(boost::asio::deadline_timer* t){
-	prog_network.sendBroadcast(Message::createMessage(MESS,"PING!"));
+	prog_network.sendBroadcast(Message::create_message(MESS,"PING!"));
 	t->expires_at(t->expires_at()+boost::posix_time::seconds(10));
 	t->async_wait(boost::bind(&Freejtag::ping,this,t));
 }

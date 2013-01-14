@@ -26,7 +26,7 @@ bool MessageTargetBundle::sendBroadcast(const Message::pointer msg) {
 }
 
 void MessageTargetBundle::addConnection(Connection::pointer conn) {
-	this->sendBroadcast(Message::createMessage(MESS,"New Connection!"));
+	this->sendBroadcast(Message::create_message(MESS,"New Connection!"));
 	ConnectionBundle::addConnection(conn);
 }
 

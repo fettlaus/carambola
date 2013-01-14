@@ -20,7 +20,7 @@ namespace freejtag {
  * Create a new Connection and bind it to a socket.
  * @param service
  */
-Connection::Connection(NetworkBuffer& output_queue, asio::io_service& service):cur_message_(Message::createMessage()),
+Connection::Connection(NetworkBuffer& output_queue, asio::io_service& service):cur_message_(Message::create_message()),
 		BaseConnection(service),
 		output_queue_(output_queue) {
 	PRINT("new Connection");
@@ -35,7 +35,7 @@ Connection::Connection(NetworkBuffer& output_queue, asio::io_service& service):c
 void Connection::deliver(const Message::pointer msg) {
 	PRINT("Deliver to Client");
 	send_mutex_.lock();
-	asio::async_write(this->get_socket(),msg->toBuffers(),boost::bind(&Connection::handle_write,
+	asio::async_write(this->get_socket(),msg->to_buffers(),boost::bind(&Connection::handle_write,
 			shared_from_this(),
 			asio::placeholders::error,
 			asio::placeholders::bytes_transferred,
@@ -79,12 +79,12 @@ void Connection::start(){
 	data = 0xAB;
 	uint32_t b;
 	b = 123123;
-	const Message::pointer msg = Message::createMessage(MESS,"Hello there!");
+	const Message::pointer msg = Message::create_message(MESS,"Hello there!");
 	buffers.push_back(asio::buffer(&data,1));
 	buffers.push_back(asio::buffer(&b,4));
 	buffers.push_back(asio::buffer("zweiter"));
 	buffers.push_back(asio::buffer("zweiter"));
-	asio::async_write(this->get_socket(),msg->toBuffers(),
+	asio::async_write(this->get_socket(),msg->to_buffers(),
 			boost::bind(&Connection::handle_write,
 					shared_from_this(),
 					asio::placeholders::error,
