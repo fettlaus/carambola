@@ -61,7 +61,7 @@ void Connection::handle_write(const boost::system::system_error& err, size_t byt
 		throw connection_exception() << connection_info(shared_from_this());
 	}
 	send_mutex_.unlock();
- 	PRINT("Message(" << (int)Message::TypeToInt(msg->getType()) << "," << (int)msg->getLength() << "," << (long)msg->getTimestamp() << ") <== " << bytes << " Byte gesendet an " << socket_.remote_endpoint().address().to_string());
+ 	PRINT(msg << " <== " << bytes << " Byte gesendet an " << socket_.remote_endpoint().address().to_string());
 }
 
 Connection::~Connection() {
