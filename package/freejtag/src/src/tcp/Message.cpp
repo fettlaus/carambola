@@ -49,8 +49,6 @@ Message::Message(MessageType type, std::string body, uint32_t timestamp) :
 
         timestamp_ = diff.total_milliseconds();
     }
-
-    PRINT(this << " created");
 }
 
 /**
@@ -59,16 +57,16 @@ Message::Message(MessageType type, std::string body, uint32_t timestamp) :
  * @param msg Message to parse
  * @return Outgoing ostream
  */
-std::ostream & operator <<(std::ostream & o, const Message & msg)
+std::ostream & operator <<(std::ostream & o, const Message::pointer msg)
 {
     return o << "Message("
-           << (int) msg.type_
+           << (int) msg->type_
            << ","
-           << (int) msg.length_
+           << (int) msg->length_
            << ","
-           << (int) msg.timestamp_
+           << (int) msg->timestamp_
            << ")=\""
-           << msg.data_ + msg.header_length ///< @todo Unsafe call to body!
+           << msg->data_ + msg->header_length ///< @todo Unsafe call to body!
            << "\"";
 }
 
@@ -77,9 +75,15 @@ std::ostream & operator <<(std::ostream & o, const Message & msg)
  */
 Message::~Message()
 {
-    delete[] data_;
-
-    PRINT(this << " destroyed");
+    PRINT("Message("
+    		<< (int) type_
+    		<< ","
+    		<< (int) length_
+    		<< ","
+    		<< (int) timestamp_
+    		<< ")=\""
+    		<< data_ + header_length
+    		<<"\" destroyed");
 }
 
 /**
@@ -190,7 +194,9 @@ void Message::set_type(MessageType type)
  */
 Message::pointer Message::create_message(MessageType type, std::string allocator, uint32_t timestamp)
 {
-    return pointer(new Message(type, allocator, timestamp));
+	pointer ptr(new Message(type, allocator, timestamp));
+	PRINT(ptr << " created");
+    return ptr;
 }
 
 /**

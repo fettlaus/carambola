@@ -60,7 +60,7 @@ public:
     static pointer create_message(MessageType type = ERROR, std::string = "", uint32_t timestamp = 0); ///< Create a
     ///< new Message and get its Message::pointer
 private:
-    friend std::ostream& operator<<(std::ostream& o, const Message& msg);
+    friend std::ostream& operator<<(std::ostream& o, const Message::pointer msg);
     static uint8_t type_to_int(MessageType);
     static MessageType int_to_type(uint8_t unsignedChar);
     Message(MessageType type, std::string, uint32_t timestamp);
