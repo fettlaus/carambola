@@ -23,8 +23,10 @@
  */
 class DPRINT {
 public:
-    explicit DPRINT(std::ostream& str):stream_(str){
-    	ss_ << boost::posix_time::to_iso_string(boost::posix_time::microsec_clock::local_time());
+    explicit DPRINT(std::ostream& str):stream_(str),
+    f(new boost::posix_time::time_facet("%H:%M:%S%F")){
+        ss_.imbue(std::locale(ss_.getloc(),f));
+        ss_ << boost::posix_time::microsec_clock::local_time();
     	ss_ << ": ";
     }
     ~DPRINT() {
@@ -39,6 +41,7 @@ public:
 private:
     std::ostream& stream_;
     std::stringstream ss_;
+    boost::posix_time::time_facet*const f;
 };
 
 
