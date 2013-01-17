@@ -18,7 +18,7 @@ namespace freejtag
  * @param body The body-content of the new Message
  * @param timestamp The timestamp of the new Message
  */
-Message::Message(MessageType type, std::string body, uint32_t timestamp) :
+Message::Message(MessageType type, std::string body, MessageTimestamp timestamp) :
     length_(body.length()),
     type_(type_to_int(type)),
     timestamp_(timestamp)
@@ -94,19 +94,18 @@ Message::~Message()
 bool Message::decode_header()
 {
     char buffer[header_length + 2] = "";
-    uint8_t type;
 
-    std::strncat(buffer, data_, sizeof(type));
+    std::strncat(buffer, data_, sizeof(MessageType_));
 
     type_ = atoi(buffer);
     buffer[0] = '\0';
 
-    std::strncat(buffer, data_ + sizeof(type), sizeof(length_));
+    std::strncat(buffer, data_ + sizeof(MessageType_), sizeof(MessageLength_));
 
     length_ = atoi(buffer);
     buffer[0] = '\0';
 
-    std::strncat(buffer, data_ + sizeof(type) + sizeof(length_), sizeof(timestamp_));
+    std::strncat(buffer, data_ + sizeof(MessageType_) + sizeof(MessageLength_), sizeof(MessageTimestamp));
 
     timestamp_ = atoi(buffer);
 
@@ -135,11 +134,11 @@ size_t Message::get_length() const
 std::vector<asio::const_buffer> Message::to_buffers() const
 {
     std::vector<boost::asio::const_buffer> buffers;
-    buffers.push_back(asio::buffer(&type_, 1));
-    buffers.push_back(asio::buffer(&length_, 2));
-    buffers.push_back(asio::buffer(&timestamp_, 4));
+    buffers.push_back(asio::buffer(&type_, sizeof(MessageType_)));
+    buffers.push_back(asio::buffer(&length_, sizeof(MessageLength_)));
+    buffers.push_back(asio::buffer(&timestamp_, sizeof(MessageTimestamp)));
 
-    if ((type_ == 0x01) || (type_ == 0x02)) { ///< @todo Encode different headers
+    if ((type_ == type_to_int(MESS)) || (type_ == type_to_int(PING))) { ///< @todo Encode different headers
         buffers.push_back(asio::buffer(data_ + header_length, length_));
     }
 
@@ -150,7 +149,7 @@ std::vector<asio::const_buffer> Message::to_buffers() const
  * The timestamp of this message. Either set on construction or by using set_timestamp().
  * @return Timestamp of message
  */
-uint32_t Message::get_timestamp() const
+Message::MessageTimestamp Message::get_timestamp() const
 {
     return timestamp_;
 }
@@ -160,7 +159,7 @@ uint32_t Message::get_timestamp() const
  * MessageType of Message.
  * @param time
  */
-void Message::set_timestamp(uint32_t time)
+void Message::set_timestamp(MessageTimestamp time)
 {
     timestamp_ = time;
 }
@@ -192,7 +191,7 @@ void Message::set_type(MessageType type)
  * @param timestamp Timestamp of the new Message
  * @return Smart-pointer to the new Message
  */
-Message::pointer Message::create_message(MessageType type, std::string allocator, uint32_t timestamp)
+Message::pointer Message::create_message(MessageType type, std::string allocator, MessageTimestamp timestamp)
 {
 	pointer ptr(new Message(type, allocator, timestamp));
 	PRINT(ptr << " created");
@@ -204,7 +203,7 @@ Message::pointer Message::create_message(MessageType type, std::string allocator
  * @param unsignedChar The decimal representation
  * @return Corresponding MessageType
  */
-MessageType Message::int_to_type(uint8_t unsignedChar)
+MessageType Message::int_to_type(MessageType_ unsignedChar)
 {
     switch (unsignedChar) {
     case 0x01:
@@ -235,7 +234,7 @@ MessageType Message::int_to_type(uint8_t unsignedChar)
  * @param messageTypeEnum The MessageType
  * @return integer Corresponding representation of MessageType
  */
-uint8_t Message::type_to_int(MessageType messageTypeEnum)
+Message::MessageType_ Message::type_to_int(MessageType messageTypeEnum)
 {
     switch (messageTypeEnum) {
     case MESS:

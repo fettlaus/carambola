@@ -48,29 +48,33 @@ class Message: public boost::enable_shared_from_this<Message>
 
 public:
     typedef boost::shared_ptr<Message> pointer; ///< We use smart pointers to access instances of this class.
+    typedef uint32_t MessageTimestamp; ///< Size of the timestamp.
 
     bool decode_header();
     ~Message();
     std::vector<asio::const_buffer> to_buffers() const; ///< Buffer useful for sending via Connection
     size_t get_length() const;
-    uint32_t get_timestamp() const;
-    void set_timestamp(uint32_t time);
+    MessageTimestamp get_timestamp() const;
+    void set_timestamp(MessageTimestamp time);
     MessageType get_type() const;
     void set_type(MessageType type);
-    static pointer create_message(MessageType type = ERROR, std::string = "", uint32_t timestamp = 0); ///< Create a
+    static pointer create_message(MessageType type = ERROR, std::string = "", MessageTimestamp timestamp = 0); ///< Create a
     ///< new Message and get its Message::pointer
 private:
+    typedef uint8_t MessageType_; ///< Size of the MessageType
+    typedef uint16_t MessageLength_; ///< Size of the MessageLength
+
     friend std::ostream& operator<<(std::ostream& o, const Message::pointer msg);
-    static uint8_t type_to_int(MessageType);
-    static MessageType int_to_type(uint8_t unsignedChar);
-    Message(MessageType type, std::string, uint32_t timestamp);
+    static MessageType_ type_to_int(MessageType);
+    static MessageType int_to_type(MessageType_ unsignedChar);
+    Message(MessageType type, std::string, MessageTimestamp timestamp);
 
     /**
      * The (fixed) length of the header in byte.
      */
     enum
     {
-        header_length = 7
+        header_length = sizeof(MessageType_) + sizeof(MessageLength_) + sizeof(MessageTimestamp)
     };
 
     /**
@@ -81,9 +85,9 @@ private:
         body_max_length = 512
     };
 
-    uint8_t type_; ///< Type of this Message
-    uint16_t length_; ///< Length of this Message
-    uint32_t timestamp_; ///< Timestamp of this Message
+    MessageType_ type_; ///< Type of this Message
+    MessageLength_ length_; ///< Length of this Message
+    MessageTimestamp timestamp_; ///< Timestamp of this Message
     char data_[header_length + body_max_length]; ///< Data of this message (header + body)
 };
 
