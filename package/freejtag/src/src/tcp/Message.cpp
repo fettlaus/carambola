@@ -138,7 +138,7 @@ std::vector<asio::const_buffer> Message::to_buffers() const
     buffers.push_back(asio::buffer(&length_, sizeof(MessageLength_)));
     buffers.push_back(asio::buffer(&timestamp_, sizeof(MessageTimestamp)));
 
-    if ((type_ == type_to_int(MESS)) || (type_ == type_to_int(PING))) { ///< @todo Encode different headers
+    if ((type_ == type_to_int(MESS)) || (type_ == type_to_int(UART))) { ///< @todo Encode different headers
         buffers.push_back(asio::buffer(data_ + header_length, length_));
     }
 
