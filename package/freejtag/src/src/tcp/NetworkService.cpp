@@ -34,53 +34,56 @@
 //		free resources
 //
 //
-namespace freejtag{
+namespace freejtag {
 
-NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings, int port):io_service_(io_service),
-			accepto(io_service_),
-			shutdown_(false),
-			settings_(settings),
-			input_buffer_(buffer){
-		PRINT("new telnet");
-		unsigned int this_port = settings.get_value<uint16_t>("port");
-		asio::ip::tcp::endpoint ep(asio::ip::tcp::v4(),this_port);
-		accepto.open(ep.protocol());
-		accepto.set_option(boost::asio::socket_base::reuse_address(true));
-		accepto.bind(ep);
-		accepto.listen();
-		start_accept();
-		PRINT("Run Service");
-	}
+NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings, int port) :
+    io_service_(io_service),
+    accepto(io_service_),
+    shutdown_(false),
+    settings_(settings),
+    input_buffer_(buffer) {
+    PRINT("new telnet");
+    unsigned int this_port = settings.get_value<uint16_t>("port");
+    asio::ip::tcp::endpoint ep(asio::ip::tcp::v4(), this_port);
+    accepto.open(ep.protocol());
+    accepto.set_option(boost::asio::socket_base::reuse_address(true));
+    accepto.bind(ep);
+    accepto.listen();
+    start_accept();
+    PRINT("Run Service");
+}
 
-	void NetworkService::start_accept(){
-		PRINT("Start accept");
-		//asio::io_service& ios = accepto.get_io_service();
-		Connection::pointer new_conn = Connection::create_new(input_buffer_, io_service_);
-		accepto.async_accept(new_conn->get_socket(),boost::bind(&NetworkService::handle_accept,this,new_conn,asio::placeholders::error));
-	}
-	void NetworkService::handle_accept(Connection::pointer ptr, const boost::system::error_code& err){
-		PRINT("incoming Connection!");
-		if(!err){
-			ptr->start();
-		}
-		connection_bundle_.addConnection(ptr);
-		start_accept();
-	}
+void NetworkService::start_accept() {
+    PRINT("Start accept");
+    //asio::io_service& ios = accepto.get_io_service();
+    Connection::pointer new_conn = Connection::create_new(input_buffer_, io_service_);
+    accepto.async_accept(new_conn->get_socket(),
+        boost::bind(&NetworkService::handle_accept, this, new_conn, asio::placeholders::error));
+}
+void NetworkService::handle_accept(Connection::pointer ptr, const boost::system::error_code& err) {
+    PRINT("incoming Connection!");
+    if (!err) {
+        ptr->start();
+        sendMessage(ptr, Message::create_message(MESS, "Hello, new connection!"));
+    }
+    connection_bundle_.addConnection(ptr);
+    start_accept();
+}
 
 bool NetworkService::sendBroadcast(Message::pointer msg) {
-	PRINT("Got Broadcast!");
-	connection_bundle_.sendBroadcast(msg);
-	return true;
+    PRINT("Got Broadcast!");
+    connection_bundle_.sendBroadcast(msg);
+    return true;
 }
 
 void NetworkService::removeConnection(Connection::pointer conn) {
-	connection_bundle_.removeConnection(conn);
+    connection_bundle_.removeConnection(conn);
 }
 
 bool NetworkService::sendMessage(Connection::pointer ptr, Message::pointer msg) {
-	PRINT("Got Direct-Message!");
-	ptr->deliver(msg);
-	return true;
+    PRINT("Got Direct-Message!");
+    ptr->deliver(msg);
+    return true;
 }
 
 }
