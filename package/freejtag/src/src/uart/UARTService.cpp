@@ -41,6 +41,7 @@ void UARTService::open(std::string device) {
 	uart_connection_.open(device);
 }
 
+///@todo: remove this thread, we are now async.
 void UARTService::read_line() {
 	while(!shutdown_){
 		//uart_buffer_.push(std::string("Test!"));
