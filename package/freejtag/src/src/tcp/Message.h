@@ -13,14 +13,12 @@
 
 namespace asio = boost::asio;
 
-namespace freejtag
-{
+namespace freejtag {
 
 /**
  * This enum is used to specify the type of the Message.
  */
-enum MessageType
-{
+enum MessageType {
     MESS, ///< 0x01: Common message to target.  Max size is body_max_length
     UART, ///< 0x02: Message received on the UART port of server.
     SPID, ///< 0x03: @todo what is this
@@ -43,14 +41,15 @@ enum MessageType
  * <a href="http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/example/chat/chat_message.hpp">Useful example of
  *  designing a message</a>
  */
-class Message: public boost::enable_shared_from_this<Message>
-{
+class Message: public boost::enable_shared_from_this<Message> {
 
 public:
     typedef boost::shared_ptr<Message> pointer; ///< We use smart pointers to access instances of this class.
     typedef uint32_t MessageTimestamp; ///< Size of the timestamp.
+    typedef uint8_t MessageType_; ///< Size of the MessageType
+    typedef uint16_t MessageLength_; ///< Size of the MessageLength
 
-    bool decode_header();
+    int decode_header();
     ~Message();
     std::vector<asio::const_buffer> to_buffers() const; ///< Buffer useful for sending via Connection
     size_t get_length() const;
@@ -60,31 +59,28 @@ public:
     void set_type(MessageType type);
     static pointer create_message(MessageType type = ERROR, std::string = "", MessageTimestamp timestamp = 0); ///< Create a
     ///< new Message and get its Message::pointer
-private:
-    typedef uint8_t MessageType_; ///< Size of the MessageType
-    typedef uint16_t MessageLength_; ///< Size of the MessageLength
-
-    friend std::ostream& operator<<(std::ostream& o, const Message::pointer msg);
-    static MessageType_ type_to_int(MessageType);
-    static MessageType int_to_type(MessageType_ unsignedChar);
-    Message(MessageType type, std::string, MessageTimestamp timestamp);
+    char* get_header();
+    char* get_body();
 
     /**
      * The (fixed) length of the header in byte.
      */
-    enum
-    {
+    enum {
         header_length = sizeof(MessageType_) + sizeof(MessageLength_) + sizeof(MessageTimestamp)
     };
 
     /**
      * Maximum allowed length of the body in byte.
      */
-    enum
-    {
+    enum {
         body_max_length = 512
     };
 
+private:
+    friend std::ostream& operator<<(std::ostream& o, const Message::pointer msg);
+    static MessageType_ type_to_int(MessageType);
+    static MessageType int_to_type(MessageType_ unsignedChar);
+    Message(MessageType type, std::string, MessageTimestamp timestamp);
     MessageType_ type_; ///< Type of this Message
     MessageLength_ length_; ///< Length of this Message (big endian)
     MessageTimestamp timestamp_; ///< Timestamp of this Message (big endian)

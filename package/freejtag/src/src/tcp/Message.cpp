@@ -9,8 +9,7 @@
 #include <cstring>
 #include <boost/detail/endian.hpp>
 
-namespace freejtag
-{
+namespace freejtag {
 
 /**
  * Create a new message. This constructor is private, because new instances should be created by
@@ -58,8 +57,7 @@ Message::Message(MessageType type, std::string body, MessageTimestamp timestamp)
  * @param msg Message to parse
  * @return Outgoing ostream
  */
-std::ostream & operator <<(std::ostream & o, const Message::pointer msg)
-{
+std::ostream & operator <<(std::ostream & o, const Message::pointer msg) {
     return o << "Message("
            << (int) msg->type_
            << ","
@@ -88,33 +86,26 @@ Message::~Message()
 }
 
 /**
- * Decode received header. Return TRUE if there is a body to read (bodylength > 0).
- * @pre A body has to be read before this function is useful.
+ * Decode received header. Returns length of body, if there is one to read. If there is no body, it returns 0 and
+ *  -1 if an error occured.
+ * @pre A header has to be read before this function is useful.
  * @return There is a body to read
  */
-bool Message::decode_header()
-{
-    char buffer[header_length + 2] = "";
+int Message::decode_header() {
 
-    std::strncat(buffer, data_, sizeof(MessageType_));
+    memcpy(&type_, &data_, sizeof(MessageType_));
+    memcpy(&length_, &data_[sizeof(MessageType_)], sizeof(MessageLength_));
+    memcpy(&timestamp_, &data_[sizeof(MessageType_) + sizeof(MessageLength_)], sizeof(MessageTimestamp));
 
-    type_ = atoi(buffer);
-    buffer[0] = '\0';
-
-    std::strncat(buffer, data_ + sizeof(MessageType_), sizeof(MessageLength_));
-
-    length_ = atoi(buffer);
-    buffer[0] = '\0';
-
-    std::strncat(buffer, data_ + sizeof(MessageType_) + sizeof(MessageLength_), sizeof(MessageTimestamp));
-
-    timestamp_ = atoi(buffer);
-
-    if (get_length() > 0) {
-        return true;
+    //Error handling
+    int len = get_length();
+    if (len < 0 || len > body_max_length) {
+        return -1;
     }
-
-    return false;
+    if (get_type() == ERROR) {
+        return -1;
+    }
+    return len;
 }
 
 /**
@@ -122,8 +113,7 @@ bool Message::decode_header()
  * @pre Read a header from socket and called Message::decode_header()
  * @return Length of body
  */
-size_t Message::get_length() const
-{
+size_t Message::get_length() const {
     return be16toh(length_); // endianness conversion
 }
 
@@ -132,8 +122,7 @@ size_t Message::get_length() const
  * @pre Content of the Message has to be set by construction or setters.
  * @return Buffer of this message
  */
-std::vector<asio::const_buffer> Message::to_buffers() const
-{
+std::vector<asio::const_buffer> Message::to_buffers() const {
     std::vector<boost::asio::const_buffer> buffers;
     buffers.push_back(asio::buffer(&type_, sizeof(MessageType_)));
     buffers.push_back(asio::buffer(&length_, sizeof(MessageLength_)));
@@ -150,8 +139,7 @@ std::vector<asio::const_buffer> Message::to_buffers() const
  * The timestamp of this message. Either set on construction or by using set_timestamp().
  * @return Timestamp of message
  */
-Message::MessageTimestamp Message::get_timestamp() const
-{
+Message::MessageTimestamp Message::get_timestamp() const {
     return be32toh(timestamp_); // endianness conversion
 }
 
@@ -160,8 +148,7 @@ Message::MessageTimestamp Message::get_timestamp() const
  * MessageType of Message.
  * @param time
  */
-void Message::set_timestamp(MessageTimestamp time)
-{
+void Message::set_timestamp(MessageTimestamp time) {
     timestamp_ = htobe32(time); // endianness conversion
 }
 
@@ -171,8 +158,7 @@ void Message::set_timestamp(MessageTimestamp time)
  * between, it is set to ERROR and the message should not be used further.
  * @return Type of Message
  */
-MessageType Message::get_type() const
-{
+MessageType Message::get_type() const {
     return int_to_type(type_);
 }
 
@@ -180,9 +166,24 @@ MessageType Message::get_type() const
  * Set the MessageType of this Message.
  * @param type MessageType of this Message
  */
-void Message::set_type(MessageType type)
-{
+void Message::set_type(MessageType type) {
     type_ = type_to_int(type);
+}
+
+/**
+ * Get a pointer to the body. Don't write more than body_max_length byte here.
+ * @return pointer to the body
+ */
+char* Message::get_body() {
+    return data_ + header_length;
+}
+
+/**
+ * Get a pointer to the header Don't write more than header_length byte here.
+ * @return pointer to header
+ */
+char* Message::get_header() {
+    return data_;
 }
 
 /**
@@ -192,10 +193,9 @@ void Message::set_type(MessageType type)
  * @param timestamp Timestamp of the new Message
  * @return Smart-pointer to the new Message
  */
-Message::pointer Message::create_message(MessageType type, std::string allocator, MessageTimestamp timestamp)
-{
-	pointer ptr(new Message(type, allocator, timestamp));
-	PRINT(ptr << " created");
+Message::pointer Message::create_message(MessageType type, std::string allocator, MessageTimestamp timestamp) {
+    pointer ptr(new Message(type, allocator, timestamp));
+    PRINT(ptr << " created");
     return ptr;
 }
 
@@ -204,8 +204,7 @@ Message::pointer Message::create_message(MessageType type, std::string allocator
  * @param unsignedChar The decimal representation
  * @return Corresponding MessageType
  */
-MessageType Message::int_to_type(MessageType_ unsignedChar)
-{
+MessageType Message::int_to_type(MessageType_ unsignedChar) {
     switch (unsignedChar) {
     case 0x01:
         return MESS;
@@ -235,8 +234,7 @@ MessageType Message::int_to_type(MessageType_ unsignedChar)
  * @param messageTypeEnum The MessageType
  * @return integer Corresponding representation of MessageType
  */
-Message::MessageType_ Message::type_to_int(MessageType messageTypeEnum)
-{
+Message::MessageType_ Message::type_to_int(MessageType messageTypeEnum) {
     switch (messageTypeEnum) {
     case MESS:
         return 0x01;
