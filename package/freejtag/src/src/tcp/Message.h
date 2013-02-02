@@ -86,8 +86,8 @@ private:
     };
 
     MessageType_ type_; ///< Type of this Message
-    MessageLength_ length_; ///< Length of this Message
-    MessageTimestamp timestamp_; ///< Timestamp of this Message
+    MessageLength_ length_; ///< Length of this Message (big endian)
+    MessageTimestamp timestamp_; ///< Timestamp of this Message (big endian)
     char data_[header_length + body_max_length]; ///< Data of this message (header + body)
 };
 

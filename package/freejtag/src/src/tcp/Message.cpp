@@ -7,6 +7,7 @@
 #include "Message.h"
 #include "debug.h"
 #include <cstring>
+#include <boost/detail/endian.hpp>
 
 namespace freejtag
 {
@@ -19,9 +20,9 @@ namespace freejtag
  * @param timestamp The timestamp of the new Message
  */
 Message::Message(MessageType type, std::string body, MessageTimestamp timestamp) :
-    length_(body.length()),
+    length_(htobe16(body.length())), // endianness conversion
     type_(type_to_int(type)),
-    timestamp_(timestamp)
+    timestamp_(htobe32(timestamp)) // endianness conversion
 {
     // ensure data_ is zeroed
     memset(data_, 0, header_length + body_max_length);
@@ -47,7 +48,7 @@ Message::Message(MessageType type, std::string body, MessageTimestamp timestamp)
         ptime now(microsec_clock::local_time());
         time_duration diff = now - zero;
 
-        timestamp_ = diff.total_milliseconds();
+        timestamp_ = htobe32(diff.total_milliseconds());  // endianness conversion
     }
 }
 
@@ -62,9 +63,9 @@ std::ostream & operator <<(std::ostream & o, const Message::pointer msg)
     return o << "Message("
            << (int) msg->type_
            << ","
-           << (int) msg->length_
+           << (int) be16toh(msg->length_) // endianness conversion
            << ","
-           << (int) msg->timestamp_
+           << (int) be32toh(msg->timestamp_) // endianness conversion
            << ")=\""
            << msg->data_ + msg->header_length ///< @todo Unsafe call to body!
            << "\"";
@@ -78,9 +79,9 @@ Message::~Message()
     PRINT("Message("
     		<< (int) type_
     		<< ","
-    		<< (int) length_
+    		<< (int) be16toh(length_) // endianness conversion
     		<< ","
-    		<< (int) timestamp_
+    		<< (int) be32toh(timestamp_) // endianness conversion
     		<< ")=\""
     		<< data_ + header_length
     		<<"\" destroyed");
@@ -109,7 +110,7 @@ bool Message::decode_header()
 
     timestamp_ = atoi(buffer);
 
-    if (length_ > 0) {
+    if (get_length() > 0) {
         return true;
     }
 
@@ -123,7 +124,7 @@ bool Message::decode_header()
  */
 size_t Message::get_length() const
 {
-    return length_;
+    return be16toh(length_); // endianness conversion
 }
 
 /**
@@ -139,7 +140,7 @@ std::vector<asio::const_buffer> Message::to_buffers() const
     buffers.push_back(asio::buffer(&timestamp_, sizeof(MessageTimestamp)));
 
     if ((type_ == type_to_int(MESS)) || (type_ == type_to_int(UART))) { ///< @todo Encode different headers
-        buffers.push_back(asio::buffer(data_ + header_length, length_));
+        buffers.push_back(asio::buffer(data_ + header_length, get_length()));
     }
 
     return buffers;
@@ -151,7 +152,7 @@ std::vector<asio::const_buffer> Message::to_buffers() const
  */
 Message::MessageTimestamp Message::get_timestamp() const
 {
-    return timestamp_;
+    return be32toh(timestamp_); // endianness conversion
 }
 
 /**
@@ -161,7 +162,7 @@ Message::MessageTimestamp Message::get_timestamp() const
  */
 void Message::set_timestamp(MessageTimestamp time)
 {
-    timestamp_ = time;
+    timestamp_ = htobe32(time); // endianness conversion
 }
 
 /**
