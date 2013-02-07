@@ -5,7 +5,7 @@
  */
 
 #include "Message.h"
-#include "debug.h"
+#include <debug.h>
 #include <cstring>
 #include <boost/detail/endian.hpp>
 

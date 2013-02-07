@@ -6,7 +6,7 @@
  */
 
 #include "MessageTargetBundle.h"
-#include "debug.h"
+#include <debug.h>
 #include <boost/bind.hpp>
 #include <algorithm>
 

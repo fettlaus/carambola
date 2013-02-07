@@ -6,7 +6,7 @@
  */
 
 #include "MessageTarget.h"
-#include "debug.h"
+#include <debug.h>
 
 namespace freejtag{
 

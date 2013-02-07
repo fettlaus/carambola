@@ -11,7 +11,7 @@
 #include <boost/asio/serial_port.hpp>
 #include <boost/asio/streambuf.hpp>
 #include "UARTServiceTypedef.h"
-#include "debug.h"
+#include <debug.h>
 
 namespace freejtag {
 

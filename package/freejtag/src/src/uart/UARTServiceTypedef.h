@@ -8,7 +8,7 @@
 #ifndef UARTSERVICETYPEDEF_H_
 #define UARTSERVICETYPEDEF_H_
 
-#include "../util/BlockingQueue.h"
+#include <util/BlockingQueue.h>
 namespace freejtag{
 typedef std::pair< uint32_t, std::string > UARTMessage;
 typedef BlockingQueue< UARTMessage > UARTBuffer;

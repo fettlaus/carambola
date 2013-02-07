@@ -6,7 +6,7 @@
  */
 
 #include "UARTTypes.h"
-#include "debug.h"
+#include <debug.h>
 #include <boost/program_options.hpp>
 
 namespace freejtag {

@@ -9,7 +9,7 @@
 #ifndef MESSAGEQUEUE_H_
 #define MESSAGEQUEUE_H_
 
-#include "debug.h"
+#include <debug.h>
 
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>

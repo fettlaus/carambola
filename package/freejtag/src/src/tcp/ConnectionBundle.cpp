@@ -6,7 +6,7 @@
  */
 
 #include "ConnectionBundle.h"
-#include "debug.h"
+#include <debug.h>
 
 #include <boost/bind.hpp>
 

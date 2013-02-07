@@ -8,7 +8,7 @@
 #include "NetworkService.h"
 #include "Connection.h"
 #include "ConnectionException.h"
-#include "debug.h"
+#include <debug.h>
 //#include "menu.h"
 
 #include <boost/bind.hpp>

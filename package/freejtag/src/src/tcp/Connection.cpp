@@ -8,7 +8,7 @@
 #include "Connection.h"
 #include "Message.h"
 #include "ConnectionException.h"
-#include "debug.h"
+#include <debug.h>
 
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>

@@ -8,7 +8,7 @@
 #ifndef TELNET_H_
 #define TELNET_H_
 #include "Connection.h"
-#include "../settings.h"
+#include <settings.h>
 #include "MessageTargetBundle.h"
 #include "NetworkServiceTypedef.h"
 
