@@ -36,7 +36,7 @@
 //
 namespace freejtag {
 
-NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings, int port) :
+NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings) :
     io_service_(io_service),
     accepto(io_service_),
     shutdown_(false),

@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 namespace freejtag {
 Freejtag::Freejtag(int argc, char* argv[]) :
     prog_settings(argc, argv),
-    prog_network(io_service_, input_network_, prog_settings, 12323),
+    prog_network(io_service_, input_network_, prog_settings),
     uart_service_(io_service_, input_uart_, prog_settings),
     uart_dispatcher_(boost::bind(&Freejtag::uart_handle, this)),
     network_dispatcher_(boost::bind(&Freejtag::network_handle, this)) {

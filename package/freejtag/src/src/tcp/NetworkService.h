@@ -43,7 +43,7 @@ private:
 
 	MessageTargetBundle connection_bundle_;
 public:
-	NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings, int port);
+	NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings);
 	void removeConnection(Connection::pointer conn);
 	bool sendBroadcast(Message::pointer msg);
 	bool sendMessage(Connection::pointer conn, Message::pointer msg);
