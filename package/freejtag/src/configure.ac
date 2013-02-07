@@ -3,12 +3,14 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.59)
 AC_INIT(freejtag, 1.0)
 
-
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE()
+AM_INIT_AUTOMAKE([foreign subdir-objects])
+
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CXX
 AC_PROG_LIBTOOL
+AM_PROG_CC_C_O
 
 BOOST_REQUIRE
 
