@@ -88,7 +88,7 @@ void Connection::handle_read_header(const boost::system::system_error& err) {
                 boost::asio::buffer(cur_message_->get_header(), cur_message_->header_length),
                 boost::bind(&Connection::handle_read_header, shared_from_this(), boost::asio::placeholders::error));
         } else {
-            PRINT("Header decoding error!");
+            WARNING("Header decoding error!");
         }
     } else {
         //TODO: gracefully remove lost connection
