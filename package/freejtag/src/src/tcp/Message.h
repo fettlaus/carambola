@@ -45,7 +45,7 @@ class Message: public boost::enable_shared_from_this<Message> {
 
 public:
     typedef boost::shared_ptr<Message> pointer; ///< We use smart pointers to access instances of this class.
-    typedef uint32_t MessageTimestamp; ///< Size of the timestamp.
+    typedef uint64_t MessageTimestamp; ///< Size of the timestamp.
     typedef uint8_t MessageType_; ///< Size of the MessageType
     typedef uint16_t MessageLength_; ///< Size of the MessageLength
 

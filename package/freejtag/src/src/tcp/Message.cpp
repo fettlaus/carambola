@@ -5,6 +5,7 @@
  */
 
 #include "Message.h"
+#include <common/TimeKeeper.h>
 #include <debug.h>
 #include <cstring>
 #include <boost/detail/endian.hpp>
@@ -21,7 +22,7 @@ namespace freejtag {
 Message::Message(MessageType type, std::string body, MessageTimestamp timestamp) :
     length_(htobe16(body.length())), // endianness conversion
     type_(type_to_int(type)),
-    timestamp_(htobe32(timestamp)) // endianness conversion
+    timestamp_(htobe64(timestamp)) // endianness conversion
 {
     // ensure data_ is zeroed
     memset(data_, 0, header_length + body_max_length);
@@ -40,14 +41,7 @@ Message::Message(MessageType type, std::string body, MessageTimestamp timestamp)
      * <a href="http://stackoverflow.com/questions/6734375/c-boost-get-current-time-in-milliseconds">How to calculate time in ms</a>
      */
     if (timestamp_ == 0) { // Need to generate own timestamp
-        using namespace boost::posix_time;
-        using namespace boost::gregorian;
-
-        ptime zero(date(day_clock::local_day()));
-        ptime now(microsec_clock::local_time());
-        time_duration diff = now - zero;
-
-        timestamp_ = htobe32(diff.total_milliseconds());  // endianness conversion
+        timestamp_ = htobe64(TimeKeeper::time().count());  // endianness conversion
     }
 }
 
@@ -59,11 +53,11 @@ Message::Message(MessageType type, std::string body, MessageTimestamp timestamp)
  */
 std::ostream & operator <<(std::ostream & o, const Message::pointer msg) {
     return o << "Message("
-           << (int) msg->type_
+           << msg->type_
            << ","
-           << (int) be16toh(msg->length_) // endianness conversion
+           << be16toh(msg->length_) // endianness conversion
            << ","
-           << (int) be32toh(msg->timestamp_) // endianness conversion
+           << be64toh(msg->timestamp_) // endianness conversion
            << ")=\""
            << msg->data_ + msg->header_length ///< @todo Unsafe call to body!
            << "\"";
@@ -79,7 +73,7 @@ Message::~Message()
     		<< ","
     		<< (int) be16toh(length_) // endianness conversion
     		<< ","
-    		<< (int) be32toh(timestamp_) // endianness conversion
+    		<< (int) be64toh(timestamp_) // endianness conversion
     		<< ")=\""
     		<< data_ + header_length
     		<<"\" destroyed");
@@ -140,7 +134,7 @@ std::vector<asio::const_buffer> Message::to_buffers() const {
  * @return Timestamp of message
  */
 Message::MessageTimestamp Message::get_timestamp() const {
-    return be32toh(timestamp_); // endianness conversion
+    return be64toh(timestamp_); // endianness conversion
 }
 
 /**
@@ -149,7 +143,7 @@ Message::MessageTimestamp Message::get_timestamp() const {
  * @param time
  */
 void Message::set_timestamp(MessageTimestamp time) {
-    timestamp_ = htobe32(time); // endianness conversion
+    timestamp_ = htobe64(time); // endianness conversion
 }
 
 /**
