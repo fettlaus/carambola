@@ -6,8 +6,10 @@
  */
 
 #include "Connection.h"
-#include "Message.h"
+
 #include "ConnectionException.h"
+
+#include <network/Message.h>
 #include <debug.h>
 
 #include <boost/asio.hpp>

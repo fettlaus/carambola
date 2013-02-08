@@ -5,18 +5,18 @@
 bin_PROGRAMS=freejtag
 freejtag_SOURCES=Freejtag.cpp \
 				settings.cpp \
-				tcp/NetworkService.cpp \
-				tcp/BaseConnection.cpp \
-				tcp/Connection.cpp \
-				tcp/Message.cpp \
-				tcp/MessageTarget.cpp \
-				tcp/ConnectionBundle.cpp \
-				tcp/MessageTargetBundle.cpp \
+				network/Message.cpp \
+				network/tcp/NetworkService.cpp \
+				network/tcp/BaseConnection.cpp \
+				network/tcp/Connection.cpp \
+				network/tcp/MessageTarget.cpp \
+				network/tcp/ConnectionBundle.cpp \
+				network/tcp/MessageTargetBundle.cpp \
 				uart/UARTConnection.cpp \
 				uart/UARTService.cpp \
 				uart/UARTTypes.cpp \
 				common/TimeKeeper.cpp \
-				udp/DatagramService.cpp
+				network/udp/DatagramService.cpp
 				
 AM_CPPFLAGS=$(BOOST_CPPFLAGS)
 AM_LDFLAGS=$(BOOST_THREADS_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_DATE_TIME_LDFLAGS)

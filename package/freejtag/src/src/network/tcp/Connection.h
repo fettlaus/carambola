@@ -8,12 +8,11 @@
 #ifndef CONNECTION_H_
 #define CONNECTION_H_
 
-#include "Message.h"
 #include "BaseConnection.h"
 #include "MessageTarget.h"
-
 #include "NetworkServiceTypedef.h"
 
+#include <network/Message.h>
 #include <boost/enable_shared_from_this.hpp>
 
 //class boost::asio::io_service;

@@ -7,10 +7,13 @@
 
 #ifndef TELNET_H_
 #define TELNET_H_
+
 #include "Connection.h"
-#include <settings.h>
+
 #include "MessageTargetBundle.h"
 #include "NetworkServiceTypedef.h"
+
+#include <settings.h>
 
 //#include<gio/gio.h>
 #include <boost/thread.hpp>

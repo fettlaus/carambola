@@ -7,7 +7,8 @@
 
 #ifndef MESSAGETARGET_H_
 #define MESSAGETARGET_H_
-#include "Message.h"
+
+#include <network/Message.h>
 
 namespace freejtag {
 

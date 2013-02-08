@@ -9,9 +9,11 @@
 #define FREEJTAG_H_
 
 #include "settings.h"
-#include "tcp/NetworkService.h"
+
+#include <network/tcp/NetworkService.h>
 //#include "tcp/Message.h"
-#include "uart/UARTService.h"
+#include <uart/UARTService.h>
+
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include <utility>

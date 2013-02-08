@@ -9,9 +9,11 @@
  */
 
 #include "Freejtag.h"
+
 //#include "daemon.h"
 #include "settings.h"
-#include "tcp/ConnectionException.h"
+
+#include <network/tcp/ConnectionException.h>
 
 //#include <stdlib.h>
 //#include <syslog.h>
