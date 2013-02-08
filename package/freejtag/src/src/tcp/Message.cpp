@@ -53,11 +53,11 @@ Message::Message(MessageType type, std::string body, MessageTimestamp timestamp)
  */
 std::ostream & operator <<(std::ostream & o, const Message::pointer msg) {
     return o << "Message("
-           << msg->type_
+           << (int) msg->type_
            << ","
-           << be16toh(msg->length_) // endianness conversion
+           << (int) be16toh(msg->length_) // endianness conversion
            << ","
-           << be64toh(msg->timestamp_) // endianness conversion
+           << (long) be64toh(msg->timestamp_) // endianness conversion
            << ")=\""
            << msg->data_ + msg->header_length ///< @todo Unsafe call to body!
            << "\"";
@@ -73,7 +73,7 @@ Message::~Message()
     		<< ","
     		<< (int) be16toh(length_) // endianness conversion
     		<< ","
-    		<< (int) be64toh(timestamp_) // endianness conversion
+    		<< (long) be64toh(timestamp_) // endianness conversion
     		<< ")=\""
     		<< data_ + header_length
     		<<"\" destroyed");
