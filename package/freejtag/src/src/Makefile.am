@@ -15,7 +15,8 @@ freejtag_SOURCES=Freejtag.cpp \
 				uart/UARTConnection.cpp \
 				uart/UARTService.cpp \
 				uart/UARTTypes.cpp \
-				common/TimeKeeper.cpp
+				common/TimeKeeper.cpp \
+				udp/DatagramService.cpp
 				
 AM_CPPFLAGS=$(BOOST_CPPFLAGS)
 AM_LDFLAGS=$(BOOST_THREADS_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_DATE_TIME_LDFLAGS)
