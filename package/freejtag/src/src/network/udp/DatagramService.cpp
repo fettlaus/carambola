@@ -22,7 +22,7 @@ DatagramService::DatagramService(boost::asio::io_service& io_service, settings& 
     ip::udp::endpoint ep(ip::udp::v4(), this_port);
     socket_.open(ep.protocol());
     socket_.bind(ep);
-    PRINT("UDP set up");
+    PRINT("UDP set up ...");
 }
 
 void DatagramService::stop_socket() {

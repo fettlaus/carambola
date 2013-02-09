@@ -39,8 +39,9 @@ Freejtag::Freejtag(int argc, char* argv[]) :
     uart_service_(io_service_, input_uart_, prog_settings),
     uart_dispatcher_(boost::bind(&Freejtag::uart_handle, this)),
     network_dispatcher_(boost::bind(&Freejtag::network_handle, this)),
+    udp_handler_(boost::bind(&DatagramService::start_socket, &prog_datagram_)),
     prog_datagram_(io_service_,prog_settings){
-    PRINT("new freejtag");
+    PRINT("FreeJTAG set up ...");
     //prog_network = new NetworkService(message_queue_, 12323);
 }
 Freejtag::~Freejtag() {
@@ -69,6 +70,7 @@ void Freejtag::network_handle() {
 }
 
 int Freejtag::run() {
+    prog_network.start_accept();
     //set serial options
     using namespace boost::asio;
     PRINT(prog_settings.get_value<std::string>("device"));
