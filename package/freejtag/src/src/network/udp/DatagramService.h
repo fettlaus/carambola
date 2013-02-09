@@ -26,19 +26,18 @@ public:
     DatagramService(io_service& io_service, settings& settings);
     virtual ~DatagramService();
     void start_socket();
+    void stop_socket();
 private:
-    void handle_message(const boost::system::system_error& err);
-    void handle_send(const boost::system::system_error& err, size_t bytes, Message::pointer msg);
+    bool running_;
+    void delay_tuner(microseconds delay);
     ip::udp::socket socket_;
     ip::udp::endpoint sender_endpoint_;
-    char data[Message::header_length];
-    boost::thread udp_handler_;
     Message::pointer cur_message_;
-    microseconds t1;
-    microseconds t2;
-    microseconds t2_prev;
-    microseconds t3;
-    microseconds t4;
+    microseconds t1, t2, t3, t4;
+    enum {
+        time_sync_buffer = 10, ///< How many syncs we need until adjusting time
+        time_msec_direct = 90 ///< What is the maximum deviation until we directly set time
+    };
 };
 
 } /* namespace freejtag */

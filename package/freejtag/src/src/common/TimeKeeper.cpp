@@ -6,6 +6,8 @@
 
 #include "TimeKeeper.h"
 
+#include <debug.h>
+
 namespace freejtag {
 high_resolution_clock::time_point TimeKeeper::epoch(high_resolution_clock::now());
 
@@ -16,6 +18,7 @@ microseconds TimeKeeper::time(){
 
 void TimeKeeper::set(microseconds difference){
     epoch = epoch + difference;
+    PRINT("Corrected time by " << difference);
 }
 
 } /* namespace freejtag */
