@@ -42,15 +42,13 @@ NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buff
     shutdown_(false),
     settings_(settings),
     input_buffer_(buffer) {
-    PRINT("new telnet");
     unsigned int this_port = settings.get_value<uint16_t>("port");
     asio::ip::tcp::endpoint ep(asio::ip::tcp::v4(), this_port);
     accepto.open(ep.protocol());
     accepto.set_option(boost::asio::socket_base::reuse_address(true));
     accepto.bind(ep);
     accepto.listen();
-    start_accept();
-    PRINT("Run Service");
+    PRINT("TCP set up ...");
 }
 
 void NetworkService::start_accept() {
