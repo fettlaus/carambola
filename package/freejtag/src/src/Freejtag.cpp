@@ -115,8 +115,8 @@ int Freejtag::run() {
 }
 
 void Freejtag::ping(boost::asio::deadline_timer* t) {
+    t->expires_at(t->expires_at() + boost::posix_time::microsec(1000));
     prog_network.sendBroadcast(Message::create_message(MESS, "PING!"));
-    t->expires_at(t->expires_at() + boost::posix_time::seconds(10));
     t->async_wait(boost::bind(&Freejtag::ping, this, t));
 }
 }
