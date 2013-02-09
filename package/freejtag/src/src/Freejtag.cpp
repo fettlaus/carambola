@@ -38,7 +38,8 @@ Freejtag::Freejtag(int argc, char* argv[]) :
     prog_network(io_service_, input_network_, prog_settings),
     uart_service_(io_service_, input_uart_, prog_settings),
     uart_dispatcher_(boost::bind(&Freejtag::uart_handle, this)),
-    network_dispatcher_(boost::bind(&Freejtag::network_handle, this)) {
+    network_dispatcher_(boost::bind(&Freejtag::network_handle, this)),
+    prog_datagram_(io_service_,prog_settings){
     PRINT("new freejtag");
     //prog_network = new NetworkService(message_queue_, 12323);
 }

@@ -11,6 +11,7 @@
 #include "settings.h"
 
 #include <network/tcp/NetworkService.h>
+#include <network/udp/DatagramService.h>
 //#include "tcp/Message.h"
 #include <uart/UARTService.h>
 
@@ -26,6 +27,7 @@ private:
     NetworkBuffer input_network_;
     settings prog_settings;
     NetworkService prog_network;
+    DatagramService prog_datagram_;
     UARTService uart_service_;
     boost::thread uart_dispatcher_;
     boost::thread network_dispatcher_;
