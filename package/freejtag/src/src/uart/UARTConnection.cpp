@@ -17,7 +17,6 @@ UARTConnection::UARTConnection(boost::asio::io_service& io_service, UARTBuffer& 
 		port_(io_service_),
 		buffer_(buffer),
 		input_stream_(&stream_buffer_){
-	// TODO Auto-generated constructor stub
 
 }
 

@@ -36,10 +36,6 @@ Message::Message(MessageType type, std::string body, MessageTimestamp timestamp)
         memcpy(data_ + header_length, tmp, strlen(tmp));
     }
 
-    /**
-     * <a href="http://www.boost.org/doc/libs/1_52_0/doc/html/date_time/posix_time.html">Posix-Time Documentation</a>
-     * <a href="http://stackoverflow.com/questions/6734375/c-boost-get-current-time-in-milliseconds">How to calculate time in ms</a>
-     */
     if (timestamp_ == 0) { // Need to generate own timestamp
         timestamp_ = htobe64(TimeKeeper::time().count());  // endianness conversion
     }
@@ -122,7 +118,7 @@ std::vector<asio::const_buffer> Message::to_buffers() const {
     buffers.push_back(asio::buffer(&length_, sizeof(MessageLength_)));
     buffers.push_back(asio::buffer(&timestamp_, sizeof(MessageTimestamp)));
 
-    if ((type_ == type_to_int(MESS)) || (type_ == type_to_int(UART))) { ///< @todo Encode different headers
+    if ((type_ == type_to_int(MESS)) || (type_ == type_to_int(UART))) {
         buffers.push_back(asio::buffer(data_ + header_length, get_length()));
     }
 

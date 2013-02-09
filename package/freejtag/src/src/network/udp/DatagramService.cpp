@@ -17,7 +17,6 @@ namespace freejtag {
 DatagramService::DatagramService(boost::asio::io_service& io_service, settings& settings) :
     socket_(io_service),
     running_(true) {
-    ///< @todo Auto-generated constructor stub
     unsigned int this_port = settings.get_value<uint16_t>("port");
     ip::udp::endpoint ep(ip::udp::v4(), this_port);
     socket_.open(ep.protocol());

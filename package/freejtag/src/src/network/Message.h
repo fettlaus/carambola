@@ -19,16 +19,16 @@ namespace freejtag {
  * This enum is used to specify the type of the Message.
  */
 enum MessageType {
-    MESS, ///< 0x01: Common message to target.  Max size is body_max_length
-    UART, ///< 0x02: Message received on the UART port of server.
-    SPID, ///< 0x03: @todo what is this
-    STIM, ///< 0x04: Set time
-    PING, ///< 0x05: Ping!
-    PONG, ///< 0x06: Answer to Ping!
-    GSET, ///< 0x07: request settings
-    SSET, ///< 0x08: send settings
-    SETT, ///< 0x09: @todo what is this
-    ERROR ///< 0x00: Error. Message invalid
+    ERROR, ///< 0x00: Error. Message invalid
+    MESS, ///< 0x01: Common message to target.  Max size is body_max_length (TCP)
+    UART, ///< 0x02: Message received on the UART port of server. (TCP)
+    SPID, ///< 0x03: place holder
+    STIM, ///< 0x04: Set time (UDP)
+    PING, ///< 0x05: Ping! (UDP)
+    PONG, ///< 0x06: Answer to Ping! (UDP)
+    GSET, ///< 0x07: place holder
+    SSET, ///< 0x08: place holder
+    SETT ///< 0x09: place holder
 };
 
 /**
