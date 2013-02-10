@@ -25,7 +25,8 @@ namespace freejtag {
 Connection::Connection(NetworkBuffer& output_queue, asio::io_service& service) :
     cur_message_(Message::create_message()),
     BaseConnection(service),
-    output_queue_(output_queue) {
+    output_queue_(output_queue),
+    strand_(service){
     PRINT("new Connection");
 }
 
@@ -35,10 +36,9 @@ Connection::Connection(NetworkBuffer& output_queue, asio::io_service& service) :
  */
 void Connection::deliver(const Message::pointer msg) {
     PRINT("Deliver to Client");
-    send_mutex_.lock();
     asio::async_write(this->get_socket(), msg->to_buffers(),
-        boost::bind(&Connection::handle_write, shared_from_this(), asio::placeholders::error,
-            asio::placeholders::bytes_transferred, msg));
+        strand_.wrap(boost::bind(&Connection::handle_write, shared_from_this(), asio::placeholders::error,
+            asio::placeholders::bytes_transferred, msg)));
 }
 
 /**
@@ -57,10 +57,9 @@ Connection::pointer Connection::create_new(NetworkBuffer& input_messages, boost:
  * @throw connectionException If an error occurred during writing
  */
 void Connection::handle_write(const boost::system::system_error& err, size_t bytes, const Message::pointer msg) {
-    if (err.code()) {
+	if (err.code()) {
         throw connection_exception() << connection_info(shared_from_this());
     }
-    send_mutex_.unlock();
     PRINT(msg << " <== " << bytes << " Byte gesendet an " << socket_.remote_endpoint().address().to_string());
 }
 
@@ -80,13 +79,13 @@ void Connection::handle_read_header(const boost::system::system_error& err) {
     int length = cur_message_->decode_header();
     if (length > 0) {
         boost::asio::async_read(socket_, boost::asio::buffer(cur_message_->get_body(), length),
-            boost::bind(&Connection::handle_read_body, shared_from_this(), boost::asio::placeholders::error));
+            strand_.wrap(boost::bind(&Connection::handle_read_body, shared_from_this(), boost::asio::placeholders::error)));
     } else if (length == 0) {
         PRINT(cur_message_ << "received");
         output_queue_.push(std::make_pair(shared_from_this(), cur_message_));
         cur_message_ = Message::create_message();
         boost::asio::async_read(socket_, boost::asio::buffer(cur_message_->get_header(), cur_message_->header_length),
-            boost::bind(&Connection::handle_read_header, shared_from_this(), boost::asio::placeholders::error));
+            strand_.wrap(boost::bind(&Connection::handle_read_header, shared_from_this(), boost::asio::placeholders::error)));
     } else {
         WARNING("Header decoding error!");
     }
@@ -107,7 +106,7 @@ void Connection::handle_read_body(const boost::system::system_error& err) {
     output_queue_.push(std::make_pair(shared_from_this(), cur_message_));
     cur_message_ = Message::create_message();
     boost::asio::async_read(socket_, boost::asio::buffer(cur_message_->get_header(), cur_message_->header_length),
-        boost::bind(&Connection::handle_read_header, shared_from_this(), boost::asio::placeholders::error));
+        strand_.wrap(boost::bind(&Connection::handle_read_header, shared_from_this(), boost::asio::placeholders::error)));
 
 }
 
@@ -116,7 +115,7 @@ void Connection::handle_read_body(const boost::system::system_error& err) {
  */
 void Connection::start() {
     boost::asio::async_read(socket_, boost::asio::buffer(cur_message_->get_header(), cur_message_->header_length),
-        boost::bind(&Connection::handle_read_header, shared_from_this(), boost::asio::placeholders::error));
+        strand_.wrap(boost::bind(&Connection::handle_read_header, shared_from_this(), boost::asio::placeholders::error)));
     /*
      const Message::pointer msg = Message::create_message(MESS,"Hello there!");
      asio::async_write(this->get_socket(),msg->to_buffers(),
