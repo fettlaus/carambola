@@ -19,7 +19,7 @@ define Package/freejtag
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=FreeJTAG
-  DEPENDS:=+boost-program_options +boost-thread +boost-system +boost-date-time
+  DEPENDS:=+boost-program_options +boost-thread +boost-system +boost-date_time +boost-chrono
 endef
 
 define Package/freejtag/description
@@ -44,8 +44,10 @@ define Build/Compile
 endef
 
 define Package/freejtag/install
-	$(INSTALL_DIR) $(1)/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/freejtag $(1)/bin/
+	$(INSTALL_DIR) $(1)/usr/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/freejtag $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/usr/bin
+	ln -sf ../sbin/freejtag $(1)/usr/bin/freejtag
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files/freejtag.uci-defaults $(1)/etc/uci-defaults/XX_freejtag
 	$(INSTALL_DIR) $(1)/etc
