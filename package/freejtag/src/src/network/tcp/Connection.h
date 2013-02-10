@@ -13,6 +13,8 @@
 #include "NetworkServiceTypedef.h"
 
 #include <network/Message.h>
+
+#include <boost/asio/strand.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
 //class boost::asio::io_service;
@@ -29,6 +31,7 @@ private:
     void handle_read_body(const boost::system::system_error& err);
     NetworkBuffer& output_queue_;
     boost::mutex send_mutex_;
+    boost::asio::io_service::strand strand_;
 public:
     ~Connection();
     typedef boost::shared_ptr<Connection> pointer;
