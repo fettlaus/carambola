@@ -214,6 +214,8 @@ MessageType Message::int_to_type(MessageType_ unsignedChar) {
         return SSET;
     case 0x09:
         return SETT;
+    case 0x10:
+        return EXIT;
     default:
         return ERROR;
     }
@@ -244,6 +246,8 @@ Message::MessageType_ Message::type_to_int(MessageType messageTypeEnum) {
         return 0x08;
     case SETT:
         return 0x09;
+    case EXIT:
+        return 0x10;
     default:
         return 0;
     }

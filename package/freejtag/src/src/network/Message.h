@@ -28,7 +28,8 @@ enum MessageType {
     PONG, ///< 0x06: Answer to Ping! (UDP)
     GSET, ///< 0x07: place holder
     SSET, ///< 0x08: place holder
-    SETT ///< 0x09: place holder
+    SETT, ///< 0x09: place holder
+    EXIT
 };
 
 /**
