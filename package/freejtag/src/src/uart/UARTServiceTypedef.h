@@ -10,7 +10,7 @@
 
 #include <util/BlockingQueue.h>
 namespace freejtag{
-typedef std::pair< uint32_t, std::string > UARTMessage;
+typedef std::pair< uint64_t, std::string > UARTMessage;
 typedef BlockingQueue< UARTMessage > UARTBuffer;
 }
 

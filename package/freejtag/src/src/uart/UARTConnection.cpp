@@ -6,6 +6,9 @@
  */
 
 #include "UARTConnection.h"
+
+#include <common/TimeKeeper.h>
+
 #include <boost/asio/read_until.hpp>
 #include <boost/bind.hpp>
 #include <boost/asio/placeholders.hpp>
@@ -46,11 +49,10 @@ void UARTConnection::close() {
 
 void UARTConnection::handle_read(const boost::system::error_code& ec,
 		std::size_t size) {
-	//timestamp
 	if(!ec){
 		std::string new_string;
 		std::getline(input_stream_,new_string);
-		buffer_.push(std::make_pair(0,new_string));
+		buffer_.push(std::make_pair(TimeKeeper::time().count(),new_string));
 		//start new read
 		boost::asio::async_read_until(port_,stream_buffer_,'\n',
 				boost::bind(&UARTConnection::handle_read,
