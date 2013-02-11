@@ -37,12 +37,13 @@ settings::settings(int argc, char* argv[]):desc(po::options_description("Options
 	options_description tcp_options("Network Settings");
 	tcp_options.add_options()
 			("port",value<uint16_t>()->default_value(12323),"Port");
-	options_description desc2;
+	options_description desc2("Common settings");
 	desc2.add_options()
 			("help,?", "Print this help message")
 			("debug", value<bool>(), "Enable Debug")
 			("detached",value<bool>()->zero_tokens()->default_value(false),"Enable detaching")
-			("threads",value<unsigned char>()->default_value(1),"Number of Threads [unused]");
+			("threads",value<unsigned char>()->default_value(1),"Number of Threads [unused]")
+	        ("ping",value<unsigned int>()->default_value(0),"Send Message \"PING!\" every x microsecs");
 	options_description cmd("Settings");
 	cmd.add(desc2).add(tcp_options).add(uart_options);
 	store(parse_command_line(argc,argv,cmd),map);

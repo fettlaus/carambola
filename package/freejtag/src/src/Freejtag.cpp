@@ -91,8 +91,11 @@ int Freejtag::run() {
         PRINT("Detached");
         //init daemon
     }
-    boost::asio::deadline_timer t(io_service_, boost::posix_time::seconds(5));
-    t.async_wait(boost::bind(&Freejtag::ping, this, &t));
+    unsigned int timeout = prog_settings.get_value<unsigned int>("ping");
+    boost::asio::deadline_timer t(io_service_, boost::posix_time::seconds(1));
+    if(timeout > 0){
+        t.async_wait(boost::bind(&Freejtag::ping, this, &t, timeout));
+    }
     bool run = true;
     while (run) {
         try {
@@ -114,10 +117,10 @@ int Freejtag::run() {
     return 0;
 }
 
-void Freejtag::ping(boost::asio::deadline_timer* t) {
-    t->expires_at(t->expires_at() + boost::posix_time::microsec(1000));
+void Freejtag::ping(boost::asio::deadline_timer* t, unsigned int timeout) {
+    t->expires_at(t->expires_at() + boost::posix_time::microsec(timeout));
     prog_network.sendBroadcast(Message::create_message(MESS, "PING!"));
-    t->async_wait(boost::bind(&Freejtag::ping, this, t));
+    t->async_wait(boost::bind(&Freejtag::ping, this, t, timeout));
 }
 }
 /*
