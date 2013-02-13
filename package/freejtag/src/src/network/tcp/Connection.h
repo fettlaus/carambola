@@ -38,6 +38,7 @@ public:
     static pointer create_new(NetworkBuffer& input_messages, boost::asio::io_service& service);
     void deliver(const Message::pointer);
     void start();
+    void close();
 
     //bool send(const Message& msg);
     //void connect_bindings();

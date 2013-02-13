@@ -10,7 +10,8 @@
 
 namespace freejtag {
 
-UARTService::UARTService(boost::asio::io_service& io_service, UARTBuffer& buffer, settings& settings):uart_thread_(boost::bind(&UARTService::read_line,this)),
+UARTService::UARTService(boost::asio::io_service& io_service, UARTBuffer& buffer, settings& settings):
+    //uart_thread_(boost::bind(&UARTService::read_line,this)),
 		shutdown_(false),
 		uart_connection_(io_service_,buffer),
 		io_service_(io_service),
@@ -39,6 +40,10 @@ void UARTService::reload_settings() {
 
 void UARTService::open(std::string device) {
 	uart_connection_.open(device);
+}
+
+void UARTService::close(){
+    uart_connection_.close();
 }
 
 ///@todo: remove this thread, we are now async.

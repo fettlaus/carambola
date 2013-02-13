@@ -128,4 +128,10 @@ void Connection::start() {
 
 }
 
+void Connection::close() {
+     boost::system::error_code shutdown_error, close_error;
+    socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, shutdown_error);
+    socket_.close(close_error);
+}
+
 } /* namespace freejtag */

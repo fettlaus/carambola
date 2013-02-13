@@ -26,7 +26,7 @@ DatagramService::DatagramService(boost::asio::io_service& io_service, settings& 
 
 void DatagramService::stop_socket() {
     running_ = false;
-    socket_.shutdown(socket_base::shutdown_both);
+    //socket_.shutdown(socket_base::shutdown_both);
     socket_.close();
 }
 
@@ -35,6 +35,7 @@ void DatagramService::start_socket() {
     cur_message_ = Message::create_message();
     while (running_) {
         try {
+            PRINT("RUN!");
             socket_.receive_from(buffer(cur_message_->get_header(), cur_message_->header_length), sender_endpoint_);
             t2 = TimeKeeper::time();
             cur_message_->decode_header();
@@ -46,7 +47,9 @@ void DatagramService::start_socket() {
             cur_message_->set_timestamp(TimeKeeper::time().count());
             std::vector<const_buffer> buf = cur_message_->to_buffers();
             t3 = TimeKeeper::time();
+            PRINT("RUN2");
             socket_.send_to(buf, sender_endpoint_);
+            PRINT("RUN3");
             socket_.receive_from(buffer(cur_message_->get_header(), cur_message_->header_length), sender_endpoint_);
             cur_message_->decode_header();
             if (cur_message_->get_type() != STIM) {
@@ -60,7 +63,6 @@ void DatagramService::start_socket() {
 
         } catch (boost::system::system_error& err) {
             PRINT("UDP-Error");
-            continue;
         }
     }
     PRINT("UDP shutdown");

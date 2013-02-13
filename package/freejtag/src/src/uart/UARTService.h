@@ -26,6 +26,7 @@ public:
 	virtual ~UARTService();
 	std::string get_line();
 	void open(std::string device);
+	void close();
 	template<typename SettableSerialPortOption>
 	void set_setting(const SettableSerialPortOption& option, std::string name);
 
@@ -36,7 +37,7 @@ private:
 	bool shutdown_;
 	void read_line();
 	UARTBuffer& uart_buffer_;
-	boost::thread uart_thread_;
+	//boost::thread uart_thread_;
 	UARTConnection uart_connection_;
 	std::string device_;
 };

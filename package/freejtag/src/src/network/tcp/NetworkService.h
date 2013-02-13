@@ -42,10 +42,11 @@ private:
 	asio::ip::tcp::acceptor accepto;
 	bool shutdown_;
 	void handle_accept(Connection::pointer ptr, const boost::system::error_code& err);
-
+	Connection::pointer new_connection_;
 	MessageTargetBundle connection_bundle_;
 public:
 	void start_accept();
+	void shutdown();
 	NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings);
 	void removeConnection(Connection::pointer conn);
 	bool sendBroadcast(Message::pointer msg);

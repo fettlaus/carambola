@@ -18,6 +18,7 @@ class ConnectionBundle{
 public:
 	void addConnection(Connection::pointer conn);
 	void removeConnection(Connection::pointer conn);
+	void close_all_connections();
 protected:
 	ConnectionList connections_;
 };

@@ -40,7 +40,9 @@ Freejtag::Freejtag(int argc, char* argv[]) :
     uart_dispatcher_(boost::bind(&Freejtag::uart_handle, this)),
     network_dispatcher_(boost::bind(&Freejtag::network_handle, this)),
     udp_handler_(boost::bind(&DatagramService::start_socket, &prog_datagram_)),
-    prog_datagram_(io_service_,prog_settings){
+    prog_datagram_(io_service_,prog_settings),
+    ping_timer_(io_service_, boost::posix_time::seconds(1)),
+    running_(true){
     PRINT("FreeJTAG set up ...");
     //prog_network = new NetworkService(message_queue_, 12323);
 }
@@ -48,14 +50,14 @@ Freejtag::~Freejtag() {
 }
 
 void Freejtag::uart_handle() {
-    while (true) {
+    while (running_) {
         UARTMessage msg = input_uart_.pop();
         prog_network.sendBroadcast(Message::create_message(UART, msg.second, msg.first));
     }
 }
 
 void Freejtag::network_handle() {
-    while (true) {
+    while (running_) {
         MessageDatagram msgd = input_network_.pop();
         PRINT("Incoming Message!");
         Message::pointer msg = msgd.second;
@@ -65,6 +67,12 @@ void Freejtag::network_handle() {
             prog_network.sendBroadcast(msg);
         } else if (type == PING) { ///< Answer PING
             prog_network.sendMessage(con, Message::create_message(PONG));
+        } else if (type == EXIT) {
+            running_ = false;
+            ping_timer_.cancel();
+            prog_network.shutdown();
+            uart_service_.close();
+            prog_datagram_.stop_socket();
         }
     }
 }
@@ -92,14 +100,15 @@ int Freejtag::run() {
         //init daemon
     }
     unsigned int timeout = prog_settings.get_value<unsigned int>("ping");
-    boost::asio::deadline_timer t(io_service_, boost::posix_time::seconds(1));
+    //ping_timer_ = new boost::asio::deadline_timer(io_service_, boost::posix_time::seconds(1));
     if(timeout > 0){
-        t.async_wait(boost::bind(&Freejtag::ping, this, &t, timeout));
+        ping_timer_.async_wait(boost::bind(&Freejtag::ping, this, boost::asio::placeholders::error, &ping_timer_, timeout));
     }
-    bool run = true;
-    while (run) {
+    while (running_) {
         try {
             io_service_.run();
+            PRINT("Shutdown completed...");
+
         } catch (boost::system::system_error& err) {
             WARNING("System Error");
         } catch (connection_exception& err) {
@@ -109,18 +118,34 @@ int Freejtag::run() {
             }
 
         }
+
         // setup telnet
         // setup serial
         // do stuff
         // teardown
     }
+    network_dispatcher_.interrupt();
+    network_dispatcher_.join();
+    PRINT("Network joined");
+    uart_dispatcher_.interrupt();
+    uart_dispatcher_.join();
+    PRINT("UART joined");
+    udp_handler_.interrupt();
+    udp_handler_.interrupt();
+    udp_handler_.interrupt();
+    udp_handler_.join();
+    PRINT("ekit");
     return 0;
 }
 
-void Freejtag::ping(boost::asio::deadline_timer* t, unsigned int timeout) {
-    t->expires_at(t->expires_at() + boost::posix_time::microsec(timeout));
-    prog_network.sendBroadcast(Message::create_message(MESS, "PING!"));
-    t->async_wait(boost::bind(&Freejtag::ping, this, t, timeout));
+void Freejtag::ping(const boost::system::error_code& err,boost::asio::deadline_timer* t, unsigned int timeout) {
+    if(running_){
+        t->expires_at(t->expires_at() + boost::posix_time::microsec(timeout));
+        prog_network.sendBroadcast(Message::create_message(MESS, "PING!"));
+        t->async_wait(boost::bind(&Freejtag::ping, this, err, t, timeout));
+    }else{
+        PRINT("Cancel timer");
+    }
 }
 }
 /*

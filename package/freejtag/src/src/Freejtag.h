@@ -22,6 +22,7 @@
 namespace freejtag {
 class Freejtag {
 private:
+    bool running_;
     boost::asio::io_service io_service_;
     UARTBuffer input_uart_;
     NetworkBuffer input_network_;
@@ -32,7 +33,8 @@ private:
     boost::thread uart_dispatcher_;
     boost::thread network_dispatcher_;
     boost::thread udp_handler_;
-    void ping(boost::asio::deadline_timer* t, unsigned int timeout);
+    boost::asio::deadline_timer ping_timer_;
+    void ping(const boost::system::error_code& err, boost::asio::deadline_timer* t, unsigned int timeout);
     void uart_handle();
     void network_handle();
 

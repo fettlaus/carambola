@@ -54,18 +54,27 @@ NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buff
 void NetworkService::start_accept() {
     PRINT("Start accept");
     //asio::io_service& ios = accepto.get_io_service();
-    Connection::pointer new_conn = Connection::create_new(input_buffer_, io_service_);
-    accepto.async_accept(new_conn->get_socket(),
-        boost::bind(&NetworkService::handle_accept, this, new_conn, asio::placeholders::error));
+    new_connection_ = Connection::create_new(input_buffer_, io_service_);
+    accepto.async_accept(new_connection_->get_socket(),
+        boost::bind(&NetworkService::handle_accept, this, new_connection_, asio::placeholders::error));
 }
+
+void NetworkService::shutdown(){
+    PRINT("Shutting down network");
+    accepto.close();
+    connection_bundle_.close_all_connections();
+}
+
 void NetworkService::handle_accept(Connection::pointer ptr, const boost::system::error_code& err) {
-    PRINT("incoming Connection!");
-    if (!err) {
+    if (err == 0) {
+        PRINT("Incoming Connection!");
         ptr->start();
         sendMessage(ptr, Message::create_message(MESS, "Hello, new connection!"));
+        connection_bundle_.addConnection(ptr);
+        start_accept();
+    } else {
+        PRINT("Acceptor Error");
     }
-    connection_bundle_.addConnection(ptr);
-    start_accept();
 }
 
 bool NetworkService::sendBroadcast(Message::pointer msg) {
