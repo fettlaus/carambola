@@ -22,15 +22,14 @@ using namespace boost::chrono;
  *
  */
 class DatagramService {
-    using namespace boost::asio;
 public:
     DatagramService(io_service& io_service, settings& settings);
     virtual ~DatagramService();
     void start_socket();
     void stop_socket();
 private:
-    void handle_read(boost::system::system_error& err);
-    void handle_write(boost::system::system_error& err, size_t bytes_written);
+    void handle_read(const boost::system::system_error& err);
+    void handle_write(const boost::system::system_error& err, size_t bytes_written);
     bool running_;
     void delay_tuner(microseconds delay);
     ip::udp::socket socket_;
