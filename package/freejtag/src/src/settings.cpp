@@ -20,12 +20,10 @@ po::variables_map &settings::get_map() {
 	return map;
 }
 
-settings::settings(int argc, char* argv[]):desc(po::options_description("Options")) {
+settings::settings(int argc, char* argv[]) {
 	using namespace po;
 
-
 	uart::parity par;
-	map = new variables_map;
 	options_description uart_options("UART Settings");
 	uart_options.add_options()
 			("device",value<std::string>()->default_value("/dev/ttyS0"),"Device to open")

@@ -18,7 +18,6 @@ namespace freejtag {
 class settings{
 private:
 	po::variables_map map;
-	po::options_description desc;
 	const char* get_filename();
 	void set_descs();
 public:
