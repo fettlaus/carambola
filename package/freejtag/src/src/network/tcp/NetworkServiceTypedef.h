@@ -17,7 +17,6 @@ class Connection;
 class Message;
 typedef std::pair< boost::shared_ptr< Connection >,boost::shared_ptr< Message > > MessageDatagram;
 typedef BlockingQueue< MessageDatagram > NetworkBuffer;
-typedef BlockingQueue< Message::pointer > MessageQueue;
 }
 
 #endif /* NETWORKSERVICETYPEDEF_H_ */

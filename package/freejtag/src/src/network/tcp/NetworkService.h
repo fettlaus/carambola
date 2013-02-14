@@ -34,9 +34,7 @@ namespace freejtag{
 
 class NetworkService{
 private:
-	NetworkBuffer output_buffer_;
 	NetworkBuffer& input_buffer_;
-	MessageQueue broadcast_buffer_;
 	settings& settings_;
 	asio::io_service& io_service_;
 	asio::ip::tcp::acceptor accepto;
