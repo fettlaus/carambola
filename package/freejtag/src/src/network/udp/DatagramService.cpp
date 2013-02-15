@@ -16,7 +16,8 @@ namespace freejtag {
 
 DatagramService::DatagramService(boost::asio::io_service& io_service, settings& settings) :
     socket_(io_service),
-    running_(true) {
+    running_(true),
+    sequence_(0) {
     unsigned int this_port = settings.get_value<uint16_t>("port");
     ip::udp::endpoint ep(ip::udp::v4(), this_port);
     socket_.open(ep.protocol());
@@ -25,57 +26,29 @@ DatagramService::DatagramService(boost::asio::io_service& io_service, settings& 
     PRINT("UDP set up ...");
 }
 
+/**
+ * Close this socket. Will automatically call the handlers with an error code if they are still waiting.
+ */
 void DatagramService::stop_socket() {
     running_ = false;
     //socket_.shutdown(socket_base::shutdown_both);
     socket_.close();
 }
 
+/**
+ * Start socket to listen for UDP packages.
+ */
 void DatagramService::start_socket() {
-	PRINT("Start UDP Listening");
-    socket_.async_receive_from(boost::asio::buffer(cur_message_->get_header(), Message::header_length),sender_endpoint_,
-        boost::bind(&DatagramService::handle_read, this, boost::asio::placeholders::error));
-
-
-    /*
-    PRINT("UDP running");
-    cur_message_ = Message::create_message();
-    while (running_) {
-        try {
-            PRINT("RUN!");
-            socket_.receive_from(buffer(cur_message_->get_header(), cur_message_->header_length), sender_endpoint_);
-            t2 = TimeKeeper::time();
-            cur_message_->decode_header();
-            if (cur_message_->get_type() != PING) {
-                continue;
-            }
-            t1 = microseconds(cur_message_->get_timestamp());
-            cur_message_->set_type(PONG);
-            cur_message_->set_timestamp(TimeKeeper::time().count());
-            std::vector<const_buffer> buf = cur_message_->to_buffers();
-            t3 = TimeKeeper::time();
-            PRINT("RUN2");
-            socket_.send_to(buf, sender_endpoint_);
-            PRINT("RUN3");
-            socket_.receive_from(buffer(cur_message_->get_header(), cur_message_->header_length), sender_endpoint_);
-            cur_message_->decode_header();
-            if (cur_message_->get_type() != STIM) {
-                continue;
-            }
-            t4 = microseconds(cur_message_->get_timestamp());
-            microseconds delay((t2 - t1 - t4 + t3) / 2);
-            delay_tuner(delay);
-            //PRINT("T1: "<< t1 <<'\n' <<"T2: "<< t2 <<'\n'<<"T3: "<< t3 <<'\n'<<"T4: "<< t4);
-            //TimeKeeper::set(delay);
-
-        } catch (boost::system::system_error& err) {
-            PRINT("UDP-Error");
-        }
-    }
-    PRINT("UDP shutdown");
-    */
+    PRINT("Start UDP Listening");
+    socket_.async_receive_from(boost::asio::buffer(cur_message_->get_header(), Message::udp_packet_length),
+        sender_endpoint_, boost::bind(&DatagramService::handle_read, this, boost::asio::placeholders::error));
 }
 
+/**
+ * This function accumulates some delays and adjusts the TimeKeeper after gathering some.
+ * It will also directly adjust the Timekeeper if a delay is greater than time_msec_direct.
+ * @param delay
+ */
 void DatagramService::delay_tuner(microseconds delay) {
     static microseconds buf[time_sync_buffer];
     static int next_index = 0;
@@ -98,37 +71,55 @@ void DatagramService::delay_tuner(microseconds delay) {
 
 }
 
-void DatagramService::handle_read(const boost::system::system_error& err){
-microseconds tmp = TimeKeeper::time();
-PRINT("UDP received");
-// TODO: Error checking
-if (err.code() == 0){
-	cur_message_->decode_header();
-	MessageType t = cur_message_->get_type();
-	if(t == PING){
-		PRINT("PING");
-	    t2 = tmp;
-	    t1 = microseconds(cur_message_->get_timestamp());
-	    cur_message_->set_type(PONG);
-	    cur_message_->set_timestamp(TimeKeeper::time().count());
-	    std::vector<const_buffer> buf = cur_message_->to_buffers();
-	    t3 = TimeKeeper::time();
-	    socket_.async_send_to(buf,sender_endpoint_,
-	        boost::bind(&DatagramService::handle_write,this,placeholders::error,placeholders::bytes_transferred));
-	}else if(t == STIM){
-		PRINT("STIM");
-	    t4 = microseconds(cur_message_->get_timestamp());
-	    microseconds delay((t2 - t1 - t4 + t3) / 2);
-	    delay_tuner(delay);
-	}
-	socket_.async_receive_from(boost::asio::buffer(cur_message_->get_header(), Message::header_length),sender_endpoint_,
-	    boost::bind(&DatagramService::handle_read, this, boost::asio::placeholders::error));
+/**
+ * Handle received UDP package. This function will check the Type of message and act depending on it.
+ * If we received a MessageType::PING Message, we will set the sequence number, get the needed timepoints and send
+ * a PONG back.
+ * If we received a MessageType::STIM, we will check the sequence number, calculate the result and send it to
+ * DatagramService::delay_tuner().
+ * @pre DatagramService::start_socket() has been called
+ * @param err
+ */
+void DatagramService::handle_read(const boost::system::system_error& err) {
+    microseconds tmp = TimeKeeper::time();
+    if (err.code() == 0) {
+        int body_length = cur_message_->decode_header();
+        MessageType t = cur_message_->get_type();
+        if (t == PING) {
+            t2 = tmp;
+            t1 = microseconds(cur_message_->get_timestamp());
+            sequence_ = cur_message_->get_timestamp();
+            cur_message_->set_type(PONG);
+            std::vector<const_buffer> buf = cur_message_->to_buffers();
+            t3 = TimeKeeper::time();
+            socket_.async_send_to(buf, sender_endpoint_,
+                boost::bind(&DatagramService::handle_write, this, placeholders::error,
+                    placeholders::bytes_transferred));
+        } else {
+            if (body_length > 0 && t == STIM) {
+                if (sequence_ == cur_message_->get_timestamp()) {
+                    t4 = microseconds(cur_message_->get_payload());
+                    microseconds delay((t2 - t1 - t4 + t3) / 2);
+                    delay_tuner(delay);
+                }
+            }
+            socket_.async_receive_from(boost::asio::buffer(cur_message_->get_header(), Message::udp_packet_length),
+                sender_endpoint_, boost::bind(&DatagramService::handle_read, this, boost::asio::placeholders::error));
 
+        }
+    }
 }
-}
 
-void DatagramService::handle_write(const boost::system::system_error& err, size_t bytes_written){
-
+/**
+ * Start a new read if no error occured.
+ * @param err
+ * @param bytes_written
+ */
+void DatagramService::handle_write(const boost::system::system_error& err, size_t bytes_written) {
+    if (err.code() == 0) {
+        socket_.async_receive_from(boost::asio::buffer(cur_message_->get_header(), Message::udp_packet_length),
+            sender_endpoint_, boost::bind(&DatagramService::handle_read, this, boost::asio::placeholders::error));
+    }
 }
 
 DatagramService::~DatagramService() {

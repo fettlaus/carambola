@@ -36,6 +36,7 @@ private:
     ip::udp::endpoint sender_endpoint_;
     Message::pointer cur_message_;
     microseconds t1, t2, t3, t4;
+    Message::MessageTimestamp sequence_;
     enum {
         time_sync_buffer = 10, ///< How many syncs we need until adjusting time
         time_msec_direct = 90 ///< What is the maximum deviation until we directly set time
