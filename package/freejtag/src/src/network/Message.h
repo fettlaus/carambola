@@ -55,6 +55,7 @@ public:
     std::vector<asio::const_buffer> to_buffers() const; ///< Buffer useful for sending via Connection
     size_t get_length() const;
     MessageTimestamp get_timestamp() const;
+    MessageTimestamp get_payload() const; ///< Get UDP Payload
     void set_timestamp(MessageTimestamp time);
     MessageType get_type() const;
     void set_type(MessageType type);
@@ -75,6 +76,14 @@ public:
      */
     enum {
         body_max_length = 512
+    };
+
+    /**
+     * UDP Messages have fixed length of header + timestamp in body
+     * The Timestamp will be used as a sequence number
+     */
+    enum {
+        udp_packet_length = header_length + sizeof(MessageTimestamp)
     };
 
 private:

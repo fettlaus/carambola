@@ -134,6 +134,17 @@ Message::MessageTimestamp Message::get_timestamp() const {
 }
 
 /**
+ * This gets the payload of a UDP Message. The Payload is always a MessageTimestamp and will be transported
+ * in the body of the message.
+ * @return Payload of datagram
+ */
+Message::MessageTimestamp Message::get_payload() const {
+    MessageTimestamp time;
+    memcpy(&time,&data_[header_length],sizeof(MessageTimestamp));
+    return be64toh(time);
+}
+
+/**
  * Set the timestamp of the Message. The timestamp has to be set according to the specification depending on the
  * MessageType of Message.
  * @param time
