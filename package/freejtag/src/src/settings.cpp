@@ -9,10 +9,13 @@
 #include "settings.h"
 #include "uart/UARTTypes.h"
 
+#include <debug.h>
+
 #include <stdio.h>
 #include <boost/program_options.hpp>
 #include <boost/program_options/variables_map.hpp>
 
+#include <fstream>
 
 namespace freejtag {
 
@@ -45,7 +48,11 @@ settings::settings(int argc, char* argv[]) {
 	desc2.add(tcp_options).add(uart_options);
 	store(parse_command_line(argc,argv,desc2),map);
 	//TODO: Catch parse errors
-	store(parse_config_file<char>(get_filename(), desc2), map);
+	try{
+	    store(parse_config_file<char>(get_filename().c_str(), desc2), map);
+	}catch(std::ifstream::failure& e){
+	    WARNING("Error: " << e.what() << " while reading "<<get_filename());
+	}
 	notify(map);
 	// handle input
 	if(map.count("help")){
@@ -62,14 +69,13 @@ settings::~settings() {
 void settings::save_file() {
 
 }
-const char* settings::get_filename() {
+const std::string settings::get_filename() {
 #ifdef DEBUG
 	return "conf/freejtag.cfg";
 #else
 	std::stringstream s;
-	s << SYSCONFDIR << "/freejtag.cfg" << std::endl;
-	return s.str().c_str();
-	return "file";
+	s << SYSCONFDIR << "/freejtag.cfg";
+	return s.str();
 #endif
 }
 

@@ -18,7 +18,7 @@ namespace freejtag {
 class settings{
 private:
 	po::variables_map map;
-	const char* get_filename();
+	const std::string get_filename();
 	void set_descs();
 public:
 	settings(int argc, char* argv[]);
