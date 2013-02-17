@@ -81,25 +81,25 @@ int Freejtag::run() {
     prog_network.start_accept();
     //set serial options
     using namespace boost::asio;
-    PRINT(prog_settings.get_value<std::string>("device"));
-    uart_service_.open(prog_settings.get_value<std::string>("device"));
-    uart_service_.set_setting<uart::parity>(prog_settings.get_value<uart::parity>("parity"), "parity");
-    uart_service_.set_setting<uart::flow_control>(prog_settings.get_value<uart::flow_control>("flow_control"),
+    PRINT(prog_settings.get_value<std::string>("uart.device"));
+    uart_service_.open(prog_settings.get_value<std::string>("uart.device"));
+    uart_service_.set_setting<uart::parity>(prog_settings.get_value<uart::parity>("uart.parity"), "parity");
+    uart_service_.set_setting<uart::flow_control>(prog_settings.get_value<uart::flow_control>("uart.flow_control"),
         "flow control");
-    uart_service_.set_setting<uart::stop_bits>(prog_settings.get_value<uart::stop_bits>("stop_bits"), "stop bits");
+    uart_service_.set_setting<uart::stop_bits>(prog_settings.get_value<uart::stop_bits>("uart.stop_bits"), "stop bits");
     uart_service_.set_setting<serial_port::baud_rate>(
-        serial_port::baud_rate(prog_settings.get_value<unsigned int>("baud")), "baud rate");
+        serial_port::baud_rate(prog_settings.get_value<unsigned int>("uart.baud")), "baud rate");
     uart_service_.set_setting<serial_port::character_size>(
-        serial_port::character_size(prog_settings.get_value<unsigned int>("data")), "char size");
+        serial_port::character_size(prog_settings.get_value<unsigned int>("uart.data")), "char size");
 
     // check settings for daemon
     // po::variables_map map = prog_settings->get_map();
     // bool b = prog_settings->get_value<bool>("detached");
-    if (prog_settings.get_value<bool>("detached") == true) {
+    if (prog_settings.get_value<bool>("common.detached") == true) {
         PRINT("Detached");
         //init daemon
     }
-    unsigned int timeout = prog_settings.get_value<unsigned int>("ping");
+    unsigned int timeout = prog_settings.get_value<unsigned int>("common.ping");
     //ping_timer_ = new boost::asio::deadline_timer(io_service_, boost::posix_time::seconds(1));
     if(timeout > 0){
         ping_timer_.async_wait(boost::bind(&Freejtag::ping, this, boost::asio::placeholders::error, &ping_timer_, timeout));

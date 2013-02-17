@@ -42,7 +42,7 @@ NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buff
     shutdown_(false),
     settings_(settings),
     input_buffer_(buffer) {
-    unsigned int this_port = settings.get_value<uint16_t>("port");
+    unsigned int this_port = settings.get_value<unsigned int>("network.port");
     asio::ip::tcp::endpoint ep(asio::ip::tcp::v4(), this_port);
     accepto.open(ep.protocol());
     accepto.set_option(boost::asio::socket_base::reuse_address(true));
