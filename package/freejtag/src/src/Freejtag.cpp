@@ -14,6 +14,7 @@
 #include "settings.h"
 
 #include <network/tcp/ConnectionException.h>
+#include <common/TimeKeeper.h>
 
 //#include <stdlib.h>
 //#include <syslog.h>
@@ -64,8 +65,11 @@ void Freejtag::network_handle() {
         Connection::pointer con = msgd.first;
         MessageType type = msg->get_type();
         if (type == MESS) { ///< Echo MESS to everyone
+            msg->set_timestamp(TimeKeeper::time().count());
             prog_network.sendBroadcast(msg);
-        } else if (type == PING) { ///< Answer PING
+        } else if(type == UART){
+            //TODO: send UART
+        }else if (type == PING) { ///< Answer PING
             prog_network.sendMessage(con, Message::create_message(PONG));
         } else if (type == EXIT) {
             running_ = false;
