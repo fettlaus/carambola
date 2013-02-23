@@ -52,7 +52,7 @@ define Package/freejtag/install
 	$(INSTALL_DATA) ./files/openocd.cfg $(1)/etc/openocd.cfg
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/conf/freejtag.cfg $(1)/etc/freejtag.cfg
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/freejtag.uci-defaults $(1)/etc/uci-defaults/XX_freejtag
+	$(INSTALL_BIN) ./files/freejtag.uci-defaults $(1)/etc/uci-defaults/xx_freejtag
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/openocd.init $(1)/etc/init.d/openocd
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/conf/freejtag $(1)/etc/init.d/freejtag
