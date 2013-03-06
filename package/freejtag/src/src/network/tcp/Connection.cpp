@@ -114,6 +114,7 @@ void Connection::handle_read_body(const boost::system::system_error& err) {
  * Start the Connection. Has to be called after acquiring a connection or we won't be able to handle input and output.
  */
 void Connection::start() {
+    socket_.set_option(boost::asio::ip::tcp::no_delay(true));
     boost::asio::async_read(socket_, boost::asio::buffer(cur_message_->get_header(), cur_message_->header_length),
         strand_.wrap(boost::bind(&Connection::handle_read_header, shared_from_this(), boost::asio::placeholders::error)));
     /*
