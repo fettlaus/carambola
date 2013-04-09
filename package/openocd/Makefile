@@ -31,13 +31,13 @@ endef
 CONFIGURE_ARGS+= \
 	--prefix=$(STAGING_DIR)/usr \
 	--enable-dummy \
-	--enable-buspirate \
-	--disable-werror \
+	--enable-parport \
 	--enable-ft2232_libftdi
 
 TARGET_CFLAGS += -std=gnu99 \
 	-I$(PKG_BUILD_DIR)/jimtcl \
-	-I$(STAGING_DIR)/usr/include
+	-I$(STAGING_DIR)/usr/include \
+	-Wno-error=maybe-uninitialized
 
 define Package/openocd/install
 	$(INSTALL_DIR) $(1)/usr/sbin
