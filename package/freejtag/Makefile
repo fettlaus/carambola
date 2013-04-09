@@ -19,7 +19,7 @@ define Package/freejtag
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=FreeJTAG
-  DEPENDS:=+boost-program_options +boost-thread +boost-system +boost-date_time +boost-chrono +io
+  DEPENDS:=+boost-program_options +boost-thread +boost-system +boost-date_time +boost-chrono +boost-regex +io
 endef
 
 define Package/freejtag/description
