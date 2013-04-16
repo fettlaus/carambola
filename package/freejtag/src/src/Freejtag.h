@@ -1,8 +1,7 @@
-/*
- * freejtag.h
- *
- *  Created on: Oct 22, 2012
- *      Author: bachelor
+/**
+ * @file Freejtag.h
+ * @date Dec 27, 2013
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #ifndef FREEJTAG_H_
@@ -12,7 +11,6 @@
 
 #include <network/tcp/NetworkService.h>
 #include <network/udp/DatagramService.h>
-//#include "tcp/Message.h"
 #include <uart/UARTService.h>
 
 #include <boost/asio/io_service.hpp>

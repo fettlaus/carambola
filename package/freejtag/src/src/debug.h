@@ -1,8 +1,7 @@
-/*
- * debug.h
- *
- *  Created on: Jan 7, 2013
- *      Author: bachelor
+/**
+ * @file debug.h
+ * @date Jan 7, 2013
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #ifndef DEBUG_H_
@@ -11,7 +10,6 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <ostream>
 
-
 #define WARNING(...) {DPRINT(std::cerr) << __VA_ARGS__;}
 #ifdef DEBUG
 #define PRINT(...) {DPRINT(std::cout) << __VA_ARGS__;}
@@ -19,6 +17,7 @@
 #define PRINT(...)
 #endif
 /**
+ * Nach:
  * http://stackoverflow.com/questions/9527127/thread-safe-cout-technique-am-i-missing-something
  */
 class DPRINT {
@@ -31,7 +30,7 @@ public:
     }
     ~DPRINT() {
     	ss_ << std::endl;
-        stream_ << ss_.str() << std::flush; // write the whole shebang in one go
+        stream_ << ss_.str() << std::flush;
     }
     template <typename T>
     DPRINT& operator<<(T const& t) {
@@ -43,7 +42,5 @@ private:
     std::stringstream ss_;
     boost::posix_time::time_facet*const f;
 };
-
-
 
 #endif /* DEBUG_H_ */

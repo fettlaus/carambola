@@ -1,8 +1,7 @@
-/*
- * ConnectionBundle.cpp
- *
- *  Created on: Jan 6, 2013
- *      Author: bachelor
+/**
+ * @file ConnectionBundle.cpp
+ * @date Jan 6, 2013
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #include "ConnectionBundle.h"
@@ -12,17 +11,13 @@
 
 namespace freejtag {
 
-
-
 void ConnectionBundle::addConnection(Connection::pointer conn) {
-	connections_.insert(conn);
+    connections_.insert(conn);
 }
-
-
 
 void ConnectionBundle::removeConnection(Connection::pointer conn) {
     conn->close();
-	connections_.erase(conn);
+    connections_.erase(conn);
 }
 
 void ConnectionBundle::close_all_connections() {
@@ -30,5 +25,3 @@ void ConnectionBundle::close_all_connections() {
 }
 
 } /* namespace freejtag */
-
-

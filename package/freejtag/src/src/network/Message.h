@@ -24,12 +24,12 @@ enum MessageType {
     UART, ///< 0x02: Message received on the UART port of server. (TCP)
     SPID, ///< 0x03: place holder
     STIM, ///< 0x04: Set time (UDP)
-    PING, ///< 0x05: Ping! (UDP)
-    PONG, ///< 0x06: Answer to Ping! (UDP)
+    PING, ///< 0x05: Ping! (UDP+TCP)
+    PONG, ///< 0x06: Answer to Ping! (UDP+TCP)
     GSET, ///< 0x07: place holder
     SSET, ///< 0x08: place holder
     SETT, ///< 0x09: place holder
-    EXIT
+    EXIT ///< 0x10: shutdown server (TCP)
 };
 
 /**

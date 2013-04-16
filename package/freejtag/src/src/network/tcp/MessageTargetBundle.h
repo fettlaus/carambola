@@ -1,8 +1,7 @@
-/*
- * MessageTargetBundle.h
- *
- *  Created on: Jan 7, 2013
- *      Author: bachelor
+/**
+ * @file MessageTargetBundle.h
+ * @date Jan 7, 2013
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #ifndef MESSAGETARGETBUNDLE_H_
@@ -15,9 +14,8 @@ namespace freejtag {
 class MessageTargetBundle: public freejtag::ConnectionBundle {
 
 public:
-	void addConnection(Connection::pointer conn);
-	bool sendBroadcast(const Message::pointer msg);
-	//bool sendMessage(MessageTarget& target,const Message& msg);
+    void addConnection(Connection::pointer conn);
+    bool sendBroadcast(const Message::pointer msg);
 };
 
 } /* namespace freejtag */

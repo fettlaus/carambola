@@ -1,8 +1,7 @@
-/*
- * UARTServiceTypedef.h
- *
- *  Created on: Jan 13, 2013
- *      Author: bachelor
+/**
+ * @file UARTServiceTypedef.h
+ * @date Jan 13, 2013
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #ifndef UARTSERVICETYPEDEF_H_

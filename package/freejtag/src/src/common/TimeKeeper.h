@@ -7,14 +7,11 @@
 #ifndef TIMEKEEPER_H_
 #define TIMEKEEPER_H_
 
-//#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/chrono.hpp>
 
 namespace freejtag {
 using namespace boost::chrono;
-/**
- *
- */
+
 class TimeKeeper {
 public:
     static microseconds time();

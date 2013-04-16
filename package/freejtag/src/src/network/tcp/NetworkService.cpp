@@ -1,39 +1,19 @@
-/*
- * telnet.c
- *
- *  Created on: Oct 22, 2012
- *      Author: bachelor
+/**
+ * @file NetworkService.cpp
+ * @date Jan 3, 2013
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #include "NetworkService.h"
 #include "Connection.h"
 #include "ConnectionException.h"
 #include <debug.h>
-//#include "menu.h"
 
 #include <boost/bind.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/asio.hpp>
 
-//#include <gio/gio.h>
-//#include <glib.h>
-
-// new mainloop
-// new socketlistener
-// attach_callback()
-// on new connection:
-// 		callback attaches watch and callback
-// on server restart command:
-// 		change port in cfg
-//		close_connections()
-//		attach_callback()
-// on shutdown:
-//		close_connections()
-//		stop socketlistener
-//		free resources
-//
-//
 namespace freejtag {
 
 NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings) :
@@ -53,7 +33,6 @@ NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buff
 
 void NetworkService::start_accept() {
     PRINT("Start accept");
-    //asio::io_service& ios = accepto.get_io_service();
     new_connection_ = Connection::create_new(input_buffer_, io_service_);
     accepto.async_accept(new_connection_->get_socket(),
         boost::bind(&NetworkService::handle_accept, this, new_connection_, asio::placeholders::error));

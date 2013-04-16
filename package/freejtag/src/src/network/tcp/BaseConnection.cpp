@@ -1,8 +1,7 @@
-/*
- * BaseConnection.cpp
- *
- *  Created on: Jan 7, 2013
- *      Author: bachelor
+/**
+ * @file BaseConnection.cpp
+ * @date Jan 7, 2013
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #include "BaseConnection.h"

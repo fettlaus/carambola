@@ -1,8 +1,7 @@
-/*
- * MessageTarget.h
- *
- *  Created on: Jan 7, 2013
- *      Author: bachelor
+/**
+ * @file MessageTarget.h
+ * @date Jan 7, 2013
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #ifndef MESSAGETARGET_H_
@@ -14,12 +13,11 @@ namespace freejtag {
 
 class MessageTarget {
 public:
-	virtual ~MessageTarget()=0;
-	void deliver(const Message::pointer);
+    virtual ~MessageTarget()=0;
+    void deliver(const Message::pointer);
 protected:
-	MessageTarget();
+    MessageTarget();
 };
-
 
 } /* namespace freejtag */
 #endif /* MESSAGETARGET_H_ */

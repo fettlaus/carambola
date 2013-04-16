@@ -31,7 +31,7 @@ Message::Message(MessageType type, std::string body, MessageTimestamp timestamp)
 
     // restrict length to maximum
     if (strlen(tmp) > body_max_length) {
-        memcpy(data_ + header_length, tmp, body_max_length); ///< @todo fix terminating null
+        memcpy(data_ + header_length, tmp, body_max_length);
     } else {
         memcpy(data_ + header_length, tmp, strlen(tmp));
     }
@@ -55,7 +55,7 @@ std::ostream & operator <<(std::ostream & o, const Message::pointer msg) {
            << ","
            << (long) be64toh(msg->timestamp_) // endianness conversion
            << ")=\""
-           << msg->data_ + msg->header_length ///< @todo Unsafe call to body!
+           << msg->data_ + msg->header_length
            << "\"";
 }
 
@@ -65,14 +65,14 @@ std::ostream & operator <<(std::ostream & o, const Message::pointer msg) {
 Message::~Message()
 {
     PRINT("Message("
-    		<< (int) type_
-    		<< ","
-    		<< (int) be16toh(length_) // endianness conversion
-    		<< ","
-    		<< (long) be64toh(timestamp_) // endianness conversion
-    		<< ")=\""
-    		<< data_ + header_length
-    		<<"\" destroyed");
+            << (int) type_
+            << ","
+            << (int) be16toh(length_) // endianness conversion
+            << ","
+            << (long) be64toh(timestamp_) // endianness conversion
+            << ")=\""
+            << data_ + header_length
+            <<"\" destroyed");
 }
 
 /**

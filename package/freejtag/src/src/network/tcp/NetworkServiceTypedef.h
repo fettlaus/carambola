@@ -1,16 +1,13 @@
-/*
- * NetworkServiceTypedef.h
- *
- *  Created on: Jan 10, 2013
- *      Author: bachelor
+/**
+ * @file NetworkServiceTypedef.h
+ * @date Jan 10, 2013
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #ifndef NETWORKSERVICETYPEDEF_H_
 #define NETWORKSERVICETYPEDEF_H_
 
 #include <util/BlockingQueue.h>
-//#include "Connection.h"
-//#include "Message.h"
 
 namespace freejtag{
 class Connection;

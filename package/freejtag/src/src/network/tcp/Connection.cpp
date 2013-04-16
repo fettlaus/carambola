@@ -1,8 +1,7 @@
-/*
- * Connection.cpp
- *
- *  Created on: Dec 24, 2012
- *      Author: fettlaus
+/**
+ * @file Connection.cpp
+ * @date Dec 24, 2012
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #include "Connection.h"
@@ -117,16 +116,6 @@ void Connection::start() {
     socket_.set_option(boost::asio::ip::tcp::no_delay(true));
     boost::asio::async_read(socket_, boost::asio::buffer(cur_message_->get_header(), cur_message_->header_length),
         strand_.wrap(boost::bind(&Connection::handle_read_header, shared_from_this(), boost::asio::placeholders::error)));
-    /*
-     const Message::pointer msg = Message::create_message(MESS,"Hello there!");
-     asio::async_write(this->get_socket(),msg->to_buffers(),
-     boost::bind(&Connection::handle_write,
-     shared_from_this(),
-     asio::placeholders::error,
-     asio::placeholders::bytes_transferred,
-     msg));
-     */
-
 }
 
 void Connection::close() {

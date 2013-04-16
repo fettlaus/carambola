@@ -1,8 +1,7 @@
-/*
- * UARTTypes.h
- *
- *  Created on: Jan 11, 2013
- *      Author: bachelor
+/**
+ * @file UARTTypes.h
+ * @date Jan 11, 2013
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #ifndef UARTTYPES_H_
@@ -15,43 +14,35 @@
 namespace freejtag {
 namespace uart {
 
-
 using namespace boost::asio;
 /**
  * none, odd, even
  */
 struct parity:public serial_port_base::parity{
-	parity(type t = none);
+    parity(type t = none);
 };
-
 
 using namespace boost::asio;
 /**
  * none, software, hardware
  */
 struct flow_control:public serial_port_base::flow_control{
-	flow_control(type t = none);
+    flow_control(type t = none);
 };
-
 
 using namespace boost::asio;
 /**
  * one, onepointfive, two
  */
 struct stop_bits:public serial_port_base::stop_bits{
-	stop_bits(type t = one);
+    stop_bits(type t = one);
 };
 
 void validate(boost::any& v,const std::vector<std::string>& val,parity* type,int);
 void validate(boost::any& v,const std::vector<std::string>& val,flow_control* type,int);
 void validate(boost::any& v,const std::vector<std::string>& val,stop_bits* type,int);
 
-
 } /* namespace uart */
-/*
-* boost::asio::serial_port_base::flow_control @n
-* boost::asio::serial_port_base::stop_bits @n
-*/
 
 } /* namespace freejtag */
 #endif /* UARTTYPES_H_ */

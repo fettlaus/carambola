@@ -1,8 +1,7 @@
-/*
- * Connection.h
- *
- *  Created on: Dec 24, 2012
- *      Author: fettlaus
+/**
+ * @file Connection.h
+ * @date Dec 24, 2012
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #ifndef CONNECTION_H_
@@ -17,10 +16,7 @@
 #include <boost/asio/strand.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
-//class boost::asio::io_service;
 namespace freejtag {
-
-//class MessageDatagramQueue;
 
 class Connection: public BaseConnection, public MessageTarget, public boost::enable_shared_from_this<Connection> {
 private:
@@ -39,10 +35,6 @@ public:
     void deliver(const Message::pointer);
     void start();
     void close();
-
-    //bool send(const Message& msg);
-    //void connect_bindings();
-
 };
 
 } /* namespace freejtag */

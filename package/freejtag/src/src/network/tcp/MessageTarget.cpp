@@ -1,8 +1,7 @@
-/*
- * MessageTarget.cpp
- *
- *  Created on: Jan 7, 2013
- *      Author: bachelor
+/**
+ * @file MessageTarget.cpp
+ * @date Jan 7, 2013
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #include "MessageTarget.h"
@@ -19,7 +18,7 @@ MessageTarget::~MessageTarget(){
 }
 
 void MessageTarget::deliver(const Message::pointer) {
-	PRINT("False print to broadcast!");
+    PRINT("False print to broadcast!");
 }
 
 } /* namespace freejtag */

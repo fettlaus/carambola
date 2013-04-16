@@ -18,9 +18,7 @@
 namespace freejtag {
 using namespace boost::asio;
 using namespace boost::chrono;
-/**
- *
- */
+
 class DatagramService {
 public:
     DatagramService(io_service& io_service, settings& settings);

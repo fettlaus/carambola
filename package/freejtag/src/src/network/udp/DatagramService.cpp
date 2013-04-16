@@ -31,7 +31,6 @@ DatagramService::DatagramService(boost::asio::io_service& io_service, settings& 
  */
 void DatagramService::stop_socket() {
     running_ = false;
-    //socket_.shutdown(socket_base::shutdown_both);
     socket_.close();
 }
 
@@ -122,8 +121,6 @@ void DatagramService::handle_write(const boost::system::system_error& err, size_
     }
 }
 
-DatagramService::~DatagramService() {
-    ///<  @todo Auto-generated destructor stub
-}
+DatagramService::~DatagramService() { }
 
 } /* namespace freejtag */
