@@ -1,7 +1,7 @@
 /**
  * Message.cpp
  * @date Dec 27, 2012
- * @author Arne Wischer
+ * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
 #include "Message.h"

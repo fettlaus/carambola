@@ -15,14 +15,10 @@
 
 namespace freejtag {
 
-//TODO: remove settings from UART
-class settings;
-
 class UARTService {
 public:
-    UARTService(boost::asio::io_service& io_service, UARTBuffer& buffer, settings& settings);
+    UARTService(boost::asio::io_service& io_service, UARTBuffer& buffer);
     virtual ~UARTService();
-    std::string get_line();
     void open(std::string device);
     void close();
     template<typename SettableSerialPortOption>
@@ -30,10 +26,8 @@ public:
 
 private:
     void reload_settings();
-    settings& settings_;
     boost::asio::io_service& io_service_;
     bool shutdown_;
-    void read_line();
     UARTBuffer& uart_buffer_;
     UARTConnection uart_connection_;
     std::string device_;

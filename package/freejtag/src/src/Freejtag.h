@@ -30,7 +30,6 @@ private:
     UARTService uart_service_;
     boost::thread uart_dispatcher_;
     boost::thread network_dispatcher_;
-    boost::thread udp_handler_;
     boost::asio::deadline_timer ping_timer_;
     void ping(const boost::system::error_code& err, boost::asio::deadline_timer* t, unsigned int timeout);
     void uart_handle();

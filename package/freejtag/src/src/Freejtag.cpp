@@ -29,10 +29,9 @@ namespace freejtag {
 Freejtag::Freejtag(int argc, char* argv[]) :
     prog_settings(argc, argv),
     prog_network(io_service_, input_network_, prog_settings),
-    uart_service_(io_service_, input_uart_, prog_settings),
+    uart_service_(io_service_, input_uart_),
     uart_dispatcher_(boost::bind(&Freejtag::uart_handle, this)),
     network_dispatcher_(boost::bind(&Freejtag::network_handle, this)),
-    udp_handler_(boost::bind(&DatagramService::start_socket, &prog_datagram_)),
     prog_datagram_(io_service_,prog_settings),
     ping_timer_(io_service_, boost::posix_time::seconds(1)),
     running_(true){
@@ -72,20 +71,21 @@ void Freejtag::network_handle() {
 
 int Freejtag::run() {
     prog_network.start_accept();
+    prog_datagram_.start_socket();
     //set serial options
     using namespace boost::asio;
-    PRINT(prog_settings.get_value<std::string>("uart.device"));
-    uart_service_.open(prog_settings.get_value<std::string>("uart.device"));
-    uart_service_.set_setting<uart::parity>(prog_settings.get_value<uart::parity>("uart.parity"), "parity");
-    uart_service_.set_setting<uart::flow_control>(prog_settings.get_value<uart::flow_control>("uart.flow_control"),
+    PRINT(prog_settings.get_value<std::string>("device"));
+    uart_service_.open(prog_settings.get_value<std::string>("device"));
+    uart_service_.set_setting<uart::parity>(prog_settings.get_value<uart::parity>("parity"), "parity");
+    uart_service_.set_setting<uart::flow_control>(prog_settings.get_value<uart::flow_control>("flow_control"),
         "flow control");
-    uart_service_.set_setting<uart::stop_bits>(prog_settings.get_value<uart::stop_bits>("uart.stop_bits"), "stop bits");
+    uart_service_.set_setting<uart::stop_bits>(prog_settings.get_value<uart::stop_bits>("stop_bits"), "stop bits");
     uart_service_.set_setting<serial_port::baud_rate>(
-        serial_port::baud_rate(prog_settings.get_value<unsigned int>("uart.baud")), "baud rate");
+        serial_port::baud_rate(prog_settings.get_value<unsigned int>("baud")), "baud rate");
     uart_service_.set_setting<serial_port::character_size>(
-        serial_port::character_size(prog_settings.get_value<unsigned int>("uart.data")), "char size");
+        serial_port::character_size(prog_settings.get_value<unsigned int>("data")), "char size");
 
-    unsigned int timeout = prog_settings.get_value<unsigned int>("common.ping");
+    unsigned int timeout = prog_settings.get_value<unsigned int>("ping");
     if(timeout > 0){
         ping_timer_.async_wait(boost::bind(&Freejtag::ping, this, boost::asio::placeholders::error, &ping_timer_, timeout));
     }
@@ -110,11 +110,7 @@ int Freejtag::run() {
     uart_dispatcher_.interrupt();
     uart_dispatcher_.join();
     PRINT("UART joined");
-    udp_handler_.interrupt();
-    udp_handler_.interrupt();
-    udp_handler_.interrupt();
-    udp_handler_.join();
-    PRINT("ekit");
+    PRINT("Exit");
     return 0;
 }
 

@@ -18,7 +18,7 @@ DatagramService::DatagramService(boost::asio::io_service& io_service, settings& 
     socket_(io_service),
     running_(true),
     sequence_(0) {
-    unsigned int this_port = settings.get_value<unsigned int>("network.port");
+    unsigned int this_port = settings.get_value<unsigned int>("port");
     ip::udp::endpoint ep(ip::udp::v4(), this_port);
     socket_.open(ep.protocol());
     socket_.bind(ep);
