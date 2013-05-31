@@ -11,15 +11,15 @@
 
 namespace freejtag {
 
-bool MessageTargetBundle::sendBroadcast(const Message::pointer msg) {
+bool MessageTargetBundle::send_broadcast(const Message::pointer msg) {
     PRINT("Sending Broadcast");
     std::for_each(connections_.begin(),connections_.end(),boost::bind(&Connection::deliver,_1,boost::ref(msg)));
     return true;
 }
 
-void MessageTargetBundle::addConnection(Connection::pointer conn) {
-    this->sendBroadcast(Message::create_message(MESS,"New Connection!"));
-    ConnectionBundle::addConnection(conn);
+void MessageTargetBundle::add_connection(Connection::pointer conn) {
+    this->send_broadcast(Message::create_message(MESS,"New Connection!"));
+    ConnectionBundle::add_connection(conn);
 }
 
 } /* namespace freejtag */

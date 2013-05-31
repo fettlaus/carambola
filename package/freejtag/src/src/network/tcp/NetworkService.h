@@ -31,7 +31,7 @@ private:
     NetworkBuffer& input_buffer_;
     settings& settings_;
     asio::io_service& io_service_;
-    asio::ip::tcp::acceptor accepto;
+    asio::ip::tcp::acceptor accepto_;
     bool shutdown_;
     void handle_accept(Connection::pointer ptr, const boost::system::error_code& err);
     Connection::pointer new_connection_;
@@ -40,9 +40,9 @@ public:
     void start_accept();
     void shutdown();
     NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings);
-    void removeConnection(Connection::pointer conn);
-    bool sendBroadcast(Message::pointer msg);
-    bool sendMessage(Connection::pointer conn, Message::pointer msg);
+    void remove_connection(Connection::pointer conn);
+    bool send_broadcast(Message::pointer msg);
+    bool send_message(Connection::pointer conn, Message::pointer msg);
 };
 
 }

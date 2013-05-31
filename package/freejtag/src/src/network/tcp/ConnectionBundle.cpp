@@ -11,11 +11,11 @@
 
 namespace freejtag {
 
-void ConnectionBundle::addConnection(Connection::pointer conn) {
+void ConnectionBundle::add_connection(Connection::pointer conn) {
     connections_.insert(conn);
 }
 
-void ConnectionBundle::removeConnection(Connection::pointer conn) {
+void ConnectionBundle::remove_connection(Connection::pointer conn) {
     conn->close();
     connections_.erase(conn);
 }

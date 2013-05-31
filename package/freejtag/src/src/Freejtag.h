@@ -24,8 +24,8 @@ private:
     boost::asio::io_service io_service_;
     UARTBuffer input_uart_;
     NetworkBuffer input_network_;
-    settings prog_settings;
-    NetworkService prog_network;
+    settings prog_settings_;
+    NetworkService prog_network_;
     DatagramService prog_datagram_;
     UARTService uart_service_;
     boost::thread uart_dispatcher_;

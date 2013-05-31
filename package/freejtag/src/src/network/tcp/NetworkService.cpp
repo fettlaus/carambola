@@ -18,29 +18,29 @@ namespace freejtag {
 
 NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings) :
     io_service_(io_service),
-    accepto(io_service_),
+    accepto_(io_service_),
     shutdown_(false),
     settings_(settings),
     input_buffer_(buffer) {
     unsigned int this_port = settings.get_value<unsigned int>("port");
     asio::ip::tcp::endpoint ep(asio::ip::tcp::v4(), this_port);
-    accepto.open(ep.protocol());
-    accepto.set_option(boost::asio::socket_base::reuse_address(true));
-    accepto.bind(ep);
-    accepto.listen();
+    accepto_.open(ep.protocol());
+    accepto_.set_option(boost::asio::socket_base::reuse_address(true));
+    accepto_.bind(ep);
+    accepto_.listen();
     PRINT("TCP set up ...");
 }
 
 void NetworkService::start_accept() {
     PRINT("Start accept");
     new_connection_ = Connection::create_new(input_buffer_, io_service_);
-    accepto.async_accept(new_connection_->get_socket(),
+    accepto_.async_accept(new_connection_->get_socket(),
         boost::bind(&NetworkService::handle_accept, this, new_connection_, asio::placeholders::error));
 }
 
 void NetworkService::shutdown(){
     PRINT("Shutting down network");
-    accepto.close();
+    accepto_.close();
     connection_bundle_.close_all_connections();
 }
 
@@ -48,25 +48,25 @@ void NetworkService::handle_accept(Connection::pointer ptr, const boost::system:
     if (err == 0) {
         PRINT("Incoming Connection!");
         ptr->start();
-        sendMessage(ptr, Message::create_message(MESS, "Hello, new connection!"));
-        connection_bundle_.addConnection(ptr);
+        send_message(ptr, Message::create_message(MESS, "Hello, new connection!"));
+        connection_bundle_.add_connection(ptr);
         start_accept();
     } else {
         PRINT("Acceptor Error");
     }
 }
 
-bool NetworkService::sendBroadcast(Message::pointer msg) {
+bool NetworkService::send_broadcast(Message::pointer msg) {
     PRINT("Got Broadcast!");
-    connection_bundle_.sendBroadcast(msg);
+    connection_bundle_.send_broadcast(msg);
     return true;
 }
 
-void NetworkService::removeConnection(Connection::pointer conn) {
-    connection_bundle_.removeConnection(conn);
+void NetworkService::remove_connection(Connection::pointer conn) {
+    connection_bundle_.remove_connection(conn);
 }
 
-bool NetworkService::sendMessage(Connection::pointer ptr, Message::pointer msg) {
+bool NetworkService::send_message(Connection::pointer ptr, Message::pointer msg) {
     PRINT("Got Direct-Message!");
     ptr->deliver(msg);
     return true;

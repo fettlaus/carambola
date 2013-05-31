@@ -15,8 +15,8 @@ namespace freejtag {
 typedef std::set<Connection::pointer> ConnectionList;
 class ConnectionBundle{
 public:
-    void addConnection(Connection::pointer conn);
-    void removeConnection(Connection::pointer conn);
+    void add_connection(Connection::pointer conn);
+    void remove_connection(Connection::pointer conn);
     void close_all_connections();
 protected:
     ConnectionList connections_;

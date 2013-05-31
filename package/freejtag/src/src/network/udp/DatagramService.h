@@ -33,7 +33,7 @@ private:
     ip::udp::socket socket_;
     ip::udp::endpoint sender_endpoint_;
     Message::pointer cur_message_;
-    microseconds t1, t2, t3, t4;
+    microseconds t1_, t2_, t3_, t4_;
     Message::MessageTimestamp sequence_;
     enum {
         time_sync_buffer = 10, ///< How many syncs we need until adjusting time

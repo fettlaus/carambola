@@ -9,15 +9,15 @@
 #include <debug.h>
 
 namespace freejtag {
-high_resolution_clock::time_point TimeKeeper::epoch(high_resolution_clock::now());
+high_resolution_clock::time_point TimeKeeper::epoch_(high_resolution_clock::now());
 
 microseconds TimeKeeper::time(){
-    high_resolution_clock::duration now = high_resolution_clock::now() - epoch;
+    high_resolution_clock::duration now = high_resolution_clock::now() - epoch_;
     return duration_cast<microseconds>(now);
 }
 
 void TimeKeeper::set(microseconds difference){
-    epoch = epoch + difference;
+    epoch_ = epoch_ + difference;
     PRINT("Corrected time by " << difference);
 }
 

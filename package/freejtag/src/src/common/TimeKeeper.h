@@ -18,7 +18,7 @@ public:
     static void set(microseconds difference);
     void timer();
 private:
-    static high_resolution_clock::time_point epoch;
+    static high_resolution_clock::time_point epoch_;
     // Don't implement these
     TimeKeeper();
     virtual ~TimeKeeper();
