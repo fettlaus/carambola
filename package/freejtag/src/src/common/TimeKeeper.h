@@ -19,11 +19,11 @@ public:
     void timer();
 private:
     static high_resolution_clock::time_point epoch_;
-    // Don't implement these
-    TimeKeeper();
-    virtual ~TimeKeeper();
-    TimeKeeper(TimeKeeper const&);
-    void operator=(TimeKeeper const&);
+    // Don't implement these (Use this class as a singleton)
+    TimeKeeper(); ///< Part of singleton
+    virtual ~TimeKeeper(); ///< Part of singleton
+    TimeKeeper(TimeKeeper const&); ///< Part of singleton
+    void operator=(TimeKeeper const&); ///< Part of singleton
 };
 
 } /* namespace freejtag */
