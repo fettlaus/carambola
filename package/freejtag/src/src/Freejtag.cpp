@@ -43,7 +43,7 @@ Freejtag::~Freejtag() {
 void Freejtag::uart_handle() {
     while (running_) {
         UARTMessage msg = input_uart_.pop();
-        prog_network_.send_broadcast(Message::create_message(UART, msg.second, msg.first));
+        prog_network_.send_broadcast(Message::create_message(Message::UART, msg.second, msg.first));
     }
 }
 
@@ -53,13 +53,13 @@ void Freejtag::network_handle() {
         PRINT("Incoming Message!");
         Message::pointer msg = msgd.second;
         Connection::pointer con = msgd.first;
-        MessageType type = msg->get_type();
-        if (type == MESS) { ///< Echo MESS to everyone
+        Message::Type type = msg->get_type();
+        if (type == Message::MESS) { ///< Echo MESS to everyone
             msg->set_timestamp(TimeKeeper::time().count());
             prog_network_.send_broadcast(msg);
-        } else if (type == PING) { ///< Answer PING
-            prog_network_.send_message(con, Message::create_message(PONG));
-        } else if (type == EXIT) {
+        } else if (type == Message::PING) { ///< Answer PING
+            prog_network_.send_message(con, Message::create_message(Message::PONG));
+        } else if (type == Message::EXIT) {
             running_ = false;
             ping_timer_.cancel();
             prog_network_.shutdown();
@@ -117,7 +117,7 @@ int Freejtag::run() {
 void Freejtag::ping(const boost::system::error_code& err,boost::asio::deadline_timer* t, unsigned int timeout) {
     if(running_){
         t->expires_at(t->expires_at() + boost::posix_time::microsec(timeout));
-        prog_network_.send_broadcast(Message::create_message(MESS, "PING!"));
+        prog_network_.send_broadcast(Message::create_message(Message::MESS, "PING!"));
         t->async_wait(boost::bind(&Freejtag::ping, this, err, t, timeout));
     }else{
         PRINT("Cancel timer");

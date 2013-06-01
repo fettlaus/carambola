@@ -19,7 +19,7 @@ namespace freejtag {
  * @param body The body-content of the new Message
  * @param timestamp The timestamp of the new Message
  */
-Message::Message(MessageType type, std::string body, MessageTimestamp timestamp) :
+Message::Message(Message::Type type, std::string body, MessageTimestamp timestamp) :
     length_(htobe16(body.length())), // endianness conversion
     type_(type_to_int(type)),
     timestamp_(htobe64(timestamp)) // endianness conversion
@@ -161,7 +161,7 @@ void Message::set_timestamp(MessageTimestamp time) {
  * between, it is set to ERROR and the message should not be used further.
  * @return Type of Message
  */
-MessageType Message::get_type() const {
+Message::Type Message::get_type() const {
     return int_to_type(type_);
 }
 
@@ -169,7 +169,7 @@ MessageType Message::get_type() const {
  * Set the MessageType of this Message.
  * @param type MessageType of this Message
  */
-void Message::set_type(MessageType type) {
+void Message::set_type(Message::Type type) {
     type_ = type_to_int(type);
 }
 
@@ -197,7 +197,7 @@ char* Message::get_header() {
  * @param timestamp Timestamp of the new Message
  * @return Smart-pointer to the new Message
  */
-Message::pointer Message::create_message(MessageType type, std::string allocator, MessageTimestamp timestamp) {
+Message::pointer Message::create_message(Message::Type type, std::string allocator, MessageTimestamp timestamp) {
     pointer ptr(new Message(type, allocator, timestamp));
     PRINT(ptr << " created");
     return ptr;
@@ -208,7 +208,7 @@ Message::pointer Message::create_message(MessageType type, std::string allocator
  * @param unsignedChar The decimal representation
  * @return Corresponding MessageType
  */
-MessageType Message::int_to_type(MessageType_ unsignedChar) {
+Message::Type Message::int_to_type(MessageType_ unsignedChar) {
     switch (unsignedChar) {
     case 0x01:
         return MESS;
@@ -240,7 +240,7 @@ MessageType Message::int_to_type(MessageType_ unsignedChar) {
  * @param messageTypeEnum The MessageType
  * @return integer Corresponding representation of MessageType
  */
-Message::MessageType_ Message::type_to_int(MessageType messageTypeEnum) {
+Message::MessageType_ Message::type_to_int(Message::Type messageTypeEnum) {
     switch (messageTypeEnum) {
     case MESS:
         return 0x01;

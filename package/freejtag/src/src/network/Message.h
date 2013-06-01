@@ -16,23 +16,6 @@ namespace asio = boost::asio;
 namespace freejtag {
 
 /**
- * This enum is used to specify the type of the Message.
- */
-enum MessageType {
-    ERROR, ///< 0x00: Error. Message invalid
-    MESS, ///< 0x01: Common message to target.  Max size is body_max_length (TCP)
-    UART, ///< 0x02: Message received on the UART port of server. (TCP)
-    SPID, ///< 0x03: place holder
-    STIM, ///< 0x04: Set time (UDP)
-    PING, ///< 0x05: Ping! (UDP+TCP)
-    PONG, ///< 0x06: Answer to Ping! (UDP+TCP)
-    GSET, ///< 0x07: place holder
-    SSET, ///< 0x08: place holder
-    SETT, ///< 0x09: place holder
-    EXIT ///< 0x10: shutdown server (TCP)
-};
-
-/**
  * This is a single Message, which can be received from and sent to a Connection.
  * If it is created with the default constructor, it will appear as a MessageType::ERROR message,
  * which can act as a placeholder. After reading data into the message it's
@@ -50,18 +33,22 @@ public:
     typedef uint8_t MessageType_; ///< Size of the MessageType
     typedef uint16_t MessageLength_; ///< Size of the MessageLength
 
-    int decode_header();
-    ~Message();
-    std::vector<asio::const_buffer> to_buffers() const;
-    size_t get_length() const;
-    MessageTimestamp get_timestamp() const;
-    MessageTimestamp get_payload() const;
-    void set_timestamp(MessageTimestamp time);
-    MessageType get_type() const;
-    void set_type(MessageType type);
-    static pointer create_message(MessageType type = ERROR, std::string = "", MessageTimestamp timestamp = 0);
-    char* get_header();
-    char* get_body();
+    /**
+     * This enum is used to specify the type of the Message.
+     */
+    enum Type {
+        ERROR, ///< 0x00: Error. Message invalid
+        MESS, ///< 0x01: Common message to target.  Max size is body_max_length (TCP)
+        UART, ///< 0x02: Message received on the UART port of server. (TCP)
+        SPID, ///< 0x03: place holder
+        STIM, ///< 0x04: Set time (UDP)
+        PING, ///< 0x05: Ping! (UDP+TCP)
+        PONG, ///< 0x06: Answer to Ping! (UDP+TCP)
+        GSET, ///< 0x07: place holder
+        SSET, ///< 0x08: place holder
+        SETT, ///< 0x09: place holder
+        EXIT ///< 0x10: shutdown server (TCP)
+    };
 
     /**
      * The (fixed) length of the header in byte.
@@ -85,11 +72,23 @@ public:
         udp_packet_length = header_length + sizeof(MessageTimestamp)
     };
 
+    int decode_header();
+    ~Message();
+    std::vector<asio::const_buffer> to_buffers() const;
+    size_t get_length() const;
+    MessageTimestamp get_timestamp() const;
+    MessageTimestamp get_payload() const;
+    void set_timestamp(MessageTimestamp time);
+    Message::Type get_type() const;
+    void set_type(Message::Type type);
+    static pointer create_message(Message::Type type = ERROR, std::string = "", MessageTimestamp timestamp = 0);
+    char* get_header();
+    char* get_body();
 private:
     friend std::ostream& operator<<(std::ostream& o, const Message::pointer msg);
-    static MessageType_ type_to_int(MessageType);
-    static MessageType int_to_type(MessageType_ unsignedChar);
-    Message(MessageType type, std::string, MessageTimestamp timestamp);
+    static MessageType_ type_to_int(Message::Type);
+    static Message::Type int_to_type(MessageType_ unsignedChar);
+    Message(Message::Type type, std::string, MessageTimestamp timestamp);
     MessageType_ type_; ///< Type of this Message
     MessageLength_ length_; ///< Length of this Message (big endian)
     MessageTimestamp timestamp_; ///< Timestamp of this Message (big endian)

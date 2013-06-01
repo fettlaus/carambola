@@ -48,7 +48,7 @@ void NetworkService::handle_accept(Connection::pointer ptr, const boost::system:
     if (err == 0) {
         PRINT("Incoming Connection!");
         ptr->start();
-        send_message(ptr, Message::create_message(MESS, "Hello, new connection!"));
+        send_message(ptr, Message::create_message(Message::MESS, "Hello, new connection!"));
         connection_bundle_.add_connection(ptr);
         start_accept();
     } else {

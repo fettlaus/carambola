@@ -83,19 +83,19 @@ void DatagramService::handle_read(const boost::system::system_error& err) {
     microseconds tmp = TimeKeeper::time();
     if (err.code() == 0) {
         int body_length = cur_message_->decode_header();
-        MessageType t = cur_message_->get_type();
-        if (t == PING) {
+        Message::Type t = cur_message_->get_type();
+        if (t == Message::PING) {
             t2_ = tmp;
             t1_ = microseconds(cur_message_->get_timestamp());
             sequence_ = cur_message_->get_timestamp();
-            cur_message_->set_type(PONG);
+            cur_message_->set_type(Message::PONG);
             std::vector<const_buffer> buf = cur_message_->to_buffers();
             t3_ = TimeKeeper::time();
             socket_.async_send_to(buf, sender_endpoint_,
                 boost::bind(&DatagramService::handle_write, this, placeholders::error,
                     placeholders::bytes_transferred));
         } else {
-            if (body_length > 0 && t == STIM) {
+            if (body_length > 0 && t == Message::STIM) {
                 if (sequence_ == cur_message_->get_timestamp()) {
                     t4_ = microseconds(cur_message_->get_payload());
                     microseconds delay((t2_ - t1_ - t4_ + t3_) / 2);
