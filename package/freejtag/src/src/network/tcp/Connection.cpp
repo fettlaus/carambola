@@ -23,7 +23,7 @@ namespace freejtag {
  */
 Connection::Connection(NetworkBuffer& output_queue, asio::io_service& service) :
     cur_message_(Message::create_message()),
-    BaseConnection(service),
+    socket_(service),
     output_queue_(output_queue),
     strand_(service){
     PRINT("new Connection");
@@ -47,6 +47,14 @@ void Connection::deliver(const Message::pointer msg) {
  */
 Connection::pointer Connection::create_new(NetworkBuffer& input_messages, boost::asio::io_service& service) {
     return pointer(new Connection(input_messages, service));
+}
+
+/**
+ * Get socket of this connection.
+ * @return socket
+ */
+asio::ip::tcp::socket& Connection::get_socket() {
+	return socket_;
 }
 
 /**

@@ -7,19 +7,20 @@
 #ifndef CONNECTION_H_
 #define CONNECTION_H_
 
-#include "BaseConnection.h"
 #include "MessageTarget.h"
 #include "NetworkServiceTypedef.h"
 
 #include <network/Message.h>
 
 #include <boost/asio/strand.hpp>
+#include <boost/asio/ip/tcp.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
 namespace freejtag {
 
-class Connection: public BaseConnection, public MessageTarget, public boost::enable_shared_from_this<Connection> {
+class Connection: public MessageTarget, public boost::enable_shared_from_this<Connection> {
 private:
+	boost::asio::ip::tcp::socket socket_; ///< The Socket of this Connection
     Connection(NetworkBuffer& output_queue, boost::asio::io_service& service); ///< Hidden constructor
     Message::pointer cur_message_; ///< The message we are reading into
     void handle_write(const boost::system::system_error& err, size_t, const Message::pointer msg);
@@ -33,6 +34,7 @@ public:
     typedef boost::shared_ptr<Connection> pointer;
     static pointer create_new(NetworkBuffer& input_messages, boost::asio::io_service& service);
     void deliver(const Message::pointer);
+    boost::asio::ip::tcp::socket& get_socket();
     void start();
     void close();
 };

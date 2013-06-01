@@ -7,7 +7,6 @@ freejtag_SOURCES=Freejtag.cpp \
 				settings.cpp \
 				network/Message.cpp \
 				network/tcp/NetworkService.cpp \
-				network/tcp/BaseConnection.cpp \
 				network/tcp/Connection.cpp \
 				network/tcp/MessageTarget.cpp \
 				network/tcp/ConnectionBundle.cpp \
