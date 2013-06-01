@@ -41,8 +41,7 @@ ltversion.m4
 *~
 
 #Doxygen
-/html
-/latex
+/doc
 
 #Profiling
 gmon.out

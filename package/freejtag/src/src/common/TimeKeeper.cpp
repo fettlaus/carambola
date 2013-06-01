@@ -21,7 +21,8 @@ microseconds TimeKeeper::time(){
 }
 
 /**
- * Use this function to modify the internal epoch of the TimeKeeper.
+ * Use this function to modify the internal epoch of the TimeKeeper. The argument is the value
+ * in microseconds to shift the epoch by.
  * @param difference
  */
 void TimeKeeper::set(microseconds difference){

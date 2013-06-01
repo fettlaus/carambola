@@ -99,7 +99,7 @@ int Message::decode_header() {
 }
 
 /**
- * Get length of message-body as specified in the header.
+ * Get length of message-body. This is specified in its header and not actually measured.
  * @pre Read a header from socket and called Message::decode_header()
  * @return Length of body
  */
@@ -108,7 +108,9 @@ size_t Message::get_length() const {
 }
 
 /**
- * This function can be used to get a buffer of this message for writing it to a Connection.
+ * Get this Message as a Buffer. This function can be used to get a buffer of this message
+ * for writing it to a Connection.
+ * @todo Possibly return a ConstBufferSequence (and store data on heap)
  * @pre Content of the Message has to be set by construction or setters.
  * @return Buffer of this message
  */
@@ -126,7 +128,7 @@ std::vector<asio::const_buffer> Message::to_buffers() const {
 }
 
 /**
- * The timestamp of this message. Either set on construction or by using set_timestamp().
+ * Get the timestamp of this message. Either set on construction or by using set_timestamp().
  * @return Timestamp of message
  */
 Message::MessageTimestamp Message::get_timestamp() const {
@@ -134,7 +136,7 @@ Message::MessageTimestamp Message::get_timestamp() const {
 }
 
 /**
- * This gets the payload of a UDP Message. The Payload is always a MessageTimestamp and will be transported
+ * Get the payload of a UDP Message. The Payload is always a MessageTimestamp and will be transported
  * in the body of the message.
  * @return Payload of datagram
  */
@@ -180,7 +182,7 @@ char* Message::get_body() {
 }
 
 /**
- * Get a pointer to the header Don't write more than header_length byte here.
+ * Get a pointer to the header. Don't write more than header_length byte here.
  * @return pointer to header
  */
 char* Message::get_header() {
@@ -188,7 +190,8 @@ char* Message::get_header() {
 }
 
 /**
- * Constructs a new Message and return a Message::pointer to it. This provides safe use with a boost::shared_ptr.
+ * Construct a new Message. Returns a Message::pointer to the newly created Message.
+ * This provides safe use with a boost::shared_ptr.
  * @param type Type of the new Message
  * @param allocator Body of the new Message
  * @param timestamp Timestamp of the new Message

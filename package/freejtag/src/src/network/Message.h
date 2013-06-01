@@ -34,7 +34,7 @@ enum MessageType {
 
 /**
  * This is a single Message, which can be received from and sent to a Connection.
- * If it is created with the default constructor, it will appear as a ERROR message,
+ * If it is created with the default constructor, it will appear as a MessageType::ERROR message,
  * which can act as a placeholder. After reading data into the message it's
  * Message::decode_header() function should be called to generate the necessary fields. Access to a Message
  * is only possible through its Message::pointer.
@@ -52,15 +52,14 @@ public:
 
     int decode_header();
     ~Message();
-    std::vector<asio::const_buffer> to_buffers() const; ///< Buffer useful for sending via Connection
+    std::vector<asio::const_buffer> to_buffers() const;
     size_t get_length() const;
     MessageTimestamp get_timestamp() const;
-    MessageTimestamp get_payload() const; ///< Get UDP Payload
+    MessageTimestamp get_payload() const;
     void set_timestamp(MessageTimestamp time);
     MessageType get_type() const;
     void set_type(MessageType type);
-    static pointer create_message(MessageType type = ERROR, std::string = "", MessageTimestamp timestamp = 0); ///< Create a
-    ///< new Message and get its Message::pointer
+    static pointer create_message(MessageType type = ERROR, std::string = "", MessageTimestamp timestamp = 0);
     char* get_header();
     char* get_body();
 
@@ -79,8 +78,8 @@ public:
     };
 
     /**
-     * UDP Messages have fixed length of header + timestamp in body
-     * The Timestamp will be used as a sequence number
+     * Fixed length of a single UDP Message. UDP Messages have fixed length of
+     * header and the timestamp in its body. The Timestamp will also be used as a sequence number.
      */
     enum {
         udp_packet_length = header_length + sizeof(MessageTimestamp)
