@@ -39,7 +39,7 @@ public:
     typedef boost::shared_ptr<Connection> pointer; ///< Shared pointer for a connection
 
     ~Connection();
-    static pointer create_new(NetworkBuffer& input_messages, boost::asio::io_service& service);
+    static pointer create_new(NetworkBuffer& input_buffer, boost::asio::io_service& service);
     void deliver(const Message::pointer);
     boost::asio::ip::tcp::socket& get_socket();
     void start();

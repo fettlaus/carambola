@@ -21,12 +21,12 @@ namespace freejtag {
  * Create a new Connection and a new socket. It needs an io_service object used for dispatching
  * and a queue for received Messages.
  * @param service The io_service object used to dispatch the asynchronous handlers
- * @param output_queue The NetworkBuffer where received messages will be stored
+ * @param input_buffer The NetworkBuffer where received messages will be stored
  */
-Connection::Connection(NetworkBuffer& output_queue, asio::io_service& service) :
+Connection::Connection(NetworkBuffer& input_buffer, asio::io_service& service) :
     cur_message_(Message::create_message()),
     socket_(service),
-    input_buffer_(output_queue),
+    input_buffer_(input_buffer),
     strand_(service){
     PRINT("new Connection");
 }
@@ -47,11 +47,11 @@ void Connection::deliver(const Message::pointer msg) {
  * Create new Connection with a socket and return a boost::shared_ptr. After creation the socket
  * needs to be connected by an acceptor.
  * @param service The io_service object used to dispatch the asynchronous handlers.
- * @param output_queue The NetworkBuffer where received messages will be stored.
+ * @param input_buffer The NetworkBuffer where received messages will be stored.
  * @return boost::shared_ptr The pointer that should be used to access this connection.
  */
-Connection::pointer Connection::create_new(NetworkBuffer& input_messages, boost::asio::io_service& service) {
-    return pointer(new Connection(input_messages, service));
+Connection::pointer Connection::create_new(NetworkBuffer& input_buffer, boost::asio::io_service& service) {
+    return pointer(new Connection(input_buffer, service));
 }
 
 /**
@@ -66,6 +66,7 @@ asio::ip::tcp::socket& Connection::get_socket() {
  * What to do after we finished writing to the client.
  * @param err Error code
  * @param bytes Amount of bytes written
+ * @param msg Message which we have written
  * @throw connectionException If an error occurred during writing
  */
 void Connection::handle_write(const boost::system::system_error& err, size_t bytes, const Message::pointer msg) {
