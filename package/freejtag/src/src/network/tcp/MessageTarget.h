@@ -11,12 +11,20 @@
 
 namespace freejtag {
 
+/**
+ * Interface for a target which can receive a Message. This target only needs to respond to a deliver()
+ * method.
+ */
 class MessageTarget {
 public:
-    virtual ~MessageTarget()=0;
-    void deliver(const Message::pointer);
-protected:
-    MessageTarget();
+    virtual ~MessageTarget() {};
+
+    /**
+     * Deliver a single Message. This function delivers a single Message to the implementing
+     * target.
+     * @param mess Message to deliver
+     */
+    virtual void deliver(const Message::pointer mess) = 0;
 };
 
 } /* namespace freejtag */
