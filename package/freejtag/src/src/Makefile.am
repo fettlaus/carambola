@@ -8,7 +8,6 @@ freejtag_SOURCES=Freejtag.cpp \
 				network/Message.cpp \
 				network/tcp/NetworkService.cpp \
 				network/tcp/Connection.cpp \
-				network/tcp/ConnectionBundle.cpp \
 				network/tcp/MessageTargetBundle.cpp \
 				uart/UARTConnection.cpp \
 				uart/UARTService.cpp \
