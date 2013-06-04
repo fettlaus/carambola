@@ -1,5 +1,5 @@
 /**
- * @file MessageTargetBundle.cpp
+ * @file ConnectionBundle.cpp
  * @date Jan 7, 2013
  * @author Arne Wischer<Fettlaus@gmail.com>
  */
