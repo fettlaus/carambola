@@ -4,7 +4,7 @@
  * @author Arne Wischer<Fettlaus@gmail.com>
  */
 
-#include "MessageTargetBundle.h"
+#include "ConnectionBundle.h"
 #include <debug.h>
 #include <boost/bind.hpp>
 #include <algorithm>

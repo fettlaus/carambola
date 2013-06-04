@@ -9,7 +9,7 @@
 
 #include "Connection.h"
 
-#include "MessageTargetBundle.h"
+#include "ConnectionBundle.h"
 #include "NetworkServiceTypedef.h"
 
 #include <settings.h>
