@@ -9,6 +9,8 @@
 
 #include <network/Message.h>
 
+#include <boost/bind/bind.hpp>
+#include <boost/asio/placeholders.hpp>
 #include <boost/asio/ip/udp.hpp>
 
 namespace freejtag {

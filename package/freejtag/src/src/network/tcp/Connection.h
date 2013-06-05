@@ -11,6 +11,8 @@
 #include "ConnectionTypedef.h"
 #include "ConnectionException.h"
 
+#include <boost/bind/bind.hpp>
+#include <boost/asio/placeholders.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/write.hpp>

@@ -7,7 +7,7 @@
 #ifndef UARTSERVICETYPEDEF_H_
 #define UARTSERVICETYPEDEF_H_
 
-#include <common/Includes.h>
+#include <util/BlockingQueue.h>
 
 namespace freejtag{
 

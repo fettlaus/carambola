@@ -7,7 +7,7 @@
 #ifndef UARTTYPES_H_
 #define UARTTYPES_H_
 
-#include <common/Includes.h>
+#include <debug.h>
 #include <boost/program_options/value_semantic.hpp>
 #include <boost/asio/serial_port_base.hpp>
 #include <boost/any.hpp>

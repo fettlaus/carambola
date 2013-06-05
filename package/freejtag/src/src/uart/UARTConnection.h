@@ -9,6 +9,10 @@
 
 #include "UARTConnectionTypedef.h"
 
+#include <common/TimeKeeper.h>
+
+#include <boost/bind/bind.hpp>
+#include <boost/asio/placeholders.hpp>
 #include <boost/asio/read_until.hpp>
 #include <boost/asio/serial_port.hpp>
 #include <boost/asio/streambuf.hpp>

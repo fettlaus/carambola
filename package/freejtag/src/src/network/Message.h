@@ -10,7 +10,8 @@
 #include <boost/asio/buffer.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <stdint.h>
-#include <common/Includes.h>
+#include <common/TimeKeeper.h>
+#include <debug.h>
 #include <cstring>
 #include <boost/detail/endian.hpp>
 
