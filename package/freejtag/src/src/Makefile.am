@@ -3,17 +3,18 @@
 #AM_CPPFLAGS = $(BOOST_CPPFLAGS)
 
 bin_PROGRAMS=freejtag
-freejtag_SOURCES=Freejtag.cpp \
-				settings.cpp \
+freejtag_SOURCES=common/TimeKeeper.cpp \
 				network/Message.cpp \
-				network/tcp/NetworkService.cpp \
 				network/tcp/Connection.cpp \
 				network/tcp/ConnectionBundle.cpp \
+				network/tcp/NetworkService.cpp \
+				network/udp/DatagramService.cpp \
 				uart/UARTConnection.cpp \
 				uart/UARTService.cpp \
 				uart/UARTTypes.cpp \
-				common/TimeKeeper.cpp \
-				network/udp/DatagramService.cpp
+				settings.cpp \
+				Freejtag.cpp
+				
 				
 AM_CPPFLAGS+=$(BOOST_CPPFLAGS)
 AM_LDFLAGS=$(BOOST_THREADS_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_DATE_TIME_LDFLAGS)
