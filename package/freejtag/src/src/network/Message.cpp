@@ -1,14 +1,10 @@
 /**
  * Message.cpp
  * @date Dec 27, 2012
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #include "Message.h"
-#include <common/TimeKeeper.h>
-#include <debug.h>
-#include <cstring>
-#include <boost/detail/endian.hpp>
 
 namespace freejtag {
 

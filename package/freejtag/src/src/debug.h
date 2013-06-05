@@ -1,7 +1,7 @@
 /**
  * @file debug.h
  * @date Jan 7, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef DEBUG_H_
@@ -17,6 +17,7 @@
 #define PRINT(...)
 #endif
 /**
+ * @internal
  * Nach:
  * http://stackoverflow.com/questions/9527127/thread-safe-cout-technique-am-i-missing-something
  */

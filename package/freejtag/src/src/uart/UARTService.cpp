@@ -1,7 +1,7 @@
 /**
  * @file UARTService.cpp
  * @date Jan 11, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #include "UARTService.h"

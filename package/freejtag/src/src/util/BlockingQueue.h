@@ -1,7 +1,7 @@
 /**
- * @file MessageQueue.h
+ * @file BlockingQueue.h
  * @date Jan 5, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef MESSAGEQUEUE_H_

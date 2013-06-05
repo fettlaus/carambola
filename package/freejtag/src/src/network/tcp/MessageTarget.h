@@ -1,7 +1,7 @@
 /**
  * @file MessageTarget.h
  * @date Jan 7, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef MESSAGETARGET_H_

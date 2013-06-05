@@ -1,13 +1,13 @@
 /**
  * @file TimeKeeper.h
  * @date Feb 7, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef TIMEKEEPER_H_
 #define TIMEKEEPER_H_
 
-#include <boost/chrono.hpp>
+#include <boost/chrono/system_clocks.hpp>
 
 namespace freejtag {
 using namespace boost::chrono;

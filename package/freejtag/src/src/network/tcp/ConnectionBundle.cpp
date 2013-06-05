@@ -1,13 +1,10 @@
 /**
  * @file ConnectionBundle.cpp
  * @date Jan 7, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #include "ConnectionBundle.h"
-#include <debug.h>
-#include <boost/bind.hpp>
-#include <algorithm>
 
 namespace freejtag {
 

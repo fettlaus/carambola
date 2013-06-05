@@ -1,22 +1,13 @@
 /**
  * @file NetworkService.h
  * @date Jan 3, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef TELNET_H_
 #define TELNET_H_
 
-#include "Connection.h"
-
 #include "ConnectionBundle.h"
-#include "NetworkServiceTypedef.h"
-
-#include <settings.h>
-
-#include <boost/thread.hpp>
-#include <boost/asio/ip/tcp.hpp>
-#include <set>
 
 namespace asio = boost::asio;
 
@@ -29,7 +20,6 @@ namespace freejtag{
 class NetworkService{
 private:
     NetworkBuffer& input_buffer_;
-    settings& settings_;
     asio::io_service& io_service_;
     asio::ip::tcp::acceptor accepto_;
     bool shutdown_;
@@ -39,7 +29,7 @@ private:
 public:
     void start_accept();
     void shutdown();
-    NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings);
+    NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, unsigned int port);
     void remove_connection(Connection::pointer conn);
     bool send_broadcast(Message::pointer msg);
     bool send_message(Connection::pointer conn, Message::pointer msg);

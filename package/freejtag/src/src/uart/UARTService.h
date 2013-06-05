@@ -1,17 +1,13 @@
 /**
  * @file UARTService.h
  * @date Jan 11, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef UARTSERVICE_H_
 #define UARTSERVICE_H_
 
 #include "UARTConnection.h"
-#include "UARTServiceTypedef.h"
-#include "UARTTypes.h"
-
-#include <boost/thread.hpp>
 
 namespace freejtag {
 

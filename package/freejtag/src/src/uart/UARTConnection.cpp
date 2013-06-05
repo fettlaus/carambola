@@ -1,16 +1,10 @@
 /**
  * @file UARTConnection.cpp
  * @date Jan 11, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #include "UARTConnection.h"
-
-#include <common/TimeKeeper.h>
-
-#include <boost/asio/read_until.hpp>
-#include <boost/bind.hpp>
-#include <boost/asio/placeholders.hpp>
 
 namespace freejtag {
 

@@ -1,29 +1,19 @@
 /**
  * @file NetworkService.cpp
  * @date Jan 3, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #include "NetworkService.h"
-#include "Connection.h"
-#include "ConnectionException.h"
-#include <debug.h>
-
-#include <boost/bind.hpp>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/asio.hpp>
 
 namespace freejtag {
 
-NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, settings& settings) :
+NetworkService::NetworkService(asio::io_service& io_service, NetworkBuffer& buffer, unsigned int port) :
     io_service_(io_service),
     accepto_(io_service_),
     shutdown_(false),
-    settings_(settings),
     input_buffer_(buffer) {
-    unsigned int this_port = settings.get_value<unsigned int>("port");
-    asio::ip::tcp::endpoint ep(asio::ip::tcp::v4(), this_port);
+    asio::ip::tcp::endpoint ep(asio::ip::tcp::v4(), port);
     accepto_.open(ep.protocol());
     accepto_.set_option(boost::asio::socket_base::reuse_address(true));
     accepto_.bind(ep);

@@ -1,14 +1,19 @@
 /**
  * @file settings.h
  * @date Dec 25, 2012
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
-#include <boost/program_options.hpp>
-#include <boost/asio/serial_port_base.hpp>
-#include <string>
+
+#include "uart/UARTTypes.h"
+
+#include <boost/program_options/variables_map.hpp>
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/parsers.hpp>
+
+#include <fstream>
 
 namespace po = boost::program_options;
 

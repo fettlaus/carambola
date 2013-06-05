@@ -1,25 +1,18 @@
 /**
  * @file DatagramService.cpp
  * @date Feb 7, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #include "DatagramService.h"
 
-#include <common/TimeKeeper.h>
-#include <debug.h>
-
-#include <boost/bind.hpp>
-#include <boost/asio/placeholders.hpp>
-
 namespace freejtag {
 
-DatagramService::DatagramService(boost::asio::io_service& io_service, settings& settings) :
+DatagramService::DatagramService(boost::asio::io_service& io_service, unsigned int port) :
     socket_(io_service),
     running_(true),
     sequence_(0) {
-    unsigned int this_port = settings.get_value<unsigned int>("port");
-    ip::udp::endpoint ep(ip::udp::v4(), this_port);
+    ip::udp::endpoint ep(ip::udp::v4(), port);
     socket_.open(ep.protocol());
     socket_.bind(ep);
     cur_message_ = Message::create_message();

@@ -1,21 +1,10 @@
 /**
  * @file Freejtag.cpp
  * @date Dec 27, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #include "Freejtag.h"
-
-#include "settings.h"
-
-#include <network/tcp/ConnectionException.h>
-#include <common/TimeKeeper.h>
-
-#include <boost/program_options.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/asio.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/bind.hpp>
 
 int main(int argc, char* argv[]) {
     freejtag::Freejtag *prog;
@@ -28,11 +17,11 @@ int main(int argc, char* argv[]) {
 namespace freejtag {
 Freejtag::Freejtag(int argc, char* argv[]) :
     prog_settings_(argc, argv),
-    prog_network_(io_service_, input_network_, prog_settings_),
+    prog_network_(io_service_, input_network_, prog_settings_.get_value<unsigned int>("port")),
     uart_service_(io_service_, input_uart_),
     uart_dispatcher_(boost::bind(&Freejtag::uart_handle, this)),
     network_dispatcher_(boost::bind(&Freejtag::network_handle, this)),
-    prog_datagram_(io_service_,prog_settings_),
+    prog_datagram_(io_service_,prog_settings_.get_value<unsigned int>("port")),
     ping_timer_(io_service_, boost::posix_time::seconds(1)),
     running_(true){
     PRINT("FreeJTAG set up ...");

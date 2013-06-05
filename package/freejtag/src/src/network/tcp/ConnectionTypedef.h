@@ -1,13 +1,13 @@
 /**
- * @file NetworkServiceTypedef.h
+ * @file ConnectionTypedef.h
  * @date Jan 10, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef NETWORKSERVICETYPEDEF_H_
 #define NETWORKSERVICETYPEDEF_H_
 
-#include <util/BlockingQueue.h>
+#include <common/Includes.h>
 
 namespace freejtag{
 class Connection;

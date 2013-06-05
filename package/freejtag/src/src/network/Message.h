@@ -1,7 +1,7 @@
 /**
  * @file Message.h
  * @date Dec 27, 2012
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef MESSAGE_H_
@@ -10,6 +10,9 @@
 #include <boost/asio/buffer.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <stdint.h>
+#include <common/Includes.h>
+#include <cstring>
+#include <boost/detail/endian.hpp>
 
 namespace asio = boost::asio;
 

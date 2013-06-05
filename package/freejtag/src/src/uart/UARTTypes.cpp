@@ -1,16 +1,13 @@
 /**
  * @file UARTTypes.cpp
  * @date Jan 11, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #include "UARTTypes.h"
-#include <debug.h>
-#include <boost/program_options.hpp>
 
 namespace freejtag {
 namespace uart{
-
 
 parity::parity(type t):serial_port_base::parity(t) {
 }

@@ -1,16 +1,17 @@
 /**
  * @file UARTConnection.h
  * @date Jan 11, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef UARTCONNECTION_H_
 #define UARTCONNECTION_H_
 
+#include "UARTConnectionTypedef.h"
+
+#include <boost/asio/read_until.hpp>
 #include <boost/asio/serial_port.hpp>
 #include <boost/asio/streambuf.hpp>
-#include "UARTServiceTypedef.h"
-#include <debug.h>
 
 namespace freejtag {
 

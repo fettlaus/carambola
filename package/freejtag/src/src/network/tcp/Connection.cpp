@@ -1,18 +1,11 @@
 /**
  * @file Connection.cpp
  * @date Dec 24, 2012
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #include "Connection.h"
 
-#include "ConnectionException.h"
-
-#include <network/Message.h>
-#include <debug.h>
-
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
 namespace asio = boost::asio;
 
 namespace freejtag {

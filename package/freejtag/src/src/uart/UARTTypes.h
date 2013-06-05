@@ -1,12 +1,14 @@
 /**
  * @file UARTTypes.h
  * @date Jan 11, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef UARTTYPES_H_
 #define UARTTYPES_H_
 
+#include <common/Includes.h>
+#include <boost/program_options/value_semantic.hpp>
 #include <boost/asio/serial_port_base.hpp>
 #include <boost/any.hpp>
 #include <vector>

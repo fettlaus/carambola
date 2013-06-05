@@ -1,7 +1,7 @@
 /**
  * @file Freejtag.h
  * @date Dec 27, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef FREEJTAG_H_
@@ -13,9 +13,8 @@
 #include <network/udp/DatagramService.h>
 #include <uart/UARTService.h>
 
-#include <boost/asio/io_service.hpp>
+#include <boost/thread/thread.hpp>
 #include <boost/asio/deadline_timer.hpp>
-#include <utility>
 
 namespace freejtag {
 class Freejtag {

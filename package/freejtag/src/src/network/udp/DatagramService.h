@@ -1,7 +1,7 @@
 /**
  * @file DatagramService.h
  * @date Feb 7, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef DATAGRAMSERVICE_H_
@@ -9,11 +9,7 @@
 
 #include <network/Message.h>
 
-#include <boost/thread.hpp>
-#include <boost/asio/io_service.hpp>
 #include <boost/asio/ip/udp.hpp>
-#include <boost/chrono.hpp>
-#include <settings.h>
 
 namespace freejtag {
 using namespace boost::asio;
@@ -21,7 +17,7 @@ using namespace boost::chrono;
 
 class DatagramService {
 public:
-    DatagramService(io_service& io_service, settings& settings);
+    DatagramService(io_service& io_service, unsigned int port);
     virtual ~DatagramService();
     void start_socket();
     void stop_socket();

@@ -1,19 +1,10 @@
 /**
  * @file settings.cpp
  * @date Dec 25, 2012
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #include "settings.h"
-#include "uart/UARTTypes.h"
-
-#include <debug.h>
-
-#include <stdio.h>
-#include <boost/program_options.hpp>
-#include <boost/program_options/variables_map.hpp>
-
-#include <fstream>
 
 namespace freejtag {
 

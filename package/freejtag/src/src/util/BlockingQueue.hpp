@@ -1,7 +1,7 @@
 /**
- * @file MessageQueue.hpp
+ * @file BlockingQueue.hpp
  * @date Jan 5, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 template<typename D>

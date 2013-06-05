@@ -1,11 +1,10 @@
 /**
  * @file TimeKeeper.cpp
  * @date Feb 7, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #include "TimeKeeper.h"
-
 #include <debug.h>
 
 namespace freejtag {

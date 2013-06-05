@@ -1,7 +1,7 @@
 /**
  * @file ConnectionBundle.h
  * @date Jan 7, 2013
- * @author Arne Wischer<Fettlaus@gmail.com>
+ * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
 #ifndef MESSAGETARGETBUNDLE_H_
@@ -9,6 +9,7 @@
 
 #include "Connection.h"
 
+#include <algorithm>
 #include <set>
 
 namespace freejtag {
