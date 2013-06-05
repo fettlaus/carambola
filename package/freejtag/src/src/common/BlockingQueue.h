@@ -16,7 +16,10 @@
 namespace freejtag {
 
 /**
- * Nach:
+ * A templated blocking queue.
+ * This FIFO queue uses a mutex to coordinate access to the data. All methods of this class
+ * are synchronized.
+ *
  * http://www.justsoftwaresolutions.co.uk/threading/implementing-a-thread-safe-queue-using-condition-variables.html
  */
 template<typename D>
@@ -26,9 +29,9 @@ public:
     bool empty() const;
     D pop();
 private:
-    mutable boost::mutex mutex_;
-    std::queue<D> queue_;
-    boost::condition_variable cond_;
+    mutable boost::mutex mutex_; ///< The mutex to protect access
+    std::queue<D> queue_; ///< The internal queue
+    boost::condition_variable cond_; ///< Condition variable used with the mutex
 };
 
 } /* namespace freejtag */
