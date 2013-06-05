@@ -7,7 +7,7 @@
 #ifndef NETWORKSERVICETYPEDEF_H_
 #define NETWORKSERVICETYPEDEF_H_
 
-#include <util/BlockingQueue.h>
+#include <common/BlockingQueue.h>
 
 namespace freejtag{
 class Connection;
