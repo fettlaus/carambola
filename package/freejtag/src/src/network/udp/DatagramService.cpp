@@ -8,6 +8,15 @@
 
 namespace freejtag {
 
+/**
+ * Create a new DatagramService instance.
+ * This method creates a new socket from the specified io_service, opens it and binds it to an
+ * UDP endpoint using the specified port. It also creates an empty Message for storage of incoming
+ * data.
+ * <p>After creating this DatagramService, start_socket() should be called to listen for incoming data.</p>
+ * @param io_service
+ * @param port
+ */
 DatagramService::DatagramService(boost::asio::io_service& io_service, unsigned int port) :
     socket_(io_service),
     sequence_(0) {
@@ -69,8 +78,8 @@ void DatagramService::delay_tuner(microseconds delay) {
  * Handle received UDP package. This function will check the Type of Message and act depending on it.
  * If we received a MessageType::PING Message, we will set the sequence number, get the needed timepoints and send
  * a PONG back.
- * If we received a MessageType::STIM, we will check the sequence number, calculate the result and send it to
- * DatagramService::delay_tuner().<p/>
+ * <p>If we received a MessageType::STIM, we will check the sequence number, calculate the result and send it to
+ * DatagramService::delay_tuner().</p>
  * This function gets called asynchronously by the asio library.
  * @pre DatagramService::start_socket() has been called
  * @param err
