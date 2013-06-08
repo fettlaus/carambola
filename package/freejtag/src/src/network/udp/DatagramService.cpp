@@ -10,7 +10,6 @@ namespace freejtag {
 
 DatagramService::DatagramService(boost::asio::io_service& io_service, unsigned int port) :
     socket_(io_service),
-    running_(true),
     sequence_(0) {
     ip::udp::endpoint ep(ip::udp::v4(), port);
     socket_.open(ep.protocol());
@@ -20,15 +19,17 @@ DatagramService::DatagramService(boost::asio::io_service& io_service, unsigned i
 }
 
 /**
- * Close this socket. Will automatically call the handlers with an error code if they are still waiting.
+ * Close this socket.
+ * Will automatically call the handlers with an error code if they are still waiting.
  */
 void DatagramService::stop_socket() {
-    running_ = false;
     socket_.close();
 }
 
 /**
  * Start socket to listen for UDP packages.
+ * This methods starts an asynchronous receive. Upon receiving a message, it will store the sender
+ * into a endpoint so we can easily reply and start a handle_read().
  */
 void DatagramService::start_socket() {
     PRINT("Start UDP Listening");
@@ -38,19 +39,20 @@ void DatagramService::start_socket() {
 
 /**
  * This function accumulates some delays and adjusts the TimeKeeper after gathering some.
- * It will also directly adjust the Timekeeper if a delay is greater than time_msec_direct.
- * @param delay
+ * It will also directly adjust the TimeKeeper if a delay is greater than time_msec_direct.
+ * @param delay The number if microseconds which we are off
+ * @see TimeKeeper
  */
 void DatagramService::delay_tuner(microseconds delay) {
     static microseconds buf[time_sync_buffer];
     static int next_index = 0;
     if (delay > microseconds(time_msec_direct) || delay < microseconds(-time_msec_direct)) {
-        TimeKeeper::set(delay);
+        TimeKeeper::set(delay); //directly set, we are a large amount off
     } else {
         buf[next_index] = delay;
         next_index++;
         if (next_index >= time_sync_buffer) {
-            microseconds accu(0);
+            microseconds accu(0); // calculate median
             for (int i = 0; i < next_index; i++) {
                 PRINT("Delay "<< i << " is "<<buf[i].count());
                 accu = accu + buf[i];
@@ -64,13 +66,15 @@ void DatagramService::delay_tuner(microseconds delay) {
 }
 
 /**
- * Handle received UDP package. This function will check the Type of message and act depending on it.
+ * Handle received UDP package. This function will check the Type of Message and act depending on it.
  * If we received a MessageType::PING Message, we will set the sequence number, get the needed timepoints and send
  * a PONG back.
  * If we received a MessageType::STIM, we will check the sequence number, calculate the result and send it to
- * DatagramService::delay_tuner().
+ * DatagramService::delay_tuner().<p/>
+ * This function gets called asynchronously by the asio library.
  * @pre DatagramService::start_socket() has been called
  * @param err
+ * @todo Check if we possibly need to do something on an error
  */
 void DatagramService::handle_read(const boost::system::system_error& err) {
     microseconds tmp = TimeKeeper::time();
@@ -81,13 +85,13 @@ void DatagramService::handle_read(const boost::system::system_error& err) {
             t2_ = tmp;
             t1_ = microseconds(cur_message_->get_timestamp());
             sequence_ = cur_message_->get_timestamp();
-            cur_message_->set_type(Message::PONG);
+            cur_message_->set_type(Message::PONG); // send the same message with a different type back
             std::vector<const_buffer> buf = cur_message_->to_buffers();
             t3_ = TimeKeeper::time();
             socket_.async_send_to(buf, sender_endpoint_,
                 boost::bind(&DatagramService::handle_write, this, placeholders::error,
                     placeholders::bytes_transferred));
-        } else {
+        } else { // sequence finished, calculate difference
             if (body_length > 0 && t == Message::STIM) {
                 if (sequence_ == cur_message_->get_timestamp()) {
                     t4_ = microseconds(cur_message_->get_payload());
@@ -103,9 +107,12 @@ void DatagramService::handle_read(const boost::system::system_error& err) {
 }
 
 /**
- * Start a new read if no error occured.
+ * Starts a new read if no error occurred.
+ * This function is only used to start an new asynchronous receive after a successful write to the datagram
+ * socket happened. If an error occurred, no new receive will be started.
  * @param err
- * @param bytes_written
+ * @param bytes_written The number of bytes written to the socket
+ * @todo Check if we can safely receive even after an error.
  */
 void DatagramService::handle_write(const boost::system::system_error& err, size_t bytes_written) {
     if (err.code() == 0) {
@@ -113,7 +120,5 @@ void DatagramService::handle_write(const boost::system::system_error& err, size_
             sender_endpoint_, boost::bind(&DatagramService::handle_read, this, boost::asio::placeholders::error));
     }
 }
-
-DatagramService::~DatagramService() { }
 
 } /* namespace freejtag */
