@@ -26,7 +26,7 @@ microseconds TimeKeeper::time(){
  */
 void TimeKeeper::set(microseconds difference){
     epoch_ = epoch_ + difference;
-    PRINT("Corrected time by " << difference);
+    PRINT("Corrected time by " << difference.count());
 }
 
 } /* namespace freejtag */

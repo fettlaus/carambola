@@ -52,7 +52,7 @@ void DatagramService::delay_tuner(microseconds delay) {
         if (next_index >= time_sync_buffer) {
             microseconds accu(0);
             for (int i = 0; i < next_index; i++) {
-                PRINT("Delay "<< i << " is "<<buf[i]);
+                PRINT("Delay "<< i << " is "<<buf[i].count());
                 accu = accu + buf[i];
             }
             accu = accu / (next_index);
