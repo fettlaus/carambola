@@ -19,7 +19,7 @@ namespace freejtag {
  * This class stores a number of unique Connections and offers some functionality to communicate with
  * all Connection instances at once.
  */
-class MessageTargetBundle {
+class ConnectionBundle {
 public:
     void add_connection(Connection::pointer conn);
     void remove_connection(Connection::pointer conn);

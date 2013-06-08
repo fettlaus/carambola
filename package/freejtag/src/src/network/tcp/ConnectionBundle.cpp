@@ -14,7 +14,7 @@ namespace freejtag {
  * @return Always true (unused)
  * @todo Catch errors and return error state
  */
-bool MessageTargetBundle::send_broadcast(const Message::pointer msg) {
+bool ConnectionBundle::send_broadcast(const Message::pointer msg) {
     PRINT("Sending Broadcast");
     std::for_each(connections_.begin(),connections_.end(),boost::bind(&Connection::deliver,_1,boost::ref(msg)));
     return true;
@@ -25,7 +25,7 @@ bool MessageTargetBundle::send_broadcast(const Message::pointer msg) {
  * adding the new Connection.
  * @param conn The new Connection
  */
-void MessageTargetBundle::add_connection(Connection::pointer conn) {
+void ConnectionBundle::add_connection(Connection::pointer conn) {
     this->send_broadcast(Message::create_message(Message::MESS,"New Connection!"));
     connections_.insert(conn);
 }
@@ -36,7 +36,7 @@ void MessageTargetBundle::add_connection(Connection::pointer conn) {
  * @param conn The Connection to be removed
  * @todo Return state of removal (true/false)
  */
-void MessageTargetBundle::remove_connection(Connection::pointer conn) {
+void ConnectionBundle::remove_connection(Connection::pointer conn) {
     conn->close();
     connections_.erase(conn);
 }
@@ -44,7 +44,7 @@ void MessageTargetBundle::remove_connection(Connection::pointer conn) {
 /**
  * Close all Connection instances. This simply calls close() for every Connection in this bundle.
  */
-void MessageTargetBundle::close_all_connections() {
+void ConnectionBundle::close_all_connections() {
     std::for_each(connections_.begin(),connections_.end(),boost::bind(&Connection::close,_1));
 }
 

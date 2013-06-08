@@ -32,7 +32,7 @@ private:
     asio::io_service& io_service_; ///< Handles asynchronous networking
     asio::ip::tcp::acceptor accepto_; ///< Used for incoming connections
     Connection::pointer new_connection_; ///< Temporary storage for a new Connection
-    MessageTargetBundle connection_bundle_; ///< Stores all current Connection instances
+    ConnectionBundle connection_bundle_; ///< Stores all current Connection instances
 
     void handle_accept(Connection::pointer ptr, const boost::system::error_code& err);
 public:
