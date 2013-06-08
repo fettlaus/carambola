@@ -47,7 +47,7 @@ void Freejtag::network_handle() {
             msg->set_timestamp(TimeKeeper::time().count());
             prog_network_.send_broadcast(msg);
         } else if (type == Message::PING) { ///< Answer PING
-            prog_network_.send_message(con, Message::create_message(Message::PONG));
+        	con->deliver(Message::create_message(Message::PONG));
         } else if (type == Message::EXIT) {
             running_ = false;
             ping_timer_.cancel();
