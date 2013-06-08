@@ -4,8 +4,8 @@
  * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
-#ifndef MESSAGETARGETBUNDLE_H_
-#define MESSAGETARGETBUNDLE_H_
+#ifndef CONNECTIONBUNDLE_H_
+#define CONNECTIONBUNDLE_H_
 
 #include "Connection.h"
 
@@ -15,10 +15,11 @@
 namespace freejtag {
 
 /**
- *
+ * Used to store a number of Connections.
+ * This class stores a number of unique Connections and offers some functionality to communicate with
+ * all Connection instances at once.
  */
 class MessageTargetBundle {
-
 public:
     void add_connection(Connection::pointer conn);
     void remove_connection(Connection::pointer conn);
@@ -30,4 +31,4 @@ protected:
 };
 
 } /* namespace freejtag */
-#endif /* MESSAGETARGETBUNDLE_H_ */
+#endif /* CONNECTIONBUNDLE_H_ */
