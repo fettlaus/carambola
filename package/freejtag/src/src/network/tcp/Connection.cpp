@@ -64,7 +64,7 @@ asio::ip::tcp::socket& Connection::get_socket() {
  */
 void Connection::handle_write(const boost::system::system_error& err, size_t bytes, const Message::pointer msg) {
 	if (err.code()) {
-        throw connection_exception() << connection_info(shared_from_this());
+        throw ConnectionException() << ConnectionInfo(shared_from_this());
     }
     PRINT(msg << " <== " << bytes << " Byte gesendet an " << socket_.remote_endpoint().address().to_string());
 }
@@ -81,7 +81,7 @@ Connection::~Connection() {
  */
 void Connection::handle_read_header(const boost::system::system_error& err) {
     if (err.code()) {
-        throw connection_exception() << connection_info(shared_from_this());
+        throw ConnectionException() << ConnectionInfo(shared_from_this());
     }
     int length = cur_message_->decode_header();
     if (length > 0) {
@@ -107,7 +107,7 @@ void Connection::handle_read_header(const boost::system::system_error& err) {
  */
 void Connection::handle_read_body(const boost::system::system_error& err) {
     if (err.code()) {
-        throw connection_exception() << connection_info(shared_from_this());
+        throw ConnectionException() << ConnectionInfo(shared_from_this());
     }
     PRINT(cur_message_ << "received");
     input_buffer_.push(std::make_pair(shared_from_this(), cur_message_));

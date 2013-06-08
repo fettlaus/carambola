@@ -85,9 +85,9 @@ int Freejtag::run() {
 
         } catch (boost::system::system_error& err) {
             WARNING("System Error");
-        } catch (connection_exception& err) {
+        } catch (ConnectionException& err) {
             PRINT("Disconnected Client!");
-            if (Connection::pointer const * con = boost::get_error_info<connection_info>(err)) {
+            if (Connection::pointer const * con = boost::get_error_info<ConnectionInfo>(err)) {
                 prog_network_.remove_connection(*con);
             }
 
