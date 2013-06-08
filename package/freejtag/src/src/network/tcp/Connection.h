@@ -7,9 +7,10 @@
 #ifndef CONNECTION_H_
 #define CONNECTION_H_
 
-#include "MessageTarget.h"
 #include "ConnectionTypedef.h"
 #include "ConnectionException.h"
+
+#include <network/Message.h>
 
 #include <boost/bind/bind.hpp>
 #include <boost/asio/placeholders.hpp>
@@ -25,7 +26,7 @@ namespace freejtag {
  * internal socket should be connected by an Acceptor to a single incoming connection. Once it is
  * connected, the Connection can be made active by Connection::start().
  */
-class Connection: public MessageTarget, public boost::enable_shared_from_this<Connection> {
+class Connection: public boost::enable_shared_from_this<Connection> {
 public:
     typedef boost::shared_ptr<Connection> pointer; ///< Shared pointer for a connection
     //typedef boost::error_info<struct tag_connection_info,Connection::pointer> connection_info;
