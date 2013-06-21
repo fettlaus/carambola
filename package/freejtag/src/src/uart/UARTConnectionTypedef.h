@@ -4,16 +4,16 @@
  * @author Arne Wischer <Fettlaus@gmail.com>
  */
 
-#ifndef UARTSERVICETYPEDEF_H_
-#define UARTSERVICETYPEDEF_H_
+#ifndef UARTCONNECTIONTYPEDEF_H_
+#define UARTCONNECTIONTYPEDEF_H_
 
 #include <common/BlockingQueue.h>
 
 namespace freejtag{
 
-typedef std::pair< uint64_t, std::string > UARTMessage;
-typedef BlockingQueue< UARTMessage > UARTBuffer;
+typedef std::pair< uint64_t, std::string > UARTMessage; ///< Single UART message with timestamp and message
+typedef BlockingQueue< UARTMessage > UARTBuffer; ///< Storage for multiple UARTMessage instances
 
 }
 
-#endif /* UARTSERVICETYPEDEF_H_ */
+#endif /* UARTCONNECTIONTYPEDEF_H_ */
