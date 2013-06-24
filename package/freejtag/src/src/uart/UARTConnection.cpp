@@ -9,8 +9,7 @@
 namespace freejtag {
 
 UARTConnection::UARTConnection(boost::asio::io_service& io_service, UARTBuffer& buffer):
-        io_service_(io_service),
-        port_(io_service_),
+        port_(io_service),
         buffer_(buffer),
         input_stream_(&stream_buffer_){
 }

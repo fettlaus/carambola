@@ -29,11 +29,10 @@ public:
     void close();
 private:
     void handle_read(const boost::system::error_code& ec, std::size_t size);
-    UARTBuffer& buffer_;
-    boost::asio::io_service& io_service_;
-    boost::asio::serial_port port_;
-    boost::asio::streambuf stream_buffer_;
-    std::istream input_stream_;
+    UARTBuffer& buffer_; ///< Store incoming data
+    boost::asio::serial_port port_; ///< Currently used serial port
+    boost::asio::streambuf stream_buffer_; ///< Will be filled with a single line
+    std::istream input_stream_; ///< Input stream of stream_buffer_
 };
 
 } /* namespace freejtag */
