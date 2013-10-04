@@ -19,6 +19,10 @@
 
 namespace freejtag {
 
+/**
+ * This class handles a single serial connection.
+ *
+ */
 class UARTConnection {
 public:
     UARTConnection(boost::asio::io_service& io_service, UARTBuffer& buffer);

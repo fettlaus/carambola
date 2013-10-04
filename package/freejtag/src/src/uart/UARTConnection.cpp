@@ -8,6 +8,14 @@
 
 namespace freejtag {
 
+/**
+ * Create a new UARTConnection instance.
+ * The provided io_service will be used to handle all the asynchronous serial calls of this class. The
+ * UARTBuffer stores multiple instances of UARTMessage.
+ * @param io_service Service to use asynchronous methods with
+ * @param buffer Buffer in which to store incoming serial messages
+ * @see UARTMessage
+ */
 UARTConnection::UARTConnection(boost::asio::io_service& io_service, UARTBuffer& buffer):
         port_(io_service),
         buffer_(buffer),
@@ -16,6 +24,14 @@ UARTConnection::UARTConnection(boost::asio::io_service& io_service, UARTBuffer& 
 
 UARTConnection::~UARTConnection() { }
 
+/**
+ * Open a specific device.
+ * The method opens the specified device. This can be for example /dev/ttyS0 on Linux. After opening
+ * the device, the method starts a new asynchronous accept on it.
+ * @param device The device that should be opened
+ * @return Currently always true
+ * @todo Return something useful
+ */
 bool UARTConnection::open(std::string device){
     port_.open(device);
     boost::asio::async_read_until(port_,stream_buffer_,'\n',
